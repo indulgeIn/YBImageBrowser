@@ -13,6 +13,9 @@
 		706BF148207CAAB30034663E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 706BF147207CAAB30034663E /* Assets.xcassets */; };
 		706BF14B207CAAB30034663E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 706BF149207CAAB30034663E /* LaunchScreen.storyboard */; };
 		706BF14E207CAAB30034663E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF14D207CAAB30034663E /* main.m */; };
+		706BF157207CB65F0034663E /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF156207CB65F0034663E /* YBImageBrowser.m */; };
+		706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15C207CB7060034663E /* YBImageBrowserCell.m */; };
+		706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15F207CB72F0034663E /* YBImageBrowserView.m */; };
 		B454E29D3983D8A7DEBE5730 /* Pods_YBImageBrowserDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD3D3D4051E4334DCB91E8A4 /* Pods_YBImageBrowserDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +30,12 @@
 		706BF14A207CAAB30034663E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		706BF14C207CAAB30034663E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		706BF14D207CAAB30034663E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		706BF155207CB65F0034663E /* YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowser.h; sourceTree = "<group>"; };
+		706BF156207CB65F0034663E /* YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowser.m; sourceTree = "<group>"; };
+		706BF15B207CB7060034663E /* YBImageBrowserCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserCell.h; sourceTree = "<group>"; };
+		706BF15C207CB7060034663E /* YBImageBrowserCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserCell.m; sourceTree = "<group>"; };
+		706BF15E207CB72F0034663E /* YBImageBrowserView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserView.h; sourceTree = "<group>"; };
+		706BF15F207CB72F0034663E /* YBImageBrowserView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserView.m; sourceTree = "<group>"; };
 		B7388A27B4CDF81F1636CB45 /* Pods-YBImageBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBImageBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		FD3D3D4051E4334DCB91E8A4 /* Pods_YBImageBrowserDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YBImageBrowserDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF7A9D2ED33D23814BE790C3 /* Pods-YBImageBrowserDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBImageBrowserDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -91,6 +100,12 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				706BF155207CB65F0034663E /* YBImageBrowser.h */,
+				706BF156207CB65F0034663E /* YBImageBrowser.m */,
+				706BF15E207CB72F0034663E /* YBImageBrowserView.h */,
+				706BF15F207CB72F0034663E /* YBImageBrowserView.m */,
+				706BF15B207CB7060034663E /* YBImageBrowserCell.h */,
+				706BF15C207CB7060034663E /* YBImageBrowserCell.m */,
 			);
 			path = YBImageBrowser;
 			sourceTree = SOURCE_ROOT;
@@ -232,8 +247,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				706BF143207CAAB30034663E /* ViewController.m in Sources */,
+				706BF157207CB65F0034663E /* YBImageBrowser.m in Sources */,
+				706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */,
 				706BF14E207CAAB30034663E /* main.m in Sources */,
 				706BF140207CAAB30034663E /* AppDelegate.m in Sources */,
+				706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
