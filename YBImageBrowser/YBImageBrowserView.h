@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YBImageBrowserModel.h"
 
 @interface YBImageBrowserView : UICollectionView
+
+@property (nonatomic, strong) NSArray<YBImageBrowserModel *> *dataArray;
 
 @end

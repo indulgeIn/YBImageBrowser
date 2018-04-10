@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YBImageBrowserModel.h"
 
 @interface YBImageBrowserCell : UICollectionViewCell
+
+- (void)loadImageWithModel:(YBImageBrowserModel *)model;
 
 @end
