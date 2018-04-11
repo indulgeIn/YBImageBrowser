@@ -9,11 +9,21 @@
 #import "YBImageBrowserTool.h"
 #import "YBImageBrowserModel.h"
 
+@class YBImageBrowserCell;
+
+@protocol YBImageBrowserCellDelegate <NSObject>
+
+- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell didAddDownLoaderTaskWithToken:(SDWebImageDownloadToken *)token;
+
+@end
+
 @interface YBImageBrowserCell : UICollectionViewCell
 
-- (void)loadImageWithModel:(YBImageBrowserModel *)model;
+@property (nonatomic, strong) YBImageBrowserModel *model;
 
 @property (nonatomic, assign) BOOL isLoadFailed;
 - (void)reLoad;
+
+@property (nonatomic, weak) id delegate;
 
 @end

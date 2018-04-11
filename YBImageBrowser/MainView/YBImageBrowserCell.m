@@ -14,7 +14,6 @@
 
 @property (nonatomic, strong) FLAnimatedImageView *imageView;
 @property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) YBImageBrowserModel *model;
 @property (nonatomic, strong) YBImageBrowserProgressBar *progressBar;
 
 @end
@@ -57,52 +56,72 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notice_hide object:nil];
 }
 - (void)respondsToTapOfDouble:(UITapGestureRecognizer *)tap {
-    UIScrollView *scrollView = (UIScrollView *)tap.view;
-    CGPoint point = [tap locationInView:scrollView];
+    UIScrollView *scrollView = self.scrollView;
+    CGPoint point = [tap locationInView:self.imageView];
     if (scrollView.zoomScale == scrollView.maximumZoomScale) {
         [scrollView setZoomScale:scrollView.minimumZoomScale animated:YES];
     } else {
-        [scrollView zoomToRect:CGRectMake(point.x, point.y, 1, 1) animated:YES];
+        //让指定区域竟可能大的显示在可视区域
+        [scrollView zoomToRect:CGRectMake(point.x + scrollView.contentOffset.x, point.y + scrollView.contentOffset.y, 1, 1) animated:YES];
     }
 }
 
 #pragma mark public
 - (void)reLoad {
-    [self loadImageWithModel:self.model];
+    [self loadImageWithModel:self.model isPreview:NO];
 }
-- (void)loadImageWithModel:(YBImageBrowserModel *)model {
+
+#pragma mark private
+- (void)loadImageWithModel:(YBImageBrowserModel *)model isPreview:(BOOL)isPreview {
     if (!model) return;
-    _model = model;
     
     if (model.image) {
         
+        //展示图片
         self.imageView.frame = [self getFrameOfImageViewWithImage:model.image];
         self.imageView.image = model.image;
         
     } else if (model.animatedImage) {
         
+        //展示gif
         self.imageView.frame = [self getFrameOfImageViewWithImage:model.animatedImage];
         self.imageView.animatedImage = model.animatedImage;
         
     } else if (model.url) {
         
-        //优先显示缩略图
-        [SDImageCache sharedImageCache];
+        //读取缓存
+        UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:model.imageUrl];
+        if (cacheImage) {
+            model.image = cacheImage;
+            [self loadImageWithModel:model isPreview:NO];
+            return;
+        }
+        
+        //若该缩略图无缓存，放弃下载逻辑以节约资源
+        if (isPreview) return;
+        
+        //展示缩略图
+        if (model.previewModel) {
+            [self loadImageWithModel:model.previewModel isPreview:YES];
+        }
         
         //下载逻辑
-        [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:model.url options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:model.url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
             
             if (self.model != model) return;
+            CGFloat progress = receivedSize*1.0/expectedSize;
+            if (progress < 0) return;
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (!self.progressBar.superview) {
                     [self.contentView addSubview:self.progressBar];
                 }
-                self.progressBar.progress = receivedSize*1.0/expectedSize;
+                self.progressBar.progress = progress;
             });
             
         } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
             
+            //下载失败，展示错误 HUD
             if (error) {
                 self.isLoadFailed = YES;
                 if (self.model == model) {
@@ -112,24 +131,33 @@
             }
             self.isLoadFailed = NO;
             
+            //将下载完成的图片存入内存/磁盘
             if (YBImageBrowser_isGif(data)) {
                 model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
             } else {
                 model.image = image;
+                [[SDImageCache sharedImageCache] storeImage:image forKey:model.imageUrl completion:nil];
             }
             
+            //移除 HUD 并且刷新图片
             if (self.model == model) {
                 if (self.progressBar.superview) {
                     [self.progressBar removeFromSuperview];
                 }
-                [self loadImageWithModel:model];
+                [self loadImageWithModel:model isPreview:NO];
             }
             
         }];
+        
+        //将 token 给集合视图
+        if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowserCell:didAddDownLoaderTaskWithToken:)]) {
+            [_delegate yBImageBrowserCell:self didAddDownLoaderTaskWithToken:token];
+        }
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notice_hide object:nil];
     }
 }
 
-#pragma mark private
 - (CGRect)getFrameOfImageViewWithImage:(id)image {
     
     CGSize imageSize = [FLAnimatedImage sizeForImage:image];
@@ -169,6 +197,13 @@
 }
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.imageView;
+}
+
+#pragma mark setter
+- (void)setModel:(YBImageBrowserModel *)model {
+    if (!model) return;
+    _model = model;
+    [self loadImageWithModel:model isPreview:NO];
 }
 
 #pragma mark getter

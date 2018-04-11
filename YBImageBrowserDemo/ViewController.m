@@ -8,9 +8,7 @@
 
 #import "ViewController.h"
 #import "YBImageBrowser.h"
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/UIImage+GIF.h>
-#import <FLAnimatedImage/FLAnimatedImage.h>
+
 #import "YBImageBrowserTool.h"
 #import "YBImageBrowserProgressBar.h"
 
@@ -22,7 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
+
     
 }
 
@@ -47,6 +45,9 @@
     
     [browser show];
     
+}
+- (IBAction)clickClearButton:(id)sender {
+    [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
 }
 
 @end

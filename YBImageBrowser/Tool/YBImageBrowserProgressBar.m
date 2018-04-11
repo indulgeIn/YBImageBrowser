@@ -27,14 +27,14 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor blackColor];
+        self.backgroundColor = [UIColor clearColor];
         selfCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
         bottomPathColor = [UIColor lightGrayColor];
         activePathColor = [UIColor whiteColor];
         radius = 17;
         strokeWidth = 3;
         textAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:10], NSForegroundColorAttributeName:[UIColor whiteColor]};
-        loadFailedAttr = [[NSMutableAttributedString alloc] initWithString:@"抱歉，加载失败了" attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:13], NSForegroundColorAttributeName:[UIColor whiteColor]}];
+        loadFailedAttr = [[NSMutableAttributedString alloc] initWithString:@"图片加载失败了" attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:13], NSForegroundColorAttributeName:[UIColor whiteColor]}];
         isLoadFailed = NO;
     }
     return self;

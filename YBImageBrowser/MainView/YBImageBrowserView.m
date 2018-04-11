@@ -9,20 +9,29 @@
 #import "YBImageBrowserView.h"
 #import "YBImageBrowserCell.h"
 
-@interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout> {
+@interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate> {
     CGFloat selfHeight;
     CGFloat selfWidth;
+    NSPointerArray *downloaderTokens;
 }
 @end
 
 @implementation YBImageBrowserView
 
 #pragma mark life cycle
+- (void)dealloc {
+    [downloaderTokens addPointer:NULL];
+    [downloaderTokens compact];
+    for (id token in downloaderTokens) {
+        [[SDWebImageDownloader sharedDownloader] cancel:token];
+    }
+}
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
     self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
         selfHeight = self.bounds.size.height;
         selfWidth = self.bounds.size.width;
+        downloaderTokens = [NSPointerArray weakObjectsPointerArray];
         [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:@"YBImageBrowserCell"];
         self.collectionViewLayout = layout;
         self.pagingEnabled = YES;
@@ -38,6 +47,13 @@
     return self;
 }
 
+#pragma mark YBImageBrowserCellDelegate
+- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell didAddDownLoaderTaskWithToken:(SDWebImageDownloadToken *)token {
+    [downloaderTokens addPointer:NULL];
+    [downloaderTokens compact];
+    [downloaderTokens addPointer:(__bridge void * _Nullable)(token)];
+}
+
 #pragma mark *** UICollectionViewDataSource ***
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -47,13 +63,14 @@
 }
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     YBImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"YBImageBrowserCell" forIndexPath:indexPath];
-    [cell loadImageWithModel:self.dataArray[indexPath.row]];
+    cell.delegate = self;
+    cell.model = self.dataArray[indexPath.row];
     return cell;
 }
 
 #pragma mark UICollectionViewDelegateFlowLayout
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(selfWidth, selfHeight);
+    return CGSizeMake(selfWidth/10, selfHeight);
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return 0;

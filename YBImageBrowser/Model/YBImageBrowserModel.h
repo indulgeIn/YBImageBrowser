@@ -36,6 +36,12 @@
 
 
 
+
+
+
+
+
+
 ////* 不建议直接赋值的属性（内部会根据'配置属性'自动转换）
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) NSURL *url;
