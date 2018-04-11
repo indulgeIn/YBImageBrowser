@@ -7,14 +7,15 @@
 //
 
 #import "YBImageBrowserCell.h"
-#import <SDWebImage/SDWebImageDownloader.h>
-#import <SDWebImage/UIImage+GIF.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import "YBImageBrowserTool.h"
+#import "YBImageBrowserProgressBar.h"
 
 @interface YBImageBrowserCell () <UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, strong) FLAnimatedImageView *imageView;
 @property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) YBImageBrowserModel *model;
+@property (nonatomic, strong) YBImageBrowserProgressBar *progressBar;
 
 @end
 
@@ -24,35 +25,104 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        _isLoadFailed = NO;
         [self.contentView addSubview:self.scrollView];
         [self.scrollView addSubview:self.imageView];
+        [self addGesture];
     }
     return self;
 }
 - (void)prepareForReuse {
     [self.scrollView setZoomScale:1.0 animated:NO];
     self.imageView.image = nil;
+    self.imageView.animatedImage = nil;
+    if (self.progressBar.superview) {
+        [self.progressBar removeFromSuperview];
+    }
+}
+
+#pragma mark gesture
+- (void)addGesture {
+    UITapGestureRecognizer *tapOfSingle = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapOfSingle:)];
+    tapOfSingle.numberOfTapsRequired = 1;
+    UITapGestureRecognizer *tapOfDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapOfDouble:)];
+    tapOfDouble.numberOfTapsRequired = 2;
+    
+    [tapOfSingle requireGestureRecognizerToFail:tapOfDouble];
+    
+    [self.scrollView addGestureRecognizer:tapOfSingle];
+    [self.scrollView addGestureRecognizer:tapOfDouble];
+}
+- (void)respondsToTapOfSingle:(UITapGestureRecognizer *)tap {
+    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notice_hide object:nil];
+}
+- (void)respondsToTapOfDouble:(UITapGestureRecognizer *)tap {
+    UIScrollView *scrollView = (UIScrollView *)tap.view;
+    CGPoint point = [tap locationInView:scrollView];
+    if (scrollView.zoomScale == scrollView.maximumZoomScale) {
+        [scrollView setZoomScale:scrollView.minimumZoomScale animated:YES];
+    } else {
+        [scrollView zoomToRect:CGRectMake(point.x, point.y, 1, 1) animated:YES];
+    }
 }
 
 #pragma mark public
+- (void)reLoad {
+    [self loadImageWithModel:self.model];
+}
 - (void)loadImageWithModel:(YBImageBrowserModel *)model {
+    if (!model) return;
+    _model = model;
     
     if (model.image) {
         
-        [self configImageViewWithImage:model.image];
+        self.imageView.frame = [self getFrameOfImageViewWithImage:model.image];
+        self.imageView.image = model.image;
+        
+    } else if (model.animatedImage) {
+        
+        self.imageView.frame = [self getFrameOfImageViewWithImage:model.animatedImage];
+        self.imageView.animatedImage = model.animatedImage;
         
     } else if (model.url) {
         
+        //优先显示缩略图
+        [SDImageCache sharedImageCache];
+        
+        //下载逻辑
         [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:model.url options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
             
+            if (self.model != model) return;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!self.progressBar.superview) {
+                    [self.contentView addSubview:self.progressBar];
+                }
+                self.progressBar.progress = receivedSize*1.0/expectedSize;
+            });
             
         } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
             
             if (error) {
-                
+                self.isLoadFailed = YES;
+                if (self.model == model) {
+                    [self.progressBar showLoadFailedGraphics];
+                }
+                return;
+            }
+            self.isLoadFailed = NO;
+            
+            if (YBImageBrowser_isGif(data)) {
+                model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
             } else {
                 model.image = image;
-                [self configImageViewWithImage:image];
+            }
+            
+            if (self.model == model) {
+                if (self.progressBar.superview) {
+                    [self.progressBar removeFromSuperview];
+                }
+                [self loadImageWithModel:model];
             }
             
         }];
@@ -60,9 +130,9 @@
 }
 
 #pragma mark private
-- (void)configImageViewWithImage:(UIImage *)image {
+- (CGRect)getFrameOfImageViewWithImage:(id)image {
     
-    CGSize imageSize = image.size;
+    CGSize imageSize = [FLAnimatedImage sizeForImage:image];
     CGRect imageViewFrame = CGRectMake(0, 0, 0, 0);
     CGFloat scrollViewWidth = self.scrollView.bounds.size.width;
     CGFloat scrollViewHeight = self.scrollView.bounds.size.height;
@@ -80,9 +150,7 @@
         self.scrollView.contentSize = CGSizeMake(scrollViewWidth, imageViewFrame.size.height);
     }
     
-    self.imageView.frame = imageViewFrame;
-    self.imageView.image = image;
-
+    return imageViewFrame;
 }
 
 #pragma mark UIScrollViewDelegate
@@ -104,11 +172,10 @@
 }
 
 #pragma mark getter
-- (UIImageView *)imageView {
+- (FLAnimatedImageView *)imageView {
     if (!_imageView) {
-        _imageView = [UIImageView new];
+        _imageView = [FLAnimatedImageView new];
         _imageView.contentMode = UIViewContentModeScaleAspectFit;
-        _imageView.userInteractionEnabled = YES;
     }
     return _imageView;
 }
@@ -127,6 +194,12 @@
         }
     }
     return _scrollView;
+}
+- (YBImageBrowserProgressBar *)progressBar {
+    if (!_progressBar) {
+        _progressBar = [[YBImageBrowserProgressBar alloc] initWithFrame:self.bounds];
+    }
+    return _progressBar;
 }
 
 @end

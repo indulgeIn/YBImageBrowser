@@ -3,6 +3,7 @@ target ‘YBImageBrowserDemo’ do
 use_frameworks!
 
 
-pod 'SDWebImage'
+pod 'SDWebImage', '~> 4.3.3'
+pod 'FLAnimatedImage', '~> 1.0.12'
 
 end

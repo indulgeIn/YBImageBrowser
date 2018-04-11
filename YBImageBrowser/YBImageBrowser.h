@@ -6,7 +6,7 @@
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "YBImageBrowserTool.h"
 #import "YBImageBrowserModel.h"
 
 @interface YBImageBrowser : UIView

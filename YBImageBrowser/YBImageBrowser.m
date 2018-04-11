@@ -19,7 +19,7 @@
 
 #pragma mark life cycle
 - (void)dealloc {
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 - (instancetype)init {
     return [self initWithFrame:[UIScreen mainScreen].bounds];
@@ -27,11 +27,20 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        [self addNotification];
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         _browserView = [[YBImageBrowserView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
     }
     return self;
+}
+
+#pragma mark notification
+- (void)addNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notice_hide) name:YBImageBrowser_notice_hide object:nil];
+}
+- (void)notice_hide {
+    [self hide];
 }
 
 #pragma mark public

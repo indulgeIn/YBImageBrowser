@@ -9,11 +9,10 @@
 #import "YBImageBrowserView.h"
 #import "YBImageBrowserCell.h"
 
-@interface YBImageBrowserView () <UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout> {
+@interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout> {
     CGFloat selfHeight;
     CGFloat selfWidth;
 }
-
 @end
 
 @implementation YBImageBrowserView
@@ -52,11 +51,6 @@
     return cell;
 }
 
-#pragma mark UICollectionViewDelegate
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    
-}
-
 #pragma mark UICollectionViewDelegateFlowLayout
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
     return CGSizeMake(selfWidth, selfHeight);
@@ -71,5 +65,14 @@
     return UIEdgeInsetsZero;
 }
 
+#pragma mark UIScrollViewDelegate
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    NSArray<YBImageBrowserCell *>* array = (NSArray<YBImageBrowserCell *>*)[self visibleCells];
+    for (YBImageBrowserCell *cell in array) {
+        if (cell.isLoadFailed) {
+            [cell reLoad];
+        }
+    }
+}
 
 @end

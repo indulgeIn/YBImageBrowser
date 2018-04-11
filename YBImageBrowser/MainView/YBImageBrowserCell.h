@@ -6,11 +6,14 @@
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "YBImageBrowserTool.h"
 #import "YBImageBrowserModel.h"
 
 @interface YBImageBrowserCell : UICollectionViewCell
 
 - (void)loadImageWithModel:(YBImageBrowserModel *)model;
+
+@property (nonatomic, assign) BOOL isLoadFailed;
+- (void)reLoad;
 
 @end

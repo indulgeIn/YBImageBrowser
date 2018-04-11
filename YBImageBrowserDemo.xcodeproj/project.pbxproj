@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */; };
-		23552138207CEB6200769FD4 /* YBImageBrowserDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552137207CEB6200769FD4 /* YBImageBrowserDownloader.m */; };
-		2355213C207D19D200769FD4 /* gif0.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2355213B207D19D100769FD4 /* gif0.gif */; };
 		706BF140207CAAB30034663E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF13F207CAAB30034663E /* AppDelegate.m */; };
 		706BF143207CAAB30034663E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF142207CAAB30034663E /* ViewController.m */; };
 		706BF146207CAAB30034663E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 706BF144207CAAB30034663E /* Main.storyboard */; };
@@ -19,15 +17,15 @@
 		706BF157207CB65F0034663E /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF156207CB65F0034663E /* YBImageBrowser.m */; };
 		706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15C207CB7060034663E /* YBImageBrowserCell.m */; };
 		706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15F207CB72F0034663E /* YBImageBrowserView.m */; };
+		70A67664207DA0E2000EB602 /* gif0.gif in Resources */ = {isa = PBXBuildFile; fileRef = 70A67663207DA0E1000EB602 /* gif0.gif */; };
+		70A67667207DAFA3000EB602 /* YBImageBrowserTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A67666207DAFA3000EB602 /* YBImageBrowserTool.m */; };
+		70A6F066207DD97B004A0CBA /* YBImageBrowserProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A6F065207DD97B004A0CBA /* YBImageBrowserProgressBar.m */; };
 		B454E29D3983D8A7DEBE5730 /* Pods_YBImageBrowserDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD3D3D4051E4334DCB91E8A4 /* Pods_YBImageBrowserDemo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserModel.h; sourceTree = "<group>"; };
 		23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserModel.m; sourceTree = "<group>"; };
-		23552136207CEB6200769FD4 /* YBImageBrowserDownloader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserDownloader.h; sourceTree = "<group>"; };
-		23552137207CEB6200769FD4 /* YBImageBrowserDownloader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserDownloader.m; sourceTree = "<group>"; };
-		2355213B207D19D100769FD4 /* gif0.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif0.gif; sourceTree = "<group>"; };
 		706BF13B207CAAB30034663E /* YBImageBrowserDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YBImageBrowserDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		706BF13E207CAAB30034663E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		706BF13F207CAAB30034663E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -44,6 +42,11 @@
 		706BF15C207CB7060034663E /* YBImageBrowserCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserCell.m; sourceTree = "<group>"; };
 		706BF15E207CB72F0034663E /* YBImageBrowserView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserView.h; sourceTree = "<group>"; };
 		706BF15F207CB72F0034663E /* YBImageBrowserView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserView.m; sourceTree = "<group>"; };
+		70A67663207DA0E1000EB602 /* gif0.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif0.gif; sourceTree = "<group>"; };
+		70A67665207DAFA3000EB602 /* YBImageBrowserTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserTool.h; sourceTree = "<group>"; };
+		70A67666207DAFA3000EB602 /* YBImageBrowserTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserTool.m; sourceTree = "<group>"; };
+		70A6F064207DD97B004A0CBA /* YBImageBrowserProgressBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserProgressBar.h; sourceTree = "<group>"; };
+		70A6F065207DD97B004A0CBA /* YBImageBrowserProgressBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserProgressBar.m; sourceTree = "<group>"; };
 		B7388A27B4CDF81F1636CB45 /* Pods-YBImageBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBImageBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		FD3D3D4051E4334DCB91E8A4 /* Pods_YBImageBrowserDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YBImageBrowserDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF7A9D2ED33D23814BE790C3 /* Pods-YBImageBrowserDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBImageBrowserDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -91,12 +94,12 @@
 		706BF13D207CAAB30034663E /* YBImageBrowserDemo */ = {
 			isa = PBXGroup;
 			children = (
-				2355213B207D19D100769FD4 /* gif0.gif */,
 				706BF154207CAAD80034663E /* YBImageBrowser */,
 				706BF13E207CAAB30034663E /* AppDelegate.h */,
 				706BF13F207CAAB30034663E /* AppDelegate.m */,
 				706BF141207CAAB30034663E /* ViewController.h */,
 				706BF142207CAAB30034663E /* ViewController.m */,
+				70A67663207DA0E1000EB602 /* gif0.gif */,
 				706BF144207CAAB30034663E /* Main.storyboard */,
 				706BF147207CAAB30034663E /* Assets.xcassets */,
 				706BF149207CAAB30034663E /* LaunchScreen.storyboard */,
@@ -109,19 +112,45 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				70A6F063207DD4AA004A0CBA /* Tool */,
+				70A6F061207DD478004A0CBA /* Model */,
+				70A6F060207DD470004A0CBA /* MainView */,
 				706BF155207CB65F0034663E /* YBImageBrowser.h */,
 				706BF156207CB65F0034663E /* YBImageBrowser.m */,
-				23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */,
-				23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */,
+			);
+			path = YBImageBrowser;
+			sourceTree = SOURCE_ROOT;
+		};
+		70A6F060207DD470004A0CBA /* MainView */ = {
+			isa = PBXGroup;
+			children = (
 				706BF15E207CB72F0034663E /* YBImageBrowserView.h */,
 				706BF15F207CB72F0034663E /* YBImageBrowserView.m */,
 				706BF15B207CB7060034663E /* YBImageBrowserCell.h */,
 				706BF15C207CB7060034663E /* YBImageBrowserCell.m */,
-				23552136207CEB6200769FD4 /* YBImageBrowserDownloader.h */,
-				23552137207CEB6200769FD4 /* YBImageBrowserDownloader.m */,
 			);
-			path = YBImageBrowser;
-			sourceTree = SOURCE_ROOT;
+			path = MainView;
+			sourceTree = "<group>";
+		};
+		70A6F061207DD478004A0CBA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */,
+				23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		70A6F063207DD4AA004A0CBA /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				70A67665207DAFA3000EB602 /* YBImageBrowserTool.h */,
+				70A67666207DAFA3000EB602 /* YBImageBrowserTool.m */,
+				70A6F064207DD97B004A0CBA /* YBImageBrowserProgressBar.h */,
+				70A6F065207DD97B004A0CBA /* YBImageBrowserProgressBar.m */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
 		};
 		E891A8ECF05E69B092BE9682 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -194,7 +223,7 @@
 			files = (
 				706BF14B207CAAB30034663E /* LaunchScreen.storyboard in Resources */,
 				706BF148207CAAB30034663E /* Assets.xcassets in Resources */,
-				2355213C207D19D200769FD4 /* gif0.gif in Resources */,
+				70A67664207DA0E2000EB602 /* gif0.gif in Resources */,
 				706BF146207CAAB30034663E /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -242,10 +271,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FLAnimatedImage/FLAnimatedImage.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FLAnimatedImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,8 +297,9 @@
 				23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */,
 				706BF14E207CAAB30034663E /* main.m in Sources */,
 				706BF140207CAAB30034663E /* AppDelegate.m in Sources */,
-				23552138207CEB6200769FD4 /* YBImageBrowserDownloader.m in Sources */,
 				706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */,
+				70A67667207DAFA3000EB602 /* YBImageBrowserTool.m in Sources */,
+				70A6F066207DD97B004A0CBA /* YBImageBrowserProgressBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,7 +436,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UU8H9EQ986;
+				DEVELOPMENT_TEAM = 4F282792XK;
 				INFOPLIST_FILE = YBImageBrowserDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -422,7 +454,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = UU8H9EQ986;
+				DEVELOPMENT_TEAM = 4F282792XK;
 				INFOPLIST_FILE = YBImageBrowserDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
