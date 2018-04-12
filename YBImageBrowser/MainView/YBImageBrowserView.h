@@ -13,4 +13,6 @@
 
 @property (nonatomic, strong) NSArray<YBImageBrowserModel *> *dataArray;
 
+- (void)resetUserInterfaceLayout;
+
 @end

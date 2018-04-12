@@ -8,6 +8,11 @@
 
 #import "YBImageBrowserTool.h"
 
+FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_image;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_url;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_animatedImage;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_needUpdateUI;
+
 @interface YBImageBrowserModel : NSObject
 
 ////* 配置属性
@@ -32,19 +37,5 @@
  */
 @property (nonatomic, strong) YBImageBrowserModel *previewModel;
 
-
-
-
-
-
-
-
-
-
-
-////* 不建议直接赋值的属性（内部会根据'配置属性'自动转换）
-@property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) NSURL *url;
-@property (nonatomic, strong) FLAnimatedImage *animatedImage;
 
 @end

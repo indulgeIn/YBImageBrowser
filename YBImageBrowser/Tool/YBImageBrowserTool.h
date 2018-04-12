@@ -12,10 +12,13 @@
 #import <SDWebImage/SDImageCache.h>
 #import <FLAnimatedImage/FLAnimatedImage.h>
 
-UIKIT_EXTERN NSString * const YBImageBrowser_notice_hide;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_notice_hideSelf;
+
+BOOL YBImageBrowser_isGif(NSData *data);
 
 @interface YBImageBrowserTool : NSObject
 
-BOOL YBImageBrowser_isGif(NSData *data);
++ (UIViewController *)getTopController;
++ (UIWindow *)getNormalWindow;
 
 @end

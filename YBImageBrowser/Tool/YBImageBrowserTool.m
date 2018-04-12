@@ -8,7 +8,7 @@
 
 #import "YBImageBrowserTool.h"
 
-NSString * const YBImageBrowser_notice_hide = @"YBImageBrowser_notice_hide";
+NSString * const YBImageBrowser_notice_hideSelf = @"YBImageBrowser_notice_hide";
 
 NSString *YBImageBrowser_getTypeOfImageData(NSData *data) {
     uint8_t c;
@@ -38,5 +38,34 @@ BOOL YBImageBrowser_isGif(NSData *data) {
 }
 
 @implementation YBImageBrowserTool
+
++ (UIViewController *)getTopController
+{
+    UIViewController *topController = nil;
+    
+    UIWindow *window = [self getNormalWindow];
+    
+    UIView *frontView = [[window subviews] objectAtIndex:0];
+    id nextResponder = [frontView nextResponder];
+    
+    if ([nextResponder isKindOfClass:UIViewController.class])
+        topController = nextResponder;
+    else
+        topController = window.rootViewController;
+    return topController;
+}
++ (UIWindow *)getNormalWindow {
+    UIWindow *window = [[UIApplication sharedApplication] keyWindow];
+    if (window.windowLevel != UIWindowLevelNormal) {
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for(UIWindow * temp in windows) {
+            if (temp.windowLevel == UIWindowLevelNormal) {
+                window = temp;
+                break;
+            }
+        }
+    }
+    return window;
+}
 
 @end

@@ -46,23 +46,27 @@
     tapOfSingle.numberOfTapsRequired = 1;
     UITapGestureRecognizer *tapOfDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapOfDouble:)];
     tapOfDouble.numberOfTapsRequired = 2;
-    
     [tapOfSingle requireGestureRecognizerToFail:tapOfDouble];
-    
     [self.scrollView addGestureRecognizer:tapOfSingle];
     [self.scrollView addGestureRecognizer:tapOfDouble];
 }
+
 - (void)respondsToTapOfSingle:(UITapGestureRecognizer *)tap {
-    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notice_hide object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notice_hideSelf object:nil];
 }
+
 - (void)respondsToTapOfDouble:(UITapGestureRecognizer *)tap {
     UIScrollView *scrollView = self.scrollView;
-    CGPoint point = [tap locationInView:self.imageView];
+    UIView *zoomView = [self viewForZoomingInScrollView:scrollView];
+    CGPoint point = [tap locationInView:zoomView];
+    if (!CGRectContainsPoint(zoomView.bounds, point)) {
+        return;
+    }
     if (scrollView.zoomScale == scrollView.maximumZoomScale) {
         [scrollView setZoomScale:scrollView.minimumZoomScale animated:YES];
     } else {
-        //让指定区域竟可能大的显示在可视区域
-        [scrollView zoomToRect:CGRectMake(point.x + scrollView.contentOffset.x, point.y + scrollView.contentOffset.y, 1, 1) animated:YES];
+        //让指定区域尽可能大的显示在可视区域
+        [scrollView zoomToRect:CGRectMake(point.x, point.y, 1, 1) animated:YES];
     }
 }
 
@@ -71,28 +75,38 @@
     [self loadImageWithModel:self.model isPreview:NO];
 }
 
+- (void)resetUserInterfaceLayout {
+    UIScrollView *scrollView = self.scrollView;
+    [scrollView setZoomScale:scrollView.minimumZoomScale animated:YES];
+    scrollView.frame = self.bounds;
+    scrollView.contentSize = CGSizeMake(scrollView.bounds.size.width, scrollView.bounds.size.height);
+    self.progressBar.frame = self.bounds;
+}
+
 #pragma mark private
 - (void)loadImageWithModel:(YBImageBrowserModel *)model isPreview:(BOOL)isPreview {
     if (!model) return;
     
-    if (model.image) {
+    if ([model valueForKey:YBImageBrowser_KVCKey_image]) {
         
         //展示图片
-        self.imageView.frame = [self getFrameOfImageViewWithImage:model.image];
-        self.imageView.image = model.image;
+        UIImage *image = [model valueForKey:YBImageBrowser_KVCKey_image];
+        self.imageView.frame = [self getFrameOfImageViewWithImage:image];
+        self.imageView.image = image;
         
-    } else if (model.animatedImage) {
+    } else if ([model valueForKey:YBImageBrowser_KVCKey_animatedImage]) {
         
         //展示gif
-        self.imageView.frame = [self getFrameOfImageViewWithImage:model.animatedImage];
-        self.imageView.animatedImage = model.animatedImage;
+        FLAnimatedImage *animatedImage = [model valueForKey:YBImageBrowser_KVCKey_animatedImage];
+        self.imageView.frame = [self getFrameOfImageViewWithImage:animatedImage];
+        self.imageView.animatedImage = animatedImage;
         
-    } else if (model.url) {
+    } else if ([model valueForKey:YBImageBrowser_KVCKey_url]) {
         
         //读取缓存
         UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:model.imageUrl];
         if (cacheImage) {
-            model.image = cacheImage;
+            [model setValue:cacheImage forKey:@"image"];
             [self loadImageWithModel:model isPreview:NO];
             return;
         }
@@ -106,55 +120,60 @@
         }
         
         //下载逻辑
-        SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:model.url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-            
-            if (self.model != model) return;
-            CGFloat progress = receivedSize*1.0/expectedSize;
-            if (progress < 0) return;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (!self.progressBar.superview) {
-                    [self.contentView addSubview:self.progressBar];
-                }
-                self.progressBar.progress = progress;
-            });
-            
-        } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-            
-            //下载失败，展示错误 HUD
-            if (error) {
-                self.isLoadFailed = YES;
-                if (self.model == model) {
-                    [self.progressBar showLoadFailedGraphics];
-                }
-                return;
-            }
-            self.isLoadFailed = NO;
-            
-            //将下载完成的图片存入内存/磁盘
-            if (YBImageBrowser_isGif(data)) {
-                model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-            } else {
-                model.image = image;
-                [[SDImageCache sharedImageCache] storeImage:image forKey:model.imageUrl completion:nil];
-            }
-            
-            //移除 HUD 并且刷新图片
-            if (self.model == model) {
-                if (self.progressBar.superview) {
-                    [self.progressBar removeFromSuperview];
-                }
-                [self loadImageWithModel:model isPreview:NO];
-            }
-            
-        }];
-        
-        //将 token 给集合视图
-        if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowserCell:didAddDownLoaderTaskWithToken:)]) {
-            [_delegate yBImageBrowserCell:self didAddDownLoaderTaskWithToken:token];
-        }
+        [self downloadImageWithModel:model];
+    }
+}
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notice_hide object:nil];
+- (void)downloadImageWithModel:(YBImageBrowserModel *)model {
+    
+    NSURL *url = [model valueForKey:YBImageBrowser_KVCKey_url];
+    
+    SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        
+        if (self.model != model || expectedSize <= 0) return;
+        CGFloat progress = receivedSize * 1.0 / expectedSize;
+        if (progress < 0) return;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!self.progressBar.superview) {
+                [self.contentView addSubview:self.progressBar];
+            }
+            self.progressBar.progress = progress;
+        });
+        
+    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+        
+        //下载失败，展示错误 HUD
+        if (error) {
+            self.isLoadFailed = YES;
+            if (self.model == model) {
+                [self.progressBar showLoadFailedGraphics];
+            }
+            return;
+        }
+        self.isLoadFailed = NO;
+        
+        //将下载完成的图片存入内存/磁盘
+        if (YBImageBrowser_isGif(data)) {
+            [model setValue:[FLAnimatedImage animatedImageWithGIFData:data] forKey:YBImageBrowser_KVCKey_animatedImage];
+        } else {
+            [model setValue:image forKey:YBImageBrowser_KVCKey_image];
+            [[SDImageCache sharedImageCache] storeImage:image forKey:model.imageUrl completion:nil];
+        }
+        
+        //移除 HUD 并且刷新图片
+        if (self.model == model) {
+            if (self.progressBar.superview) {
+                [self.progressBar removeFromSuperview];
+            }
+            [self loadImageWithModel:model isPreview:NO];
+        }
+        
+    }];
+    
+    //将 token 给集合视图统一处理
+    if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowserCell:didAddDownLoaderTaskWithToken:)]) {
+        [_delegate yBImageBrowserCell:self didAddDownLoaderTaskWithToken:token];
     }
 }
 
@@ -183,18 +202,16 @@
 
 #pragma mark UIScrollViewDelegate
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-    
     CGRect imageViewFrame = self.imageView.frame;
     CGFloat scrollViewHeight = scrollView.bounds.size.height;
-    
     if (imageViewFrame.size.height > scrollViewHeight) {
         imageViewFrame.origin.y = 0;
     } else {
         imageViewFrame.origin.y = (scrollViewHeight - imageViewFrame.size.height) / 2.0;
     }
-    
     self.imageView.frame = imageViewFrame;
 }
+
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.imageView;
 }
@@ -203,6 +220,10 @@
 - (void)setModel:(YBImageBrowserModel *)model {
     if (!model) return;
     _model = model;
+    if ([[model valueForKey:YBImageBrowser_KVCKey_needUpdateUI] boolValue]) {
+        [self resetUserInterfaceLayout];
+        [model setValue:@(NO) forKey:YBImageBrowser_KVCKey_needUpdateUI];
+    }
     [self loadImageWithModel:model isPreview:NO];
 }
 

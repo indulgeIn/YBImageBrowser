@@ -10,9 +10,8 @@
 #import "YBImageBrowserCell.h"
 
 @interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate> {
-    CGFloat selfHeight;
-    CGFloat selfWidth;
     NSPointerArray *downloaderTokens;
+    BOOL cellsIsAlreadyChangeUI;
 }
 @end
 
@@ -29,8 +28,7 @@
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
     self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
-        selfHeight = self.bounds.size.height;
-        selfWidth = self.bounds.size.width;
+        cellsIsAlreadyChangeUI = YES;
         downloaderTokens = [NSPointerArray weakObjectsPointerArray];
         [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:@"YBImageBrowserCell"];
         self.collectionViewLayout = layout;
@@ -47,6 +45,15 @@
     return self;
 }
 
+#pragma mark public
+- (void)resetUserInterfaceLayout {
+    self.frame = self.superview.frame;
+    for (YBImageBrowserModel *model in self.dataArray) {
+        [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_needUpdateUI];
+    }
+    [self reloadData];
+}
+
 #pragma mark YBImageBrowserCellDelegate
 - (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell didAddDownLoaderTaskWithToken:(SDWebImageDownloadToken *)token {
     [downloaderTokens addPointer:NULL];
@@ -54,7 +61,7 @@
     [downloaderTokens addPointer:(__bridge void * _Nullable)(token)];
 }
 
-#pragma mark *** UICollectionViewDataSource ***
+#pragma mark UICollectionViewDataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
@@ -70,7 +77,8 @@
 
 #pragma mark UICollectionViewDelegateFlowLayout
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return CGSizeMake(selfWidth/10, selfHeight);
+    CGSize size = collectionView.bounds.size;
+    return CGSizeMake(size.width, size.height);
 }
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
     return 0;

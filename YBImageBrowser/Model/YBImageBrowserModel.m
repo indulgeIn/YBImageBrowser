@@ -8,13 +8,36 @@
 
 #import "YBImageBrowserModel.h"
 
+NSString * const YBImageBrowser_KVCKey_image = @"image";
+NSString * const YBImageBrowser_KVCKey_url = @"url";
+NSString * const YBImageBrowser_KVCKey_animatedImage = @"animatedImage";
+NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
+
+@interface YBImageBrowserModel () {
+    UIImage *image;
+    NSURL *url;
+    FLAnimatedImage *animatedImage;
+    BOOL needUpdateUI;
+}
+
+@end
+
 @implementation YBImageBrowserModel
+
+#pragma mark life cycle
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        needUpdateUI = NO;
+    }
+    return self;
+}
 
 #pragma mark setter
 - (void)setImageName:(NSString *)imageName {
     if (!imageName) return;
     _imageName = imageName;
-    _image = [UIImage imageNamed:imageName];
+    image = [UIImage imageNamed:imageName];
 }
 - (void)setGifName:(NSString *)gifName {
     if (!gifName) return;
@@ -23,12 +46,12 @@
     if (!filePath) return;
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     if (!data) return;
-    _animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
+    animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
 }
 - (void)setImageUrl:(NSString *)imageUrl {
     if (!imageUrl) return;
     _imageUrl = imageUrl;
-    _url = [NSURL URLWithString:imageUrl];
+    url = [NSURL URLWithString:imageUrl];
 }
 
 @end

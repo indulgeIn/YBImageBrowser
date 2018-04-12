@@ -21,9 +21,12 @@
 
 @property (nonatomic, strong) YBImageBrowserModel *model;
 
+@property (nonatomic, weak) id delegate;
+
 @property (nonatomic, assign) BOOL isLoadFailed;
+
 - (void)reLoad;
 
-@property (nonatomic, weak) id delegate;
+- (void)resetUserInterfaceLayout;
 
 @end

@@ -21,11 +21,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    
 }
 
 - (IBAction)clickShowButton:(id)sender {
     
+//    YBImageBrowser *browser = [[YBImageBrowser alloc] initWithFrame:CGRectMake(0, 100, 300, 400)];
     YBImageBrowser *browser = [YBImageBrowser new];
     
     YBImageBrowserModel *model0 = [YBImageBrowserModel new];
@@ -45,9 +45,20 @@
     
     [browser show];
     
+//    UIView *testView = [[UIView alloc] initWithFrame:CGRectMake(0, 100, 300, 400)];
+//    [self.view addSubview:testView];
+//    [browser showToView:testView];
+    
 }
 - (IBAction)clickClearButton:(id)sender {
+    [[SDImageCache sharedImageCache] clearMemory];
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
 }
+//- (BOOL)shouldAutorotate {
+//    return NO;
+//}
+//- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+//    return UIInterfaceOrientationMaskLandscape;
+//}
 
 @end

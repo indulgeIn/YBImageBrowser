@@ -10,7 +10,6 @@
 #import <CoreText/CoreText.h>
 
 @interface YBImageBrowserProgressBar () {
-    CGPoint selfCenter;
     UIColor *bottomPathColor;
     UIColor *activePathColor;
     CGFloat radius;
@@ -28,7 +27,6 @@
     self = [super initWithFrame:frame];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        selfCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
         bottomPathColor = [UIColor lightGrayColor];
         activePathColor = [UIColor whiteColor];
         radius = 17;
@@ -61,6 +59,8 @@
         return;
     }
     
+    CGPoint selfCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+    
     [bottomPathColor setStroke];
     UIBezierPath *bottomPath = [UIBezierPath bezierPathWithArcCenter:selfCenter radius:radius startAngle:0 endAngle:M_PI*2 clockwise:YES];
     bottomPath.lineWidth = 4.0;
@@ -82,6 +82,7 @@
 }
 
 - (void)showFaild {
+    CGPoint selfCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     CGSize size = loadFailedAttr.size;
     [loadFailedAttr drawAtPoint:CGPointMake(selfCenter.x-size.width/2.0, selfCenter.y-size.height/2.0)];
 }
