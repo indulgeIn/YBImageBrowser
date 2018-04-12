@@ -54,6 +54,7 @@ BOOL YBImageBrowser_isGif(NSData *data) {
         topController = window.rootViewController;
     return topController;
 }
+
 + (UIWindow *)getNormalWindow {
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     if (window.windowLevel != UIWindowLevelNormal) {

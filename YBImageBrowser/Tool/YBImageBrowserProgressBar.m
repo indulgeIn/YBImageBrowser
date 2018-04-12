@@ -23,6 +23,7 @@
 @implementation YBImageBrowserProgressBar
 
 #pragma mark life cycle
+
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -39,12 +40,14 @@
 }
 
 #pragma mark public
+
 - (void)showLoadFailedGraphics {
     isLoadFailed = YES;
     [self setNeedsDisplay];
 }
 
 #pragma mark setter
+
 - (void)setProgress:(CGFloat)progress {
     _progress = progress ?: 0;
     isLoadFailed = NO;
@@ -52,6 +55,7 @@
 }
 
 #pragma mark drawRect
+
 - (void)drawRect:(CGRect)rect {
     
     if (isLoadFailed) {

@@ -14,6 +14,14 @@
 
 FOUNDATION_EXTERN NSString * const YBImageBrowser_notice_hideSelf;
 
+#ifndef YBLog
+#if DEBUG
+#define YBLog(FORMAT, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);
+#else
+#define YBLog(FORMAT, ...) nil
+#endif
+#endif
+
 BOOL YBImageBrowser_isGif(NSData *data);
 
 @interface YBImageBrowserTool : NSObject

@@ -8,7 +8,7 @@
 
 #import "ViewController.h"
 #import "YBImageBrowser.h"
-
+#import "YBImageBrowserTestVC.h"
 #import "YBImageBrowserTool.h"
 #import "YBImageBrowserProgressBar.h"
 
@@ -20,13 +20,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
 }
 
 - (IBAction)clickShowButton:(id)sender {
     
-//    YBImageBrowser *browser = [[YBImageBrowser alloc] initWithFrame:CGRectMake(0, 100, 300, 400)];
-    YBImageBrowser *browser = [YBImageBrowser new];
+//    YBImageBrowser *browser = [YBImageBrowser new];
+    YBImageBrowserTestVC *browser = [YBImageBrowserTestVC new];
     
     YBImageBrowserModel *model0 = [YBImageBrowserModel new];
     model0.imageUrl = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523386869420&di=015d95da30b54296e10cb63ee740d8d9&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01c6e25889bd4ca8012060c80f8067.gif";
@@ -42,12 +42,9 @@
     model6.gifName = @"gif0";
     
     browser.dataArray = @[model0, model1, model2, model4, model5, model6];
-    
+
     [browser show];
     
-//    UIView *testView = [[UIView alloc] initWithFrame:CGRectMake(0, 100, 300, 400)];
-//    [self.view addSubview:testView];
-//    [browser showToView:testView];
     
 }
 - (IBAction)clickClearButton:(id)sender {
@@ -58,7 +55,7 @@
 //    return NO;
 //}
 //- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-//    return UIInterfaceOrientationMaskLandscape;
+//    return UIInterfaceOrientationMaskLandscapeRight;
 //}
 
 @end

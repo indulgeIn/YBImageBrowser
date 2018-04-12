@@ -21,6 +21,7 @@
 @implementation YBImageBrowserCell
 
 #pragma mark life cycle
+
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -31,6 +32,7 @@
     }
     return self;
 }
+
 - (void)prepareForReuse {
     [self.scrollView setZoomScale:1.0 animated:NO];
     self.imageView.image = nil;
@@ -41,6 +43,7 @@
 }
 
 #pragma mark gesture
+
 - (void)addGesture {
     UITapGestureRecognizer *tapOfSingle = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapOfSingle:)];
     tapOfSingle.numberOfTapsRequired = 1;
@@ -71,6 +74,7 @@
 }
 
 #pragma mark public
+
 - (void)reLoad {
     [self loadImageWithModel:self.model isPreview:NO];
 }
@@ -84,6 +88,7 @@
 }
 
 #pragma mark private
+
 - (void)loadImageWithModel:(YBImageBrowserModel *)model isPreview:(BOOL)isPreview {
     if (!model) return;
     
@@ -201,6 +206,7 @@
 }
 
 #pragma mark UIScrollViewDelegate
+
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
     CGRect imageViewFrame = self.imageView.frame;
     CGFloat scrollViewHeight = scrollView.bounds.size.height;
@@ -217,6 +223,7 @@
 }
 
 #pragma mark setter
+
 - (void)setModel:(YBImageBrowserModel *)model {
     if (!model) return;
     _model = model;
@@ -228,6 +235,7 @@
 }
 
 #pragma mark getter
+
 - (FLAnimatedImageView *)imageView {
     if (!_imageView) {
         _imageView = [FLAnimatedImageView new];
@@ -235,6 +243,7 @@
     }
     return _imageView;
 }
+
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
@@ -251,6 +260,7 @@
     }
     return _scrollView;
 }
+
 - (YBImageBrowserProgressBar *)progressBar {
     if (!_progressBar) {
         _progressBar = [[YBImageBrowserProgressBar alloc] initWithFrame:self.bounds];

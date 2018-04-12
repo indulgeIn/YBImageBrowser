@@ -25,6 +25,7 @@ NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
 @implementation YBImageBrowserModel
 
 #pragma mark life cycle
+
 - (instancetype)init {
     self = [super init];
     if (self) {
@@ -34,11 +35,13 @@ NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
 }
 
 #pragma mark setter
+
 - (void)setImageName:(NSString *)imageName {
     if (!imageName) return;
     _imageName = imageName;
     image = [UIImage imageNamed:imageName];
 }
+
 - (void)setGifName:(NSString *)gifName {
     if (!gifName) return;
     _gifName = gifName;
@@ -48,6 +51,7 @@ NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
     if (!data) return;
     animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
 }
+
 - (void)setImageUrl:(NSString *)imageUrl {
     if (!imageUrl) return;
     _imageUrl = imageUrl;
