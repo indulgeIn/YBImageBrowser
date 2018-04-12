@@ -46,7 +46,7 @@
 #pragma mark private
 - (void)configSupportAutorotateTypes {
     UIApplication *application = [UIApplication sharedApplication];
-    UIInterfaceOrientationMask keyWindowSupport = [application supportedInterfaceOrientationsForWindow:[YBImageBrowserTool getNormalWindow]];
+    UIInterfaceOrientationMask keyWindowSupport = [application supportedInterfaceOrientationsForWindow:application.keyWindow];
     UIInterfaceOrientationMask topControllerSupport = [YBImageBrowserTool getTopController].supportedInterfaceOrientations;
     supportAutorotateTypes = keyWindowSupport & topControllerSupport;
 }
