@@ -65,7 +65,7 @@
 
 - (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated {
     if (index >= _dataArray.count) {
-        YBLogWarning(@" SEL-scrollToPageWithIndex: faild, index is invalid");
+        YBLOG_WARNING(@" SEL-scrollToPageWithIndex: faild, index is invalid");
         return;
     }
     [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:animated];
@@ -123,6 +123,9 @@
     CGFloat indexF = scrollView.contentOffset.x / scrollView.bounds.size.width;
     if (indexF == (NSUInteger)indexF && !isAdjustingDirection) {
         self.currentIndex = (NSUInteger)indexF;
+        if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(yBImageBrowserView:didScrollToIndex:)]) {
+            [_yb_delegate yBImageBrowserView:self didScrollToIndex:self.currentIndex];
+        }
     }
 }
 

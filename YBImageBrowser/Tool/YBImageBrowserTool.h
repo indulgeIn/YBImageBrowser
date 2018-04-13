@@ -13,12 +13,22 @@
 #import <FLAnimatedImage/FLAnimatedImage.h>
 
 #if DEBUG
-#define YBLog(format, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:format, ##__VA_ARGS__] UTF8String]);
-#define YBLogWarning(discribe) YBLog(@"YBImageBrowser ~~~ ⚠️ ~~~ %@", discribe)
-#define YBLogError(discribe) YBLog(@"YBImageBrowser ~~~ ❌ ~~~ %@", discribe)
+#define YBLOG(format, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:format, ##__VA_ARGS__] UTF8String]);
+#define YBLOG_WARNING(discribe) YBLOG(@"YBImageBrowser ~~~ ⚠️ ~~~ %@", discribe)
+#define YBLOG_ERROR(discribe) YBLOG(@"YBImageBrowser ~~~ ❌ ~~~ %@", discribe)
 #else
-#define YBLog(FORMAT, ...) nil
+#define YBLOG(format, ...) nil
 #endif
+
+#define YB_STATUSBAR_ORIENTATION [UIApplication sharedApplication].statusBarOrientation
+#define YB_SCREEN_HEIGHT (((YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortrait) || (YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortraitUpsideDown)) ? [UIScreen mainScreen].bounds.size.height : [UIScreen mainScreen].bounds.size.width)
+#define YB_SCREEN_WIDTH (((YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortrait) || (YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortraitUpsideDown)) ? [UIScreen mainScreen].bounds.size.width : [UIScreen mainScreen].bounds.size.height)
+
+#define YB_IS_IPHONEX (YB_SCREEN_HEIGHT == 812)
+#define YB_HEIGHT_EXTRABOTTOM (YB_IS_IPHONEX ? 34.0 : 0)
+#define YB_HEIGHT_STATUSBAR (YB_IS_IPHONEX ? 44.0 : 20.0)
+
+#define YB_HEIGHT_TOOLBAR (YB_HEIGHT_STATUSBAR + 44)
 
 FOUNDATION_EXTERN NSString * const YBImageBrowser_notificationName_hideSelf;
 
@@ -32,5 +42,6 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserImageViewFillType) {
 + (BOOL)isGif:(NSData *)data;
 + (UIViewController *)getTopController;
 + (UIWindow *)getNormalWindow;
++ (void)saveImageToAlbum:(UIImage *)image;
 
 @end

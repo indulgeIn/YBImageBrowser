@@ -7,6 +7,7 @@
 //
 
 #import "YBImageBrowserTool.h"
+#import <Photos/Photos.h>
 
 NSString * const YBImageBrowser_notificationName_hideSelf = @"YBImageBrowser_notificationName_hideSelf";
 
@@ -67,6 +68,23 @@ NSString * const YBImageBrowser_notificationName_hideSelf = @"YBImageBrowser_not
         }
     }
     return window;
+}
+
++ (void)saveImageToAlbum:(UIImage *)image {
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status == PHAuthorizationStatusDenied) {
+        //相册权限未开启
+        
+    } else if(status == PHAuthorizationStatusNotDetermined){
+        //相册进行授权
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
+            //授权后
+            
+        }];
+    } else if (status == PHAuthorizationStatusAuthorized){
+        //相册已经授权
+        
+    }
 }
 
 @end

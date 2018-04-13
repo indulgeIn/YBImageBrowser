@@ -82,7 +82,7 @@
 
 - (void)resetUserInterfaceLayout {
     UIScrollView *scrollView = self.scrollView;
-    [scrollView setZoomScale:scrollView.minimumZoomScale animated:YES];
+    [scrollView setZoomScale:1 animated:YES];
     scrollView.frame = self.bounds;
     scrollView.contentSize = CGSizeMake(scrollView.bounds.size.width, scrollView.bounds.size.height);
     self.progressBar.frame = self.bounds;

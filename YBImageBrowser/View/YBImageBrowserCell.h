@@ -19,12 +19,12 @@
 
 @interface YBImageBrowserCell : UICollectionViewCell
 
+@property (nonatomic, weak) id<YBImageBrowserCellDelegate> delegate;
+
 @property (nonatomic, strong) YBImageBrowserModel *model;
 
 @property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
 @property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
-
-@property (nonatomic, weak) id delegate;
 
 - (void)reLoad;
 
