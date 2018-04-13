@@ -113,15 +113,15 @@
 			isa = PBXGroup;
 			children = (
 				70A6F063207DD4AA004A0CBA /* Tool */,
-				70A6F061207DD478004A0CBA /* DataModel */,
-				70A6F060207DD470004A0CBA /* MainView */,
+				70A6F061207DD478004A0CBA /* Model */,
+				70A6F060207DD470004A0CBA /* View */,
 				2394EBAB207FB4340084D297 /* YBImageBrowser.h */,
 				2394EBAC207FB4340084D297 /* YBImageBrowser.m */,
 			);
 			path = YBImageBrowser;
 			sourceTree = SOURCE_ROOT;
 		};
-		70A6F060207DD470004A0CBA /* MainView */ = {
+		70A6F060207DD470004A0CBA /* View */ = {
 			isa = PBXGroup;
 			children = (
 				706BF15E207CB72F0034663E /* YBImageBrowserView.h */,
@@ -129,16 +129,16 @@
 				706BF15B207CB7060034663E /* YBImageBrowserCell.h */,
 				706BF15C207CB7060034663E /* YBImageBrowserCell.m */,
 			);
-			path = MainView;
+			path = View;
 			sourceTree = "<group>";
 		};
-		70A6F061207DD478004A0CBA /* DataModel */ = {
+		70A6F061207DD478004A0CBA /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */,
 				23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */,
 			);
-			path = DataModel;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		70A6F063207DD4AA004A0CBA /* Tool */ = {

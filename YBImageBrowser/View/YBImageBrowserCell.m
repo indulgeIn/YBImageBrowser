@@ -65,7 +65,7 @@
         return;
     }
     if (scrollView.zoomScale == scrollView.maximumZoomScale) {
-        [scrollView setZoomScale:scrollView.minimumZoomScale animated:YES];
+        [scrollView setZoomScale:1 animated:YES];
     } else {
         //让指定区域尽可能大的显示在可视区域
         [scrollView zoomToRect:CGRectMake(point.x, point.y, 1, 1) animated:YES];
