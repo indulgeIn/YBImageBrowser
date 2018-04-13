@@ -8,14 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */; };
-		2394EBAD207FB4340084D297 /* YBImageBrowserTestVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2394EBAC207FB4340084D297 /* YBImageBrowserTestVC.m */; };
+		2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2394EBAC207FB4340084D297 /* YBImageBrowser.m */; };
 		706BF140207CAAB30034663E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF13F207CAAB30034663E /* AppDelegate.m */; };
 		706BF143207CAAB30034663E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF142207CAAB30034663E /* ViewController.m */; };
 		706BF146207CAAB30034663E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 706BF144207CAAB30034663E /* Main.storyboard */; };
 		706BF148207CAAB30034663E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 706BF147207CAAB30034663E /* Assets.xcassets */; };
 		706BF14B207CAAB30034663E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 706BF149207CAAB30034663E /* LaunchScreen.storyboard */; };
 		706BF14E207CAAB30034663E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF14D207CAAB30034663E /* main.m */; };
-		706BF157207CB65F0034663E /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF156207CB65F0034663E /* YBImageBrowser.m */; };
 		706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15C207CB7060034663E /* YBImageBrowserCell.m */; };
 		706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15F207CB72F0034663E /* YBImageBrowserView.m */; };
 		70A67664207DA0E2000EB602 /* gif0.gif in Resources */ = {isa = PBXBuildFile; fileRef = 70A67663207DA0E1000EB602 /* gif0.gif */; };
@@ -27,8 +26,8 @@
 /* Begin PBXFileReference section */
 		23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserModel.h; sourceTree = "<group>"; };
 		23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserModel.m; sourceTree = "<group>"; };
-		2394EBAB207FB4340084D297 /* YBImageBrowserTestVC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserTestVC.h; sourceTree = "<group>"; };
-		2394EBAC207FB4340084D297 /* YBImageBrowserTestVC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserTestVC.m; sourceTree = "<group>"; };
+		2394EBAB207FB4340084D297 /* YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowser.h; sourceTree = "<group>"; };
+		2394EBAC207FB4340084D297 /* YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowser.m; sourceTree = "<group>"; wrapsLines = 1; };
 		706BF13B207CAAB30034663E /* YBImageBrowserDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YBImageBrowserDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		706BF13E207CAAB30034663E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		706BF13F207CAAB30034663E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -39,8 +38,6 @@
 		706BF14A207CAAB30034663E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		706BF14C207CAAB30034663E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		706BF14D207CAAB30034663E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		706BF155207CB65F0034663E /* YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowser.h; sourceTree = "<group>"; };
-		706BF156207CB65F0034663E /* YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowser.m; sourceTree = "<group>"; };
 		706BF15B207CB7060034663E /* YBImageBrowserCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserCell.h; sourceTree = "<group>"; };
 		706BF15C207CB7060034663E /* YBImageBrowserCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserCell.m; sourceTree = "<group>"; };
 		706BF15E207CB72F0034663E /* YBImageBrowserView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserView.h; sourceTree = "<group>"; };
@@ -116,12 +113,10 @@
 			isa = PBXGroup;
 			children = (
 				70A6F063207DD4AA004A0CBA /* Tool */,
-				70A6F061207DD478004A0CBA /* Model */,
+				70A6F061207DD478004A0CBA /* DataModel */,
 				70A6F060207DD470004A0CBA /* MainView */,
-				706BF155207CB65F0034663E /* YBImageBrowser.h */,
-				706BF156207CB65F0034663E /* YBImageBrowser.m */,
-				2394EBAB207FB4340084D297 /* YBImageBrowserTestVC.h */,
-				2394EBAC207FB4340084D297 /* YBImageBrowserTestVC.m */,
+				2394EBAB207FB4340084D297 /* YBImageBrowser.h */,
+				2394EBAC207FB4340084D297 /* YBImageBrowser.m */,
 			);
 			path = YBImageBrowser;
 			sourceTree = SOURCE_ROOT;
@@ -137,13 +132,13 @@
 			path = MainView;
 			sourceTree = "<group>";
 		};
-		70A6F061207DD478004A0CBA /* Model */ = {
+		70A6F061207DD478004A0CBA /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
 				23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */,
 				23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */,
 			);
-			path = Model;
+			path = DataModel;
 			sourceTree = "<group>";
 		};
 		70A6F063207DD4AA004A0CBA /* Tool */ = {
@@ -297,10 +292,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				706BF143207CAAB30034663E /* ViewController.m in Sources */,
-				706BF157207CB65F0034663E /* YBImageBrowser.m in Sources */,
 				706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */,
 				23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */,
-				2394EBAD207FB4340084D297 /* YBImageBrowserTestVC.m in Sources */,
+				2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */,
 				706BF14E207CAAB30034663E /* main.m in Sources */,
 				706BF140207CAAB30034663E /* AppDelegate.m in Sources */,
 				706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */,

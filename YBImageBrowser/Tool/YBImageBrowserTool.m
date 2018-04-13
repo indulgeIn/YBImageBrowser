@@ -8,9 +8,15 @@
 
 #import "YBImageBrowserTool.h"
 
-NSString * const YBImageBrowser_notice_hideSelf = @"YBImageBrowser_notice_hide";
+NSString * const YBImageBrowser_notificationName_hideSelf = @"YBImageBrowser_notificationName_hideSelf";
 
-NSString *YBImageBrowser_getTypeOfImageData(NSData *data) {
+@implementation YBImageBrowserTool
+
++ (BOOL)isGif:(NSData *)data {
+    return [[self getTypeOfImageData:data] isEqualToString:@"gif"];
+}
+
++ (NSString *)getTypeOfImageData:(NSData *)data {
     uint8_t c;
     [data getBytes:&c length:1];
     switch (c) {
@@ -32,12 +38,6 @@ NSString *YBImageBrowser_getTypeOfImageData(NSData *data) {
     }
     return nil;
 }
-
-BOOL YBImageBrowser_isGif(NSData *data) {
-    return [YBImageBrowser_getTypeOfImageData(data) isEqualToString:@"gif"];
-}
-
-@implementation YBImageBrowserTool
 
 + (UIViewController *)getTopController
 {

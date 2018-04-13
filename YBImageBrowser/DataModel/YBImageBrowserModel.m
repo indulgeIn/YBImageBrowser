@@ -8,16 +8,14 @@
 
 #import "YBImageBrowserModel.h"
 
-NSString * const YBImageBrowser_KVCKey_image = @"image";
-NSString * const YBImageBrowser_KVCKey_url = @"url";
-NSString * const YBImageBrowser_KVCKey_animatedImage = @"animatedImage";
 NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
+NSString * const YBImageBrowser_KVCKey_isLoading = @"isLoading";
+NSString * const YBImageBrowser_KVCKey_isLoadFailed = @"isLoadFailed";
 
 @interface YBImageBrowserModel () {
-    UIImage *image;
-    NSURL *url;
-    FLAnimatedImage *animatedImage;
     BOOL needUpdateUI;
+    BOOL isLoading;
+    BOOL isLoadFailed;
 }
 
 @end
@@ -30,6 +28,8 @@ NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
     self = [super init];
     if (self) {
         needUpdateUI = NO;
+        isLoading = NO;
+        isLoadFailed = NO;
     }
     return self;
 }
@@ -39,7 +39,7 @@ NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
 - (void)setImageName:(NSString *)imageName {
     if (!imageName) return;
     _imageName = imageName;
-    image = [UIImage imageNamed:imageName];
+    _image = [UIImage imageNamed:imageName];
 }
 
 - (void)setGifName:(NSString *)gifName {
@@ -49,13 +49,13 @@ NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
     if (!filePath) return;
     NSData *data = [NSData dataWithContentsOfFile:filePath];
     if (!data) return;
-    animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
+    _animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
 }
 
 - (void)setImageUrl:(NSString *)imageUrl {
     if (!imageUrl) return;
     _imageUrl = imageUrl;
-    url = [NSURL URLWithString:imageUrl];
+    _url = [NSURL URLWithString:imageUrl];
 }
 
 @end

@@ -1,8 +1,8 @@
 //
-//  YBImageBrowser.m
+//  YBImageBrowserTestVC.m
 //  YBImageBrowserDemo
 //
-//  Created by 杨少 on 2018/4/10.
+//  Created by 杨波 on 2018/4/12.
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
@@ -33,42 +33,58 @@
 }
 
 - (instancetype)init {
-    return [self initWithFrame:[UIScreen mainScreen].bounds];
-}
-
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+    self = [super init];
     if (self) {
-        pthread_mutex_init(&lock, NULL);
-        [self configSupportAutorotateTypes];
-        [self configFrameForStatusBarOrientation];
+        [self initData];
         [self addNotification];
-        [self addDeviceOrientationNotification];
-        [self initYBImageBrowserView];
     }
     return self;
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    [self configSupportAutorotateTypes];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    //此刻 statusBar 的方向才是当前控制器设定的方向
+    [self initYBImageBrowserView];
+    [self configFrameForStatusBarOrientation];
+    [self addDeviceOrientationNotification];
+}
+
 #pragma mark private
 
+//初始化数据
+- (void)initData {
+    pthread_mutex_init(&lock, NULL);
+    self.verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
+    self.horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
+}
+
+//初始化核心视图
 - (void)initYBImageBrowserView {
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    _browserView = [[YBImageBrowserView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
+    _browserView = [[YBImageBrowserView alloc] initWithFrame:[YBImageBrowserTool getNormalWindow].bounds collectionViewLayout:layout];
+    _browserView.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
+    _browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
+    _browserView.dataArray = self.dataArray;
+    [self.view addSubview:_browserView];
 }
 
-//找到 keywidow 和 topController 支持屏幕旋转方向的交集
+//找到 keywidow 和当前 Controller 支持屏幕旋转方向的交集
 - (void)configSupportAutorotateTypes {
     UIApplication *application = [UIApplication sharedApplication];
     UIInterfaceOrientationMask keyWindowSupport = [application supportedInterfaceOrientationsForWindow:[YBImageBrowserTool getNormalWindow]];
-    UIViewController *topController = [YBImageBrowserTool getTopController];
-    UIInterfaceOrientationMask topControllerSupport = ![topController shouldAutorotate] ? UIInterfaceOrientationMaskPortrait : topController.supportedInterfaceOrientations;
-    supportAutorotateTypes = keyWindowSupport & topControllerSupport;
+    UIInterfaceOrientationMask selfSupport = ![self shouldAutorotate] ? UIInterfaceOrientationMaskPortrait : [self supportedInterfaceOrientations];
+    supportAutorotateTypes = keyWindowSupport & selfSupport;
 }
 
 //根据当前 statusBar 的方向，配置 statusBar 在不同方向下 self 的 frame
 - (void)configFrameForStatusBarOrientation {
-    CGRect frame = self.frame;
+    CGRect frame = [YBImageBrowserTool getNormalWindow].bounds;
     UIInterfaceOrientation statusBarOrientation = [UIApplication sharedApplication].statusBarOrientation;
     if (statusBarOrientation == UIInterfaceOrientationPortrait || statusBarOrientation == UIInterfaceOrientationPortraitUpsideDown) {
         frameOfSelfForOrientationPortrait = frame;
@@ -80,26 +96,7 @@
         frameOfSelfForOrientationPortraitUpsideDown = frameOfSelfForOrientationPortrait;
         frameOfSelfForOrientationLandscapeLeft = frame;
         frameOfSelfForOrientationLandscapeRight = frame;
-    } 
-}
-
-//根据 statusBar 方向改变 UI
-- (void)resetUserInterfaceLayoutByStatusBarOrientation {
-    CGRect *tagetRect = NULL;
-    UIInterfaceOrientation statusBarOrientation = [UIApplication sharedApplication].statusBarOrientation;
-    if (statusBarOrientation == UIInterfaceOrientationPortrait && (supportAutorotateTypes & UIInterfaceOrientationMaskPortrait)) {
-        tagetRect = &frameOfSelfForOrientationPortrait;
-    } else if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft && (supportAutorotateTypes & UIInterfaceOrientationMaskLandscapeLeft)) {
-        tagetRect = &frameOfSelfForOrientationLandscapeLeft;
-    } else if (statusBarOrientation == UIInterfaceOrientationLandscapeRight && (supportAutorotateTypes & UIInterfaceOrientationMaskLandscapeRight)) {
-        tagetRect = &frameOfSelfForOrientationLandscapeRight;
-    } else if (statusBarOrientation == UIInterfaceOrientationPortraitUpsideDown && (supportAutorotateTypes & UIInterfaceOrientationMaskPortraitUpsideDown)) {
-        tagetRect = &frameOfSelfForOrientationPortraitUpsideDown;
-    } else {
-        return;
     }
-    self.frame = *tagetRect;
-    [_browserView resetUserInterfaceLayout];
 }
 
 //根据 device 方向改变 UI
@@ -117,34 +114,44 @@
     } else {
         return;
     }
-    self.frame = *tagetRect;
+    self.view.frame = *tagetRect;
     [_browserView resetUserInterfaceLayout];
 }
 
 #pragma mark public
 
 - (void)show {
-    [self showToView:[UIApplication sharedApplication].keyWindow];
-}
-
-- (void)showToView:(UIView *)view {
-    if (!_dataArray || _dataArray.count <= 0) return;
-    [self addSubview:self.browserView];
-    [view addSubview:self];
+    if (!_dataArray || _dataArray.count <= 0) {
+        YBLogWarning(@"the dataArray is invalid");
+        return;
+    }
+    [[YBImageBrowserTool getTopController] presentViewController:self animated:NO completion:nil];
 }
 
 - (void)hide {
-    [self removeFromSuperview];
+    [self dismissViewControllerAnimated:NO completion:nil];
 }
 
 #pragma mark notification
 
 - (void)addNotification {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notice_hide) name:YBImageBrowser_notice_hideSelf object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notice_hide) name:YBImageBrowser_notificationName_hideSelf object:nil];
 }
 
 - (void)notice_hide {
     [self hide];
+}
+
+#pragma mark setter
+
+- (void)setDataArray:(NSArray<YBImageBrowserModel *> *)dataArray {
+    if (!_dataArray) {
+        _dataArray = dataArray;
+    }
+}
+
+- (void)setYb_supportedInterfaceOrientations:(UIInterfaceOrientationMask)yb_supportedInterfaceOrientations {
+    _yb_supportedInterfaceOrientations = yb_supportedInterfaceOrientations;
 }
 
 #pragma mark device orientation
@@ -155,10 +162,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceOrientationChanged:) name:UIDeviceOrientationDidChangeNotification  object:device];
 }
 
-- (void)deviceOrientationChanged:(NSNotification *)note{
-    if (NO) {
-        //自动方向变化单一，不需操作
-        YBLog(@"不需变化");
+- (void)deviceOrientationChanged:(NSNotification *)note {
+    if (supportAutorotateTypes - (supportAutorotateTypes & (-supportAutorotateTypes)) == 0) {
+        //若不是复合项，不需要改变结构UI（此处位运算部分感谢算法大佬刘曦老哥的贡献😁）
         return;
     }
     pthread_mutex_lock(&lock);
@@ -166,13 +172,12 @@
     pthread_mutex_unlock(&lock);
 }
 
-#pragma mark setter
+- (BOOL)shouldAutorotate {
+    return YES;
+}
 
-- (void)setDataArray:(NSArray<YBImageBrowserModel *> *)dataArray {
-    if (!_dataArray) {
-        _dataArray = dataArray;
-        _browserView.dataArray = dataArray;
-    }
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return self.yb_supportedInterfaceOrientations;
 }
 
 @end

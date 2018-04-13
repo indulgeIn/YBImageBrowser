@@ -13,6 +13,11 @@
 
 @property (nonatomic, strong) NSArray<YBImageBrowserModel *> *dataArray;
 
+@property (nonatomic, assign) NSUInteger currentIndex;
+
+@property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
+@property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
+
 - (void)resetUserInterfaceLayout;
 
 @end

@@ -11,7 +11,7 @@
 
 @interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate> {
     NSPointerArray *downloaderTokens;
-    BOOL cellsIsAlreadyChangeUI;
+    BOOL isAdjustingDirection; //正在调整方向
 }
 @end
 
@@ -30,7 +30,7 @@
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
     self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
-        cellsIsAlreadyChangeUI = YES;
+        isAdjustingDirection = NO;
         downloaderTokens = [NSPointerArray weakObjectsPointerArray];
         [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:@"YBImageBrowserCell"];
         self.collectionViewLayout = layout;
@@ -50,11 +50,25 @@
 #pragma mark public
 
 - (void)resetUserInterfaceLayout {
+    isAdjustingDirection = YES;
     self.frame = self.superview.frame;
     for (YBImageBrowserModel *model in self.dataArray) {
         [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_needUpdateUI];
     }
     [self reloadData];
+    [self layoutIfNeeded];
+    [self scrollToPageWithIndex:self.currentIndex animated:NO];
+    isAdjustingDirection = NO;
+}
+
+#pragma mark private
+
+- (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated {
+    if (index >= _dataArray.count) {
+        YBLogWarning(@" SEL-scrollToPageWithIndex: faild, index is invalid");
+        return;
+    }
+    [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:animated];
 }
 
 #pragma mark YBImageBrowserCellDelegate
@@ -78,6 +92,8 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     YBImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"YBImageBrowserCell" forIndexPath:indexPath];
     cell.delegate = self;
+    cell.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
+    cell.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
     cell.model = self.dataArray[indexPath.row];
     return cell;
 }
@@ -103,10 +119,17 @@
 
 #pragma mark UIScrollViewDelegate
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGFloat indexF = scrollView.contentOffset.x / scrollView.bounds.size.width;
+    if (indexF == (NSUInteger)indexF && !isAdjustingDirection) {
+        self.currentIndex = (NSUInteger)indexF;
+    }
+}
+
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     NSArray<YBImageBrowserCell *>* array = (NSArray<YBImageBrowserCell *>*)[self visibleCells];
     for (YBImageBrowserCell *cell in array) {
-        if (cell.isLoadFailed) {
+        if ([[cell.model valueForKey:YBImageBrowser_KVCKey_isLoadFailed] boolValue]) {
             [cell reLoad];
         }
     }

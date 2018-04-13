@@ -25,7 +25,6 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        _isLoadFailed = NO;
         [self.contentView addSubview:self.scrollView];
         [self.scrollView addSubview:self.imageView];
         [self addGesture];
@@ -55,7 +54,7 @@
 }
 
 - (void)respondsToTapOfSingle:(UITapGestureRecognizer *)tap {
-    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notice_hideSelf object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notificationName_hideSelf object:nil];
 }
 
 - (void)respondsToTapOfDouble:(UITapGestureRecognizer *)tap {
@@ -76,7 +75,9 @@
 #pragma mark public
 
 - (void)reLoad {
-    [self loadImageWithModel:self.model isPreview:NO];
+    if (![[self.model valueForKey:YBImageBrowser_KVCKey_isLoading] boolValue]) {
+        [self loadImageWithModel:self.model isPreview:NO];
+    }
 }
 
 - (void)resetUserInterfaceLayout {
@@ -92,21 +93,19 @@
 - (void)loadImageWithModel:(YBImageBrowserModel *)model isPreview:(BOOL)isPreview {
     if (!model) return;
     
-    if ([model valueForKey:YBImageBrowser_KVCKey_image]) {
+    if (model.image) {
         
         //展示图片
-        UIImage *image = [model valueForKey:YBImageBrowser_KVCKey_image];
-        self.imageView.frame = [self getFrameOfImageViewWithImage:image];
-        self.imageView.image = image;
+        self.imageView.frame = [self getFrameOfImageViewWithImage:model.image];
+        self.imageView.image = model.image;
         
-    } else if ([model valueForKey:YBImageBrowser_KVCKey_animatedImage]) {
+    } else if (model.animatedImage) {
         
         //展示gif
-        FLAnimatedImage *animatedImage = [model valueForKey:YBImageBrowser_KVCKey_animatedImage];
-        self.imageView.frame = [self getFrameOfImageViewWithImage:animatedImage];
-        self.imageView.animatedImage = animatedImage;
+        self.imageView.frame = [self getFrameOfImageViewWithImage:model.animatedImage];
+        self.imageView.animatedImage = model.animatedImage;
         
-    } else if ([model valueForKey:YBImageBrowser_KVCKey_url]) {
+    } else if (model.url) {
         
         //读取缓存
         UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:model.imageUrl];
@@ -131,7 +130,9 @@
 
 - (void)downloadImageWithModel:(YBImageBrowserModel *)model {
     
-    NSURL *url = [model valueForKey:YBImageBrowser_KVCKey_url];
+    NSURL *url = model.url;
+    
+    [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_isLoading];
     
     SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         
@@ -148,21 +149,23 @@
         
     } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
         
+        [model setValue:@(NO) forKey:YBImageBrowser_KVCKey_isLoading];
+        
         //下载失败，展示错误 HUD
         if (error) {
-            self.isLoadFailed = YES;
+            [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_isLoadFailed];
             if (self.model == model) {
                 [self.progressBar showLoadFailedGraphics];
             }
             return;
         }
-        self.isLoadFailed = NO;
+        [model setValue:@(NO) forKey:YBImageBrowser_KVCKey_isLoadFailed];
         
         //将下载完成的图片存入内存/磁盘
-        if (YBImageBrowser_isGif(data)) {
-            [model setValue:[FLAnimatedImage animatedImageWithGIFData:data] forKey:YBImageBrowser_KVCKey_animatedImage];
+        if ([YBImageBrowserTool isGif:data]) {
+            model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
         } else {
-            [model setValue:image forKey:YBImageBrowser_KVCKey_image];
+            model.image = image;
             [[SDImageCache sharedImageCache] storeImage:image forKey:model.imageUrl completion:nil];
         }
         
@@ -185,36 +188,80 @@
 - (CGRect)getFrameOfImageViewWithImage:(id)image {
     
     CGSize imageSize = [FLAnimatedImage sizeForImage:image];
-    CGRect imageViewFrame = CGRectMake(0, 0, 0, 0);
     CGFloat scrollViewWidth = self.scrollView.bounds.size.width;
     CGFloat scrollViewHeight = self.scrollView.bounds.size.height;
-    
     CGFloat scrollViewScale = scrollViewWidth / scrollViewHeight;
     
-    imageViewFrame.size.width = scrollViewWidth;
-    imageViewFrame.size.height = scrollViewWidth * (imageSize.height / imageSize.width);
+    CGFloat width = 0, height = 0, x = 0, y = 0, minimumZoomScale = 1;
+    CGSize contentSize = CGSizeZero;
     
-    if (imageSize.width / imageSize.height >= scrollViewScale) {
-        imageViewFrame.origin.y = (scrollViewHeight - imageViewFrame.size.height) / 2.0;
-        self.scrollView.contentSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
-    } else {
-        imageViewFrame.origin.y = 0;
-        self.scrollView.contentSize = CGSizeMake(scrollViewWidth, imageViewFrame.size.height);
+    YBImageBrowserImageViewFillType currentFillType = scrollViewScale < 1 ? self.verticalScreenImageViewFillType : self.horizontalScreenImageViewFillType;
+    
+    switch (currentFillType) {
+        case YBImageBrowserImageViewFillTypeFullWidth: {
+            
+            width = scrollViewWidth;
+            height = scrollViewWidth * (imageSize.height / imageSize.width);
+            if (imageSize.width / imageSize.height >= scrollViewScale) {
+                x = 0;
+                y = (scrollViewHeight - height) / 2.0;
+                contentSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
+                minimumZoomScale = 1;
+            } else {
+                x = 0;
+                y = 0;
+                contentSize = CGSizeMake(scrollViewWidth, height);
+                minimumZoomScale = scrollViewHeight / height;
+            }
+        }
+            break;
+        case YBImageBrowserImageViewFillTypeCompletely: {
+            
+            if (imageSize.width / imageSize.height >= scrollViewScale) {
+                width = scrollViewWidth;
+                height = scrollViewWidth * (imageSize.height / imageSize.width);
+                x = 0;
+                y = (scrollViewHeight - height) / 2.0;
+            } else {
+                height = scrollViewHeight;
+                width = scrollViewHeight * (imageSize.width / imageSize.height);
+                x = (scrollViewWidth - width) / 2.0;
+                y = 0;
+            }
+            contentSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
+            minimumZoomScale = 1;
+        }
+            break;
+        default:
+            break;
     }
     
-    return imageViewFrame;
+    self.scrollView.contentSize = contentSize;
+    self.scrollView.minimumZoomScale = minimumZoomScale;
+    
+    return CGRectMake(x, y, width, height);
 }
 
 #pragma mark UIScrollViewDelegate
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+
     CGRect imageViewFrame = self.imageView.frame;
+    CGFloat width = imageViewFrame.size.width, height = imageViewFrame.size.height;
     CGFloat scrollViewHeight = scrollView.bounds.size.height;
-    if (imageViewFrame.size.height > scrollViewHeight) {
+    CGFloat scrollViewWidth = scrollView.bounds.size.width;
+    
+    if (height > scrollViewHeight) {
         imageViewFrame.origin.y = 0;
     } else {
-        imageViewFrame.origin.y = (scrollViewHeight - imageViewFrame.size.height) / 2.0;
+        imageViewFrame.origin.y = (scrollViewHeight - height) / 2.0;
     }
+    if (width > scrollViewWidth) {
+        imageViewFrame.origin.x = 0;
+    } else {
+        imageViewFrame.origin.x = (scrollViewWidth - width) / 2.0;
+    }
+    
     self.imageView.frame = imageViewFrame;
 }
 

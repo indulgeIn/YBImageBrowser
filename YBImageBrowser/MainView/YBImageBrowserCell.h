@@ -21,9 +21,10 @@
 
 @property (nonatomic, strong) YBImageBrowserModel *model;
 
-@property (nonatomic, weak) id delegate;
+@property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
+@property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
 
-@property (nonatomic, assign) BOOL isLoadFailed;
+@property (nonatomic, weak) id delegate;
 
 - (void)reLoad;
 
