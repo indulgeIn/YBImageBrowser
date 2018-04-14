@@ -12,6 +12,9 @@
     CAGradientLayer *gradient;
 }
 
+@property (nonatomic, strong) UILabel *titleLabel;
+@property (nonatomic, strong) UIButton *rightButton;
+
 @end
 
 @implementation YBImageBrowserToolBar
@@ -31,17 +34,64 @@
 #pragma mark public
 
 - (void)setTitleLabelWithCurrentIndex:(NSUInteger)index totalCount:(NSUInteger)totalCount {
+    if (!totalCount) return;
     self.titleLabel.text = [NSString stringWithFormat:@"%ld/%ld", index, totalCount];
+}
+
+- (void)setRightButtonImage:(UIImage *)image {
+    [self.rightButton setImage:image forState:UIControlStateNormal];
+    if (!image) return;
+    [self resetUserInterfaceLayout_rightButton];
+}
+
+- (void)setRightButtonHide:(BOOL)hide {
+    self.rightButton.hidden = hide;
+}
+
+- (void)setRightButtonTitle:(NSString *)title {
+    [self.rightButton setTitle:title forState:UIControlStateNormal];
+    if (!title) return;
+    [self resetUserInterfaceLayout_rightButton];
 }
 
 - (void)resetUserInterfaceLayout {
     self.frame = CGRectMake(0, 0, self.superview.frame.size.width, YB_HEIGHT_TOOLBAR);
+    [self resetUserInterfaceLayout_titleLabel];
+    [self resetUserInterfaceLayout_rightButton];
+}
+
+#pragma mark private
+
+- (void)resetUserInterfaceLayout_titleLabel {
     CGFloat selfWidth = self.frame.size.width;
     CGFloat selfHeight = self.frame.size.height;
-    CGFloat titleLabelToLeft = 80, buttonWidth = 50;
+    CGFloat titleLabelToLeft = selfWidth / 3.0;
     self.titleLabel.frame = CGRectMake(titleLabelToLeft, 0, selfWidth - 2 * titleLabelToLeft, selfHeight);
-    self.rightButton.frame = CGRectMake(selfWidth - buttonWidth, 0, buttonWidth, selfHeight);
     gradient.frame = self.bounds;
+}
+
+- (void)resetUserInterfaceLayout_rightButton {
+    
+    CGFloat buttonWidth = 0;
+    if ([self.rightButton currentTitle] || [self.rightButton currentAttributedTitle]) {
+        buttonWidth = [YBImageBrowserUtilities getWidthWithAttStr:self.rightButton.titleLabel.attributedText] + 15 * 2;
+    }
+    if ([self.rightButton currentImage]) {
+        CGSize size = [self.rightButton currentImage].size;
+        buttonWidth += size.width + 15 * 2;
+    }
+    if (!buttonWidth) {
+        YBLOG_WARNING(@"title and image are all nil");
+        return;
+    }
+    
+    CGFloat selfWidth = self.frame.size.width;
+    CGFloat selfHeight = self.frame.size.height;
+    CGFloat maxLimit = (selfWidth - self.titleLabel.bounds.size.width) / 2;
+    
+    buttonWidth = maxLimit < buttonWidth ? maxLimit : buttonWidth;
+    
+    self.rightButton.frame = CGRectMake(selfWidth - buttonWidth, 0, buttonWidth, selfHeight);
 }
 
 #pragma mark private
@@ -71,6 +121,7 @@
         _titleLabel.textColor = [UIColor whiteColor];
         _titleLabel.font = [UIFont boldSystemFontOfSize:20];
         _titleLabel.textAlignment = NSTextAlignmentCenter;
+        _titleLabel.adjustsFontSizeToFitWidth = YES;
     }
     return _titleLabel;
 }
@@ -78,8 +129,9 @@
 - (UIButton *)rightButton {
     if (!_rightButton) {
         _rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_rightButton setImage:[UIImage imageNamed:@"ybImageBrowser_more"] forState:UIControlStateNormal];
         [_rightButton addTarget:self action:@selector(clickRightButton:) forControlEvents:UIControlEventTouchUpInside];
+        _rightButton.titleLabel.font = [UIFont systemFontOfSize:14];
+        [_rightButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     }
     return _rightButton;
 }

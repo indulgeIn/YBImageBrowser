@@ -46,5 +46,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>是否允许此App访问你的媒体资料库以存储图片？</string>
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>是否允许此App存储图片到你的媒体资料库？</string>
+    
 </dict>
 </plist>

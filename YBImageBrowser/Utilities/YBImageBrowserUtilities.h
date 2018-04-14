@@ -1,5 +1,5 @@
 //
-//  YBImageBrowserTool.h
+//  YBImageBrowserUtilities.h
 //  YBImageBrowserDemo
 //
 //  Created by 杨少 on 2018/4/11.
@@ -14,11 +14,13 @@
 
 #if DEBUG
 #define YBLOG(format, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:format, ##__VA_ARGS__] UTF8String]);
-#define YBLOG_WARNING(discribe) YBLOG(@"YBImageBrowser ~~~ ⚠️ ~~~ %@", discribe)
-#define YBLOG_ERROR(discribe) YBLOG(@"YBImageBrowser ~~~ ❌ ~~~ %@", discribe)
+#define YBLOG_WARNING(discribe) YBLOG(@"%@ ⚠️ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
+#define YBLOG_ERROR(discribe) YBLOG(@"%@ ❌ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
 #else
 #define YBLOG(format, ...) nil
 #endif
+
+#define YB_READIMAGE_FROMFILE(fileName, fileType) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:fileType]]
 
 #define YB_STATUSBAR_ORIENTATION [UIApplication sharedApplication].statusBarOrientation
 #define YB_SCREEN_HEIGHT (((YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortrait) || (YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortraitUpsideDown)) ? [UIScreen mainScreen].bounds.size.height : [UIScreen mainScreen].bounds.size.width)
@@ -37,11 +39,11 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserImageViewFillType) {
     YBImageBrowserImageViewFillTypeCompletely   //保证图片完整显示情况下最大限度填充
 };
 
-@interface YBImageBrowserTool : NSObject
+@interface YBImageBrowserUtilities : NSObject
 
 + (BOOL)isGif:(NSData *)data;
 + (UIViewController *)getTopController;
 + (UIWindow *)getNormalWindow;
-+ (void)saveImageToAlbum:(UIImage *)image;
++ (CGFloat)getWidthWithAttStr:(NSAttributedString *)attStr;
 
 @end

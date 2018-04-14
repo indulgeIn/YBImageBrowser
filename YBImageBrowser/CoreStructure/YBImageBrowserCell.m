@@ -7,7 +7,7 @@
 //
 
 #import "YBImageBrowserCell.h"
-#import "YBImageBrowserTool.h"
+#import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserProgressBar.h"
 
 @interface YBImageBrowserCell () <UIScrollViewDelegate>
@@ -44,20 +44,26 @@
 #pragma mark gesture
 
 - (void)addGesture {
-    UITapGestureRecognizer *tapOfSingle = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapOfSingle:)];
-    tapOfSingle.numberOfTapsRequired = 1;
-    UITapGestureRecognizer *tapOfDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapOfDouble:)];
-    tapOfDouble.numberOfTapsRequired = 2;
-    [tapOfSingle requireGestureRecognizerToFail:tapOfDouble];
-    [self.scrollView addGestureRecognizer:tapOfSingle];
-    [self.scrollView addGestureRecognizer:tapOfDouble];
+    UITapGestureRecognizer *tapSingle = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapSingle:)];
+    tapSingle.numberOfTapsRequired = 1;
+    
+    UITapGestureRecognizer *tapDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapDouble:)];
+    tapDouble.numberOfTapsRequired = 2;
+    
+    [tapSingle requireGestureRecognizerToFail:tapDouble];
+    
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToLongPress:)];
+    
+    [self.scrollView addGestureRecognizer:tapSingle];
+    [self.scrollView addGestureRecognizer:tapDouble];
+    [self.scrollView addGestureRecognizer:longPress];
 }
 
-- (void)respondsToTapOfSingle:(UITapGestureRecognizer *)tap {
+- (void)respondsToTapSingle:(UITapGestureRecognizer *)tap {
     [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notificationName_hideSelf object:nil];
 }
 
-- (void)respondsToTapOfDouble:(UITapGestureRecognizer *)tap {
+- (void)respondsToTapDouble:(UITapGestureRecognizer *)tap {
     UIScrollView *scrollView = self.scrollView;
     UIView *zoomView = [self viewForZoomingInScrollView:scrollView];
     CGPoint point = [tap locationInView:zoomView];
@@ -69,6 +75,14 @@
     } else {
         //让指定区域尽可能大的显示在可视区域
         [scrollView zoomToRect:CGRectMake(point.x, point.y, 1, 1) animated:YES];
+    }
+}
+
+- (void)respondsToLongPress:(UILongPressGestureRecognizer *)tap {
+    if (tap.state == UIGestureRecognizerStateBegan) {
+        if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowserCell:longPressBegin:)]) {
+            [_delegate yBImageBrowserCell:self longPressBegin:tap];
+        }
     }
 }
 
@@ -110,7 +124,7 @@
         //读取缓存
         UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:model.imageUrl];
         if (cacheImage) {
-            [model setValue:cacheImage forKey:@"image"];
+            model.image = cacheImage;
             [self loadImageWithModel:model isPreview:NO];
             return;
         }
@@ -162,7 +176,7 @@
         [model setValue:@(NO) forKey:YBImageBrowser_KVCKey_isLoadFailed];
         
         //将下载完成的图片存入内存/磁盘
-        if ([YBImageBrowserTool isGif:data]) {
+        if ([YBImageBrowserUtilities isGif:data]) {
             model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
         } else {
             model.image = image;

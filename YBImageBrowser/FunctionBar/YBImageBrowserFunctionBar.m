@@ -8,21 +8,6 @@
 
 #import "YBImageBrowserFunctionBar.h"
 
-
-NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBrowserFunctionModel_ID_savePictureToAlbum";
-
-@implementation YBImageBrowserFunctionModel
-
-+ (instancetype)functionModelForSavePictureToAlbum {
-    YBImageBrowserFunctionModel *model = [YBImageBrowserFunctionModel new];
-    model.name = @"保存图片";
-    model.ID = YBImageBrowserFunctionModel_ID_savePictureToAlbum;
-    return model;
-}
-
-@end
-
-
 @interface YBImageBrowserFunctionBar () <UITableViewDelegate, UITableViewDataSource> {
     CGRect showFrameOfTableView;
     CGRect hideFrameOfTableView;
@@ -41,10 +26,10 @@ NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBr
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.heightOfCell = 50;
-        self.maxScaleOfOperationBar = 0.7;
-        self.timeOfAnimation = 0.2;
-        self.isShow = NO;
+        _heightOfCell = 50;
+        _maxScaleOfOperationBar = 0.7;
+        _timeOfAnimation = 0.2;
+        _isShow = NO;
         [self resetUserInterfaceLayout];
         [self addSubview:self.tableView];
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
@@ -59,9 +44,11 @@ NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBr
         return;
     }
     self.frame = view.bounds;
+    [self resetUserInterfaceLayout];
     [view addSubview:self];
     self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
     self.tableView.frame = hideFrameOfTableView;
+    [self.tableView reloadData];
     [UIView animateWithDuration:self.timeOfAnimation animations:^{
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3];
         self.tableView.frame = showFrameOfTableView;
@@ -71,10 +58,14 @@ NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBr
 }
 
 - (void)hide {
+    [self hideWithAnimate:YES];
+}
+
+- (void)hideWithAnimate:(BOOL)animate {
     if (!self.isShow) {
         return;
     }
-    [UIView animateWithDuration:self.timeOfAnimation animations:^{
+    [UIView animateWithDuration:animate?self.timeOfAnimation:0 animations:^{
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
         self.tableView.frame = hideFrameOfTableView;
     } completion:^(BOOL finished) {
@@ -100,8 +91,8 @@ NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBr
 #pragma mark setter
 
 - (void)setDataArray:(NSArray<YBImageBrowserFunctionModel *> *)dataArray {
-    if (!dataArray || dataArray.count == 0) {
-        YBLOG_WARNING(@"class-YBImageBrowserFunctionBar dataArray (NSArray<YBImageBrowserFunctionModel *> *) is invalid");
+    if (!dataArray || !dataArray.count) {
+        YBLOG_WARNING(@"dataArray is invalid")
         return;
     }
     _dataArray = dataArray;
@@ -111,62 +102,88 @@ NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBr
 
 - (void)setMaxScaleOfOperationBar:(CGFloat)maxScaleOfOperationBar {
     if (maxScaleOfOperationBar <= 0) {
-        _maxScaleOfOperationBar = 0;
-    } else if (maxScaleOfOperationBar > [UIScreen mainScreen].bounds.size.height) {
+        YBLOG_WARNING(@"maxScaleOfOperationBar mast be greater than zero")
+        return;
+    }
+    if (maxScaleOfOperationBar > [UIScreen mainScreen].bounds.size.height) {
         _maxScaleOfOperationBar = [UIScreen mainScreen].bounds.size.height;
     } else {
         _maxScaleOfOperationBar = maxScaleOfOperationBar;
     }
+    [self resetUserInterfaceLayout];
+    [self.tableView reloadData];
 }
+
+- (void)setHeightOfCell:(CGFloat)heightOfCell {
+    if (heightOfCell <= 0) {
+        YBLOG_WARNING(@"heightOfCell mast be greater than zero")
+        return;
+    }
+    _heightOfCell = heightOfCell;
+    [self resetUserInterfaceLayout];
+    [self.tableView reloadData];
+}
+
+
 
 #pragma mark UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 2;
 }
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
         return self.dataArray.count;
     }
     return 1;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return self.heightOfCell;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     if (section == 0) {
         return 0.001;
     }
     return 5;
 }
+
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 0.001;
 }
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YBImageBrowserFunctionBar"];
-    UILabel *label = [cell viewWithTag:1000];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"YBImageBrowserFunctionBar"];
+    UILabel *label = [cell.contentView viewWithTag:1000];
+    UIView *line = [cell.contentView viewWithTag:1001];
+    if (!label) {
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         label = [UILabel new];
         label.textColor = [UIColor darkTextColor];
-        label.font = [UIFont systemFontOfSize:15];
+        label.font = [UIFont boldSystemFontOfSize:16];
         label.textAlignment = NSTextAlignmentCenter;
         label.tag = 1000;
         [cell.contentView addSubview:label];
+        line = [UIView new];
+        line.backgroundColor = [UIColor groupTableViewBackgroundColor];
+        line.tag = 1001;
+        [cell.contentView addSubview:line];
     }
-    label.frame = CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, self.heightOfCell);
-    
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+    label.frame = CGRectMake(0, 0, width, self.heightOfCell);
+    line.frame = CGRectMake(0, self.heightOfCell - 0.5, width, 0.5);
     if (indexPath.section == 0) {
         label.text = self.dataArray[indexPath.row].name;
     } else {
         label.text = @"取消";
     }
-    
     return cell;
 }
 
 #pragma mark UITableViewDelegate
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if (_delegate && [_delegate respondsToSelector:@selector(ybImageBrowserFunctionBar:clickCellWithModel:)]) {
@@ -186,6 +203,7 @@ NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBr
 }
 
 #pragma mark getter
+
 - (UITableView *)tableView {
     if (!_tableView) {
         _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -194,10 +212,13 @@ NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum = @"YBImageBr
         _tableView.estimatedRowHeight = 44;
         _tableView.estimatedSectionFooterHeight = 0;
         _tableView.estimatedSectionHeaderHeight = 0;
+        _tableView.backgroundColor = [UIColor clearColor];
         if (@available(iOS 11.0, *)) {
             _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
         _tableView.alwaysBounceVertical = NO;
+        _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:@"YBImageBrowserFunctionBar"];
     }
     return _tableView;
 }

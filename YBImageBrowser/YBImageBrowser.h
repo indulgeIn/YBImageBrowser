@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "YBImageBrowserTool.h"
+#import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserModel.h"
 #import "YBImageBrowserFunctionBar.h"
+#import "YBImageBrowserToolBar.h"
+#import "YBImageBrowserCopywriter.h"
 
 @class YBImageBrowser;
 
@@ -21,7 +23,7 @@
 
 /**
  数据源
- （只赋值一次，试图更换数据源请另开辟内存）
+ （可重载）
  */
 @property (nonatomic, copy) NSArray<YBImageBrowserModel *> *dataArray;
 
@@ -34,6 +36,11 @@
  隐藏
  */
 - (void)hide;
+
+/**
+ 当前下标
+ */
+@property (nonatomic, assign) NSUInteger currentIndex;
 
 /**
  支持旋转的方向
@@ -53,7 +60,29 @@
 
 /**
  额外操作弹出框的数据源
+ （默认有图片/gif保存功能）
  */
 @property (nonatomic, copy) NSArray<YBImageBrowserFunctionModel *> *fuctionDataArray;
+
+/**
+ 额外操作弹出框
+ */
+@property (nonatomic, strong, readonly) YBImageBrowserFunctionBar *functionBar;
+
+/**
+ 工具栏
+ */
+@property (nonatomic, strong, readonly) YBImageBrowserToolBar *toolBar;
+
+/**
+ 显示状态栏
+ */
+@property (nonatomic, assign) BOOL showStatusBar;
+
+/**
+ 文案撰写者
+ （可依靠该属性配置自定义的文案）
+ */
+@property (nonatomic, strong) YBImageBrowserCopywriter *copywriter;
 
 @end

@@ -27,7 +27,6 @@
                                     <constraint firstAttribute="width" constant="50" id="6Cv-6c-3DB"/>
                                     <constraint firstAttribute="height" constant="50" id="Z6T-qn-Baw"/>
                                 </constraints>
-                                <state key="normal" title="显示"/>
                                 <connections>
                                     <action selector="clickShowButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ytb-wp-Rne"/>
                                 </connections>

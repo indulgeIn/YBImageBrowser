@@ -20,11 +20,7 @@
 #pragma mark life cycle
 
 - (void)dealloc {
-    [downloaderTokens addPointer:NULL];
-    [downloaderTokens compact];
-    for (id token in downloaderTokens) {
-        [[SDWebImageDownloader sharedDownloader] cancel:token];
-    }
+    [self cancelAllDownloadTask];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
@@ -43,6 +39,7 @@
         if (@available(iOS 11.0, *)) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
+        [self visibleCells];
     }
     return self;
 }
@@ -65,10 +62,30 @@
 
 - (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated {
     if (index >= _dataArray.count) {
-        YBLOG_WARNING(@" SEL-scrollToPageWithIndex: faild, index is invalid");
+        YBLOG_WARNING(@"index is invalid")
         return;
     }
     [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:animated];
+}
+
+- (void)cancelAllDownloadTask {
+    [downloaderTokens addPointer:NULL];
+    [downloaderTokens compact];
+    for (id token in downloaderTokens) {
+        [[SDWebImageDownloader sharedDownloader] cancel:token];
+    }
+}
+
+#pragma mark setter
+
+- (void)setDataArray:(NSArray<YBImageBrowserModel *> *)dataArray {
+    if (!dataArray || !dataArray.count) {
+        YBLOG_WARNING(@"dataArray is invalid")
+        return;
+    }
+    _dataArray = dataArray;
+    [self cancelAllDownloadTask];
+    [self reloadData];
 }
 
 #pragma mark YBImageBrowserCellDelegate
@@ -77,6 +94,12 @@
     [downloaderTokens addPointer:NULL];
     [downloaderTokens compact];
     [downloaderTokens addPointer:(__bridge void * _Nullable)(token)];
+}
+
+- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture {
+    if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(yBImageBrowserView:longPressBegin:)]) {
+        [_yb_delegate yBImageBrowserView:self longPressBegin:gesture];
+    }
 }
 
 #pragma mark UICollectionViewDataSource
@@ -118,11 +141,12 @@
 }
 
 #pragma mark UIScrollViewDelegate
-
+//  0.0-0.5 - 0   0.5-1.5 - 1   1.5-2.5 - 2  ......
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat indexF = scrollView.contentOffset.x / scrollView.bounds.size.width;
-    if (indexF == (NSUInteger)indexF && !isAdjustingDirection) {
-        self.currentIndex = (NSUInteger)indexF;
+    NSUInteger index = (NSUInteger)((scrollView.contentOffset.x / scrollView.bounds.size.width) + 0.5);
+    if (index > self.dataArray.count) return;
+    if (self.currentIndex != index && !isAdjustingDirection) {
+        self.currentIndex = index;
         if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(yBImageBrowserView:didScrollToIndex:)]) {
             [_yb_delegate yBImageBrowserView:self didScrollToIndex:self.currentIndex];
         }

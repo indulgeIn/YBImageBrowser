@@ -9,7 +9,9 @@
 #import "YBImageBrowser.h"
 #import "YBImageBrowserView.h"
 #import <pthread.h>
-#import "YBImageBrowserToolBar.h"
+#import <Photos/Photos.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "YBImageBrowserPromptBar.h"
 
 @interface YBImageBrowser () <YBImageBrowserViewDelegate, YBImageBrowserToolBarDelegate, YBImageBrowserFunctionBarDelegate> {
     CGRect frameOfSelfForOrientationPortrait;
@@ -19,6 +21,7 @@
     UIInterfaceOrientationMask supportAutorotateTypes;
     pthread_mutex_t lock;
     UIWindow *window;
+    BOOL isDealViewWillAppear;
 }
 
 @property (nonatomic, strong) YBImageBrowserView *browserView;
@@ -39,6 +42,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        self.automaticallyAdjustsScrollViewInsets = NO;
         [self initData];
         [self addNotification];
     }
@@ -48,24 +52,35 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self configSupportAutorotateTypes];
+    [self.view addSubview:self.browserView];
+    [self.view addSubview:self.toolBar];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     //此刻 statusBar 的方向才是当前控制器设定的方向
-    [self.view addSubview:self.browserView];
-    [self.view addSubview:self.toolBar];
-    [self.toolBar resetUserInterfaceLayout];
-    [self configFrameForStatusBarOrientation];
-    [self addDeviceOrientationNotification];
+    if (!isDealViewWillAppear) {
+        [self.browserView resetUserInterfaceLayout];
+        [self.toolBar resetUserInterfaceLayout];
+        [self.browserView scrollToPageWithIndex:self.currentIndex animated:NO];
+        [self configFrameForStatusBarOrientation];
+        [self addDeviceOrientationNotification];
+        isDealViewWillAppear = YES;
+    }
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return !self.showStatusBar;
 }
 
 #pragma mark private
 
 //初始化数据
 - (void)initData {
+    isDealViewWillAppear = NO;
+    _showStatusBar = NO;
     pthread_mutex_init(&lock, NULL);
-    window = [YBImageBrowserTool getNormalWindow];
+    window = [YBImageBrowserUtilities getNormalWindow];
     self.verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     self.horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     self.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum]];
@@ -114,17 +129,19 @@
     self.view.frame = *tagetRect;
     [self.browserView resetUserInterfaceLayout];
     [self.toolBar resetUserInterfaceLayout];
-    [self.functionBar resetUserInterfaceLayout];
+    if (_functionBar && _functionBar.superview) {
+        [_functionBar hideWithAnimate:NO];
+    }
 }
 
 #pragma mark public
 
 - (void)show {
-    if (!_dataArray || _dataArray.count <= 0) {
-        YBLOG_WARNING(@"the dataArray is invalid");
+    if (!_dataArray || !_dataArray.count) {
+        YBLOG_WARNING(@"dataArray is invalid")
         return;
     }
-    [[YBImageBrowserTool getTopController] presentViewController:self animated:NO completion:nil];
+    [[YBImageBrowserUtilities getTopController] presentViewController:self animated:NO completion:nil];
 }
 
 - (void)hide {
@@ -142,33 +159,63 @@
 }
 
 #pragma mark YBImageBrowserViewDelegate
+
 - (void)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView didScrollToIndex:(NSUInteger)index {
-    [_toolBar setTitleLabelWithCurrentIndex:index+1 totalCount:self.browserView.dataArray.count];
+    [self.toolBar setTitleLabelWithCurrentIndex:index+1 totalCount:imageBrowserView.dataArray.count];
+}
+
+- (void)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView longPressBegin:(UILongPressGestureRecognizer *)gesture {
+    if (self.fuctionDataArray.count > 1) {
+        //弹出额外操作栏
+        if (_functionBar) {
+            [_functionBar showToView:self.view];
+        }
+    }
 }
 
 #pragma mark YBImageBrowserToolBarDelegate
+
 - (void)yBImageBrowserToolBar:(YBImageBrowserToolBar *)imageBrowserToolBar didClickRightButton:(UIButton *)button {
-    [self.functionBar showToView:self.view];
+    if (!self.fuctionDataArray.count) return;
+    if (self.fuctionDataArray.count == 1 && [self.fuctionDataArray[0].ID isEqualToString:YBImageBrowserFunctionModel_ID_savePictureToAlbum]) {
+        //直接保存图片
+        [self savePhotoToAlbumWithCurrentIndex];
+    } else {
+        //弹出额外操作栏
+        if (_functionBar) {
+            [_functionBar showToView:self.view];
+        }
+    }
 }
 
 #pragma mark YBImageBrowserFunctionBarDelegate
+
 - (void)ybImageBrowserFunctionBar:(YBImageBrowserFunctionBar *)functionBar clickCellWithModel:(YBImageBrowserFunctionModel *)model {
-    YBImageBrowserModel *currentModel = self.browserView.dataArray[self.browserView.currentIndex];
+    
     if ([model.ID isEqualToString:YBImageBrowserFunctionModel_ID_savePictureToAlbum]) {
-        if (currentModel.image) {
-            [self savePhotoToAlbum:currentModel.image];
-        }
+        [self savePhotoToAlbumWithCurrentIndex];
     } else {
-        YBLOG(@"%@", NSStringFromSelector(_cmd));
+        YBLOG(@"%@", NSStringFromSelector(_cmd))
     }
 }
 
 #pragma mark setter
 
-- (void)setDataArray:(NSArray<YBImageBrowserModel *> *)dataArray {
-    if (!_dataArray) {
-        _dataArray = dataArray;
+- (void)setCurrentIndex:(NSUInteger)currentIndex {
+    _currentIndex = currentIndex;
+    if (_browserView) {
+        [_browserView scrollToPageWithIndex:self.currentIndex animated:NO];
     }
+}
+
+- (void)setDataArray:(NSArray<YBImageBrowserModel *> *)dataArray {
+    if (!dataArray || !dataArray.count) {
+        YBLOG_WARNING(@"dataArray is invalid")
+        return;
+    }
+    _dataArray = dataArray;
+    self.browserView.dataArray = dataArray;
+    [self.toolBar setTitleLabelWithCurrentIndex:1 totalCount:dataArray.count];
 }
 
 - (void)setYb_supportedInterfaceOrientations:(UIInterfaceOrientationMask)yb_supportedInterfaceOrientations {
@@ -176,7 +223,28 @@
 }
 
 - (void)setFuctionDataArray:(NSArray<YBImageBrowserFunctionModel *> *)fuctionDataArray {
-    self.functionBar.dataArray = fuctionDataArray;
+    _fuctionDataArray = fuctionDataArray;
+    if (fuctionDataArray.count == 0) {
+        [self.toolBar setRightButtonHide:YES];
+    } else if (fuctionDataArray.count == 1) {
+        YBImageBrowserFunctionModel *model = fuctionDataArray[0];
+        if (model.image) {
+            [self.toolBar setRightButtonImage:model.image];
+            [self.toolBar setRightButtonTitle:nil];
+        } else if (model.name) {
+            [self.toolBar setRightButtonImage:nil];
+            [self.toolBar setRightButtonTitle:model.name];
+        } else {
+            [self.toolBar setRightButtonImage:nil];
+            [self.toolBar setRightButtonTitle:nil];
+            YBLOG_WARNING(@"the only model in fuctionDataArray is invalid")
+        }
+    } else {
+        [self.toolBar setRightButtonImage:YB_READIMAGE_FROMFILE(@"ybImageBrowser_more", @"png")];
+        [self.toolBar setRightButtonTitle:nil];
+        //functionBar 方法仅在此处调用其它地方均用实例变量方式访问
+        self.functionBar.dataArray = fuctionDataArray;
+    }
 }
 
 #pragma mark getter
@@ -185,7 +253,7 @@
     if (!_browserView) {
         UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        _browserView = [[YBImageBrowserView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+        _browserView = [[YBImageBrowserView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         _browserView.yb_delegate = self;
         _browserView.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
         _browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
@@ -198,7 +266,7 @@
     if (!_toolBar) {
         _toolBar = [YBImageBrowserToolBar new];
         _toolBar.delegate = self;
-        [_toolBar setTitleLabelWithCurrentIndex:1 totalCount:self.browserView.dataArray.count];
+        [_toolBar setTitleLabelWithCurrentIndex:1 totalCount:self.dataArray.count];
     }
     return _toolBar;
 }
@@ -209,6 +277,13 @@
         _functionBar.delegate = self;
     }
     return _functionBar;
+}
+
+- (YBImageBrowserCopywriter *)copywriter {
+    if (!_copywriter) {
+        _copywriter = [YBImageBrowserCopywriter new];
+    }
+    return _copywriter;
 }
 
 #pragma mark device orientation
@@ -239,14 +314,75 @@
 
 #pragma mark save photo to album
 
-- (void)savePhotoToAlbum:(UIImage *)image {
-    UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), (__bridge void *)self);
+- (void)savePhotoToAlbumWithCurrentIndex {
+    NSArray *dataArray = self.browserView.dataArray;
+    NSUInteger currentIndex = self.browserView.currentIndex;
+    if (currentIndex >= dataArray.count) {
+        YBLOG_WARNING(@"currentIndex is out of range")
+        return;
+    }
+    [self savePhotoToAlbumWithModel:dataArray[currentIndex] preview:NO];
 }
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    if (image) {
-        
+
+- (void)savePhotoToAlbumWithModel:(YBImageBrowserModel *)model preview:(BOOL)preview {
+    if (model.image) {
+        [self judgeAlbumAuthorizationStatusSuccess:^{
+            [self savePhotoToAlbumWithImage:model.image];
+        }];
+    } else if (model.animatedImage) {
+        if (model.animatedImage.data) {
+            [self judgeAlbumAuthorizationStatusSuccess:^{
+                [self saveGifToAlbumWithData:model.animatedImage.data];
+            }];
+        } else {
+            YBLOG_WARNING(@"instance of FLAnimatedImage is exist, but it's key-data is not exist, this maybe the BUG of the framework of FLAnimatedImage")
+        }
     } else {
-        
+        if (!preview) {
+            [self savePhotoToAlbumWithModel:model.previewModel preview:YES];
+        } else {
+            [self.view showForkWithText:self.copywriter.noImageDataToSave];
+        }
+    }
+}
+
+- (void)judgeAlbumAuthorizationStatusSuccess:(void(^)(void))success {
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status == PHAuthorizationStatusDenied) {
+        [self.view showForkWithText:self.copywriter.albumAuthorizationDenied];
+    } else if(status == PHAuthorizationStatusNotDetermined){
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
+            if (status == PHAuthorizationStatusAuthorized) {
+                if (success) success();
+            } else {
+                YBLOG_WARNING(@"user is not Authorized");
+            }
+        }];
+    } else if (status == PHAuthorizationStatusAuthorized){
+        if (success) success();
+    }
+}
+    
+- (void)saveGifToAlbumWithData:(NSData *)data {
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library writeImageDataToSavedPhotosAlbum:data metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
+        if (!error) {
+            [self.view showHookWithText:self.copywriter.saveImageDataToAlbumSuccessful];
+        } else {
+            [self.view showHookWithText:self.copywriter.saveImageDataToAlbumFailed];
+        }
+    }];
+}
+
+- (void)savePhotoToAlbumWithImage:(UIImage *)image {
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(completedWithImage:error:context:), (__bridge void *)self);
+}
+
+- (void)completedWithImage:(UIImage *)image error:(NSError *)error context:(void *)context {
+    if (!error) {
+        [self.view showHookWithText:self.copywriter.saveImageDataToAlbumSuccessful];
+    } else {
+        [self.view showHookWithText:self.copywriter.saveImageDataToAlbumFailed];
     }
 }
 

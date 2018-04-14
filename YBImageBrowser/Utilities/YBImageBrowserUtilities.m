@@ -1,17 +1,16 @@
 //
-//  YBImageBrowserTool.m
+//  YBImageBrowserUtilities.m
 //  YBImageBrowserDemo
 //
 //  Created by 杨少 on 2018/4/11.
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
-#import "YBImageBrowserTool.h"
-#import <Photos/Photos.h>
+#import "YBImageBrowserUtilities.h"
 
 NSString * const YBImageBrowser_notificationName_hideSelf = @"YBImageBrowser_notificationName_hideSelf";
 
-@implementation YBImageBrowserTool
+@implementation YBImageBrowserUtilities
 
 + (BOOL)isGif:(NSData *)data {
     return [[self getTypeOfImageData:data] isEqualToString:@"gif"];
@@ -42,6 +41,7 @@ NSString * const YBImageBrowser_notificationName_hideSelf = @"YBImageBrowser_not
 
 + (UIViewController *)getTopController
 {
+    
     UIViewController *topController = nil;
     
     UIWindow *window = [self getNormalWindow];
@@ -70,21 +70,8 @@ NSString * const YBImageBrowser_notificationName_hideSelf = @"YBImageBrowser_not
     return window;
 }
 
-+ (void)saveImageToAlbum:(UIImage *)image {
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status == PHAuthorizationStatusDenied) {
-        //相册权限未开启
-        
-    } else if(status == PHAuthorizationStatusNotDetermined){
-        //相册进行授权
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
-            //授权后
-            
-        }];
-    } else if (status == PHAuthorizationStatusAuthorized){
-        //相册已经授权
-        
-    }
++ (CGFloat)getWidthWithAttStr:(NSAttributedString *)attStr {
+    return [attStr boundingRectWithSize:CGSizeMake(MAXFLOAT, 0) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.width;
 }
 
 @end

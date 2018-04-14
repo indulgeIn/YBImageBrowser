@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */; };
 		2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2394EBAC207FB4340084D297 /* YBImageBrowser.m */; };
+		239822062081BBBA00086EEF /* ybImageBrowser_save.png in Resources */ = {isa = PBXBuildFile; fileRef = 239822052081BBBA00086EEF /* ybImageBrowser_save.png */; };
+		239822092081D32D00086EEF /* YBImageBrowserPromptBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */; };
+		2398220C20820A6200086EEF /* YBImageBrowserFunctionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2398220B20820A6200086EEF /* YBImageBrowserFunctionModel.m */; };
+		23982216208212DA00086EEF /* YBImageBrowserCopywriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 23982215208212DA00086EEF /* YBImageBrowserCopywriter.m */; };
 		23E433FC2080D1E500C8DBFB /* YBImageBrowserToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */; };
 		23E434002080D84900C8DBFB /* ybImageBrowser_more.png in Resources */ = {isa = PBXBuildFile; fileRef = 23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */; };
 		23E434032080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */; };
@@ -21,7 +25,7 @@
 		706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15C207CB7060034663E /* YBImageBrowserCell.m */; };
 		706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF15F207CB72F0034663E /* YBImageBrowserView.m */; };
 		70A67664207DA0E2000EB602 /* gif0.gif in Resources */ = {isa = PBXBuildFile; fileRef = 70A67663207DA0E1000EB602 /* gif0.gif */; };
-		70A67667207DAFA3000EB602 /* YBImageBrowserTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A67666207DAFA3000EB602 /* YBImageBrowserTool.m */; };
+		70A67667207DAFA3000EB602 /* YBImageBrowserUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A67666207DAFA3000EB602 /* YBImageBrowserUtilities.m */; };
 		70A6F066207DD97B004A0CBA /* YBImageBrowserProgressBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 70A6F065207DD97B004A0CBA /* YBImageBrowserProgressBar.m */; };
 		B454E29D3983D8A7DEBE5730 /* Pods_YBImageBrowserDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD3D3D4051E4334DCB91E8A4 /* Pods_YBImageBrowserDemo.framework */; };
 /* End PBXBuildFile section */
@@ -31,6 +35,13 @@
 		23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserModel.m; sourceTree = "<group>"; };
 		2394EBAB207FB4340084D297 /* YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowser.h; sourceTree = "<group>"; };
 		2394EBAC207FB4340084D297 /* YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowser.m; sourceTree = "<group>"; wrapsLines = 1; };
+		239822052081BBBA00086EEF /* ybImageBrowser_save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ybImageBrowser_save.png; sourceTree = "<group>"; };
+		239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserPromptBar.m; sourceTree = "<group>"; };
+		239822082081D32D00086EEF /* YBImageBrowserPromptBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserPromptBar.h; sourceTree = "<group>"; };
+		2398220A20820A6200086EEF /* YBImageBrowserFunctionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserFunctionModel.h; sourceTree = "<group>"; };
+		2398220B20820A6200086EEF /* YBImageBrowserFunctionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserFunctionModel.m; sourceTree = "<group>"; };
+		23982214208212DA00086EEF /* YBImageBrowserCopywriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserCopywriter.h; sourceTree = "<group>"; };
+		23982215208212DA00086EEF /* YBImageBrowserCopywriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserCopywriter.m; sourceTree = "<group>"; };
 		23E433FA2080D1E500C8DBFB /* YBImageBrowserToolBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserToolBar.h; sourceTree = "<group>"; };
 		23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserToolBar.m; sourceTree = "<group>"; };
 		23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ybImageBrowser_more.png; sourceTree = "<group>"; };
@@ -51,8 +62,8 @@
 		706BF15E207CB72F0034663E /* YBImageBrowserView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserView.h; sourceTree = "<group>"; };
 		706BF15F207CB72F0034663E /* YBImageBrowserView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserView.m; sourceTree = "<group>"; };
 		70A67663207DA0E1000EB602 /* gif0.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = gif0.gif; sourceTree = "<group>"; };
-		70A67665207DAFA3000EB602 /* YBImageBrowserTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserTool.h; sourceTree = "<group>"; };
-		70A67666207DAFA3000EB602 /* YBImageBrowserTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserTool.m; sourceTree = "<group>"; };
+		70A67665207DAFA3000EB602 /* YBImageBrowserUtilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserUtilities.h; sourceTree = "<group>"; };
+		70A67666207DAFA3000EB602 /* YBImageBrowserUtilities.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserUtilities.m; sourceTree = "<group>"; };
 		70A6F064207DD97B004A0CBA /* YBImageBrowserProgressBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserProgressBar.h; sourceTree = "<group>"; };
 		70A6F065207DD97B004A0CBA /* YBImageBrowserProgressBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserProgressBar.m; sourceTree = "<group>"; };
 		B7388A27B4CDF81F1636CB45 /* Pods-YBImageBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBImageBrowserDemo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -72,9 +83,72 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2398220D20820D2900086EEF /* CoreStructure */ = {
+			isa = PBXGroup;
+			children = (
+				23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */,
+				23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */,
+				706BF15E207CB72F0034663E /* YBImageBrowserView.h */,
+				706BF15F207CB72F0034663E /* YBImageBrowserView.m */,
+				706BF15B207CB7060034663E /* YBImageBrowserCell.h */,
+				706BF15C207CB7060034663E /* YBImageBrowserCell.m */,
+			);
+			path = CoreStructure;
+			sourceTree = "<group>";
+		};
+		2398220E20820D2900086EEF /* ToolBar */ = {
+			isa = PBXGroup;
+			children = (
+				23E433FA2080D1E500C8DBFB /* YBImageBrowserToolBar.h */,
+				23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */,
+			);
+			path = ToolBar;
+			sourceTree = "<group>";
+		};
+		2398220F20820D2900086EEF /* AssistBar */ = {
+			isa = PBXGroup;
+			children = (
+				239822082081D32D00086EEF /* YBImageBrowserPromptBar.h */,
+				239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */,
+				70A6F064207DD97B004A0CBA /* YBImageBrowserProgressBar.h */,
+				70A6F065207DD97B004A0CBA /* YBImageBrowserProgressBar.m */,
+			);
+			path = AssistBar;
+			sourceTree = "<group>";
+		};
+		2398221020820D2A00086EEF /* FunctionBar */ = {
+			isa = PBXGroup;
+			children = (
+				23E434012080F3BA00C8DBFB /* YBImageBrowserFunctionBar.h */,
+				23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */,
+				2398220A20820A6200086EEF /* YBImageBrowserFunctionModel.h */,
+				2398220B20820A6200086EEF /* YBImageBrowserFunctionModel.m */,
+			);
+			path = FunctionBar;
+			sourceTree = "<group>";
+		};
+		2398221120820D2A00086EEF /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				70A67665207DAFA3000EB602 /* YBImageBrowserUtilities.h */,
+				70A67666207DAFA3000EB602 /* YBImageBrowserUtilities.m */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		23982213208212A500086EEF /* Copywriter */ = {
+			isa = PBXGroup;
+			children = (
+				23982214208212DA00086EEF /* YBImageBrowserCopywriter.h */,
+				23982215208212DA00086EEF /* YBImageBrowserCopywriter.m */,
+			);
+			path = Copywriter;
+			sourceTree = "<group>";
+		};
 		23E433FE2080D5EA00C8DBFB /* File */ = {
 			isa = PBXGroup;
 			children = (
+				239822052081BBBA00086EEF /* ybImageBrowser_save.png */,
 				23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */,
 			);
 			path = File;
@@ -128,50 +202,18 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
+				23982213208212A500086EEF /* Copywriter */,
+				2398220F20820D2900086EEF /* AssistBar */,
+				2398220D20820D2900086EEF /* CoreStructure */,
+				2398221020820D2A00086EEF /* FunctionBar */,
+				2398220E20820D2900086EEF /* ToolBar */,
+				2398221120820D2A00086EEF /* Utilities */,
 				23E433FE2080D5EA00C8DBFB /* File */,
-				70A6F063207DD4AA004A0CBA /* Tool */,
-				70A6F061207DD478004A0CBA /* Model */,
-				70A6F060207DD470004A0CBA /* View */,
 				2394EBAB207FB4340084D297 /* YBImageBrowser.h */,
 				2394EBAC207FB4340084D297 /* YBImageBrowser.m */,
 			);
 			path = YBImageBrowser;
 			sourceTree = SOURCE_ROOT;
-		};
-		70A6F060207DD470004A0CBA /* View */ = {
-			isa = PBXGroup;
-			children = (
-				70A6F064207DD97B004A0CBA /* YBImageBrowserProgressBar.h */,
-				70A6F065207DD97B004A0CBA /* YBImageBrowserProgressBar.m */,
-				23E433FA2080D1E500C8DBFB /* YBImageBrowserToolBar.h */,
-				23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */,
-				23E434012080F3BA00C8DBFB /* YBImageBrowserFunctionBar.h */,
-				23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */,
-				706BF15E207CB72F0034663E /* YBImageBrowserView.h */,
-				706BF15F207CB72F0034663E /* YBImageBrowserView.m */,
-				706BF15B207CB7060034663E /* YBImageBrowserCell.h */,
-				706BF15C207CB7060034663E /* YBImageBrowserCell.m */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		70A6F061207DD478004A0CBA /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */,
-				23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */,
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		70A6F063207DD4AA004A0CBA /* Tool */ = {
-			isa = PBXGroup;
-			children = (
-				70A67665207DAFA3000EB602 /* YBImageBrowserTool.h */,
-				70A67666207DAFA3000EB602 /* YBImageBrowserTool.m */,
-			);
-			path = Tool;
-			sourceTree = "<group>";
 		};
 		E891A8ECF05E69B092BE9682 /* Frameworks */ = {
 			isa = PBXGroup;
@@ -244,6 +286,7 @@
 			files = (
 				706BF14B207CAAB30034663E /* LaunchScreen.storyboard in Resources */,
 				706BF148207CAAB30034663E /* Assets.xcassets in Resources */,
+				239822062081BBBA00086EEF /* ybImageBrowser_save.png in Resources */,
 				70A67664207DA0E2000EB602 /* gif0.gif in Resources */,
 				23E434002080D84900C8DBFB /* ybImageBrowser_more.png in Resources */,
 				706BF146207CAAB30034663E /* Main.storyboard in Resources */,
@@ -318,11 +361,14 @@
 				23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */,
 				2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */,
 				706BF14E207CAAB30034663E /* main.m in Sources */,
+				23982216208212DA00086EEF /* YBImageBrowserCopywriter.m in Sources */,
 				706BF140207CAAB30034663E /* AppDelegate.m in Sources */,
 				23E434032080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m in Sources */,
 				706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */,
-				70A67667207DAFA3000EB602 /* YBImageBrowserTool.m in Sources */,
+				70A67667207DAFA3000EB602 /* YBImageBrowserUtilities.m in Sources */,
 				70A6F066207DD97B004A0CBA /* YBImageBrowserProgressBar.m in Sources */,
+				239822092081D32D00086EEF /* YBImageBrowserPromptBar.m in Sources */,
+				2398220C20820A6200086EEF /* YBImageBrowserFunctionModel.m in Sources */,
 				23E433FC2080D1E500C8DBFB /* YBImageBrowserToolBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

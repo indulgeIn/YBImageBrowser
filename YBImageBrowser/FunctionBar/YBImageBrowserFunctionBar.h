@@ -6,33 +6,10 @@
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
-#import "YBImageBrowserTool.h"
-
-
-FOUNDATION_EXTERN NSString * const YBImageBrowserFunctionModel_ID_savePictureToAlbum;
+#import "YBImageBrowserUtilities.h"
+#import "YBImageBrowserFunctionModel.h"
 
 @class YBImageBrowserFunctionBar;
-
-@interface YBImageBrowserFunctionModel : NSObject
-
-/**
- 功能显示的名字
- */
-@property (nonatomic, copy) NSString *name;
-
-/**
- 功能的ID（自己定义方便做判断）
- */
-@property (nonatomic, copy) NSString *ID;
-
-/**
- 保存图片的 model 的便利构造
- @return --
- */
-+ (instancetype)functionModelForSavePictureToAlbum;
-
-@end
-
 
 @protocol YBImageBrowserFunctionBarDelegate <NSObject>
 
@@ -50,12 +27,12 @@ FOUNDATION_EXTERN NSString * const YBImageBrowserFunctionModel_ID_savePictureToA
 @property (nonatomic, copy) NSArray<YBImageBrowserFunctionModel *> *dataArray;
 
 /**
- 每一项的高度（默认50）
+ 每一项的高度
  */
 @property (nonatomic, assign) CGFloat heightOfCell;
 
 /**
- 操作栏占最大可视高度的比例（默认0.7）
+ 操作栏占最大可视高度的比例
  */
 @property (nonatomic, assign) CGFloat maxScaleOfOperationBar;
 
@@ -69,6 +46,7 @@ FOUNDATION_EXTERN NSString * const YBImageBrowserFunctionModel_ID_savePictureToA
  隐藏
  */
 - (void)hide;
+- (void)hideWithAnimate:(BOOL)animate;
 
 /**
  转场动画持续时间

@@ -6,7 +6,7 @@
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
-#import "YBImageBrowserTool.h"
+#import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserModel.h"
 
 @class YBImageBrowserCell;
@@ -14,6 +14,8 @@
 @protocol YBImageBrowserCellDelegate <NSObject>
 
 - (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell didAddDownLoaderTaskWithToken:(SDWebImageDownloadToken *)token;
+
+- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture;
 
 @end
 

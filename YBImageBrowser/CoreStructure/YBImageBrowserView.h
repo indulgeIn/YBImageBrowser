@@ -6,7 +6,7 @@
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
-#import "YBImageBrowserTool.h"
+#import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserModel.h"
 
 @class YBImageBrowserView;
@@ -14,6 +14,8 @@
 @protocol YBImageBrowserViewDelegate <NSObject>
 
 - (void)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView didScrollToIndex:(NSUInteger)index;
+
+- (void)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView longPressBegin:(UILongPressGestureRecognizer *)gesture;
 
 @end
 
@@ -29,5 +31,7 @@
 @property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
 
 - (void)resetUserInterfaceLayout;
+
+- (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated;
 
 @end

@@ -6,7 +6,7 @@
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
-#import "YBImageBrowserTool.h"
+#import "YBImageBrowserUtilities.h"
 
 @class YBImageBrowserToolBar;
 
@@ -20,11 +20,15 @@
 
 @property (nonatomic, weak) id <YBImageBrowserToolBarDelegate> delegate;
 
-@property (nonatomic, strong) UILabel *titleLabel;
-@property (nonatomic, strong) UIButton *rightButton;
+@property (nonatomic, strong, readonly) UILabel *titleLabel;
+@property (nonatomic, strong, readonly) UIButton *rightButton;
 
 - (void)resetUserInterfaceLayout;
 
 - (void)setTitleLabelWithCurrentIndex:(NSUInteger)index totalCount:(NSUInteger)totalCount;
+
+- (void)setRightButtonHide:(BOOL)hide;
+- (void)setRightButtonImage:(UIImage *)image;
+- (void)setRightButtonTitle:(NSString *)title;
 
 @end

@@ -34,6 +34,12 @@ NSString * const YBImageBrowser_KVCKey_isLoadFailed = @"isLoadFailed";
     return self;
 }
 
+#pragma mark public
+
+- (void)setImageWithFileName:(NSString *)fileName fileType:(NSString *)type {
+    _image = YB_READIMAGE_FROMFILE(fileName, type);
+}
+
 #pragma mark setter
 
 - (void)setImageName:(NSString *)imageName {
