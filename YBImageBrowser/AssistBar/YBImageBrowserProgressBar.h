@@ -13,6 +13,6 @@
 //0.0 - 1.0
 @property (nonatomic, assign) CGFloat progress;
 
-- (void)showLoadFailedGraphics;
+- (void)showLoadFailedGraphicsWithText:(NSString *)text;
 
 @end

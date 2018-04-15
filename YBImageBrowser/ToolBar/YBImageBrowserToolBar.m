@@ -19,6 +19,11 @@
 
 @implementation YBImageBrowserToolBar
 
+@synthesize so_screenOrientation = _so_screenOrientation;
+@synthesize so_frameOfVertical = _so_frameOfVertical;
+@synthesize so_frameOfHorizontal = _so_frameOfHorizontal;
+@synthesize so_isUpdateUICompletely = _so_isUpdateUICompletely;
+
 #pragma mark life cycle
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -35,6 +40,11 @@
 
 - (void)setTitleLabelWithCurrentIndex:(NSUInteger)index totalCount:(NSUInteger)totalCount {
     if (!totalCount) return;
+    if (totalCount == 1) {
+        self.titleLabel.hidden = YES;
+    } else {
+        if (self.titleLabel.isHidden) self.titleLabel.hidden = NO;
+    }
     self.titleLabel.text = [NSString stringWithFormat:@"%ld/%ld", index, totalCount];
 }
 
@@ -51,12 +61,6 @@
 - (void)setRightButtonTitle:(NSString *)title {
     [self.rightButton setTitle:title forState:UIControlStateNormal];
     if (!title) return;
-    [self resetUserInterfaceLayout_rightButton];
-}
-
-- (void)resetUserInterfaceLayout {
-    self.frame = CGRectMake(0, 0, self.superview.frame.size.width, YB_HEIGHT_TOOLBAR);
-    [self resetUserInterfaceLayout_titleLabel];
     [self resetUserInterfaceLayout_rightButton];
 }
 
@@ -94,8 +98,6 @@
     self.rightButton.frame = CGRectMake(selfWidth - buttonWidth, 0, buttonWidth, selfHeight);
 }
 
-#pragma mark private
-
 - (void)addGradient {
     gradient = [CAGradientLayer layer];
     gradient.startPoint = CGPointMake(0.5, 0);
@@ -103,6 +105,31 @@
     gradient.colors = @[(id)[UIColor colorWithRed:0  green:0  blue:0 alpha:0.5].CGColor, (id)[UIColor colorWithRed:0  green:0  blue:0 alpha:0].CGColor];
     gradient.frame = self.bounds;
     [self.layer addSublayer:gradient];
+}
+
+#pragma mark YBImageBrowserScreenOrientationProtocol
+
+- (void)so_setFrameInfoWithSuperViewScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation superViewSize:(CGSize)size {
+    
+    BOOL isVertical = screenOrientation == YBImageBrowserScreenOrientationVertical;
+    CGRect rect0 = CGRectMake(0, 0, size.width, 44 + YB_HEIGHT_STATUSBAR), rect1 = CGRectMake(0, 0, size.height, 44 + YB_HEIGHT_STATUSBAR);
+    _so_frameOfVertical = isVertical ? rect0 : rect1;
+    _so_frameOfHorizontal = !isVertical ? rect0 : rect1;
+}
+
+- (void)so_updateFrameWithScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation {
+    if (screenOrientation == _so_screenOrientation) return;
+    
+    _so_isUpdateUICompletely = NO;
+    
+    self.frame = screenOrientation == YBImageBrowserScreenOrientationVertical ? _so_frameOfVertical : _so_frameOfHorizontal;
+    
+    _so_screenOrientation = screenOrientation;
+    
+    [self resetUserInterfaceLayout_titleLabel];
+    [self resetUserInterfaceLayout_rightButton];
+    
+    _so_isUpdateUICompletely = YES;
 }
 
 #pragma mark event

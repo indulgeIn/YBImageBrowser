@@ -13,20 +13,20 @@
 
 @implementation UIView (YBImageBrowserPromptBar)
 
-- (void)showHookWithText:(NSString *)text {
+- (void)yb_showHookPromptWithText:(NSString *)text {
     [self showWithText:text type:YBImageBrowserPromptBarTypeHook];
 }
 
-- (void)showForkWithText:(NSString *)text {
+- (void)yb_showForkPromptWithText:(NSString *)text {
     [self showWithText:text type:YBImageBrowserPromptBarTypeFork];
 }
 
 - (void)showWithText:(NSString *)text type:(YBImageBrowserPromptBarType)type {
     
-    YBImageBrowserPromptBar *promptBar = self.promptBar;
+    YBImageBrowserPromptBar *promptBar = self.ybImageBrowserPromptBar;
     if (!promptBar) {
         promptBar = [[YBImageBrowserPromptBar alloc] initWithFrame:CGRectZero barType:type];
-        self.promptBar = promptBar;
+        self.ybImageBrowserPromptBar = promptBar;
     } else {
         [NSObject cancelPreviousPerformRequestsWithTarget:promptBar];
     }
@@ -34,7 +34,7 @@
     [self addSubview:promptBar];
     
     NSAttributedString *attr = [[NSAttributedString alloc] initWithString:text attributes:@{NSFontAttributeName:FONT_TEXTLABLE}];
-    CGFloat selfWidth = self.bounds.size.width, selfHeight = self.bounds.size.height;
+    CGFloat selfWidth = self.bounds.size.width;
     CGFloat width = [YBImageBrowserUtilities getWidthWithAttStr:attr] + 20 + 5, height = 100;;
     if (width > selfWidth - 30) {
         width = selfWidth - 30;
@@ -42,8 +42,9 @@
     if (width < 100) {
         width = 100;
     }
-    promptBar.frame = CGRectMake((selfWidth - width) / 2.0, (selfHeight - height) / 2.0, width, height);
-    
+    promptBar.bounds = CGRectMake(0, 0, width, height);
+    promptBar.center = self.center;
+    promptBar.barType = type;
     [promptBar resetUserInterfaceLayout_textLabel];
     promptBar.textLabel.text = text;
     [promptBar drawView];
@@ -57,14 +58,20 @@
     }
 }
 
-- (void)setPromptBar:(YBImageBrowserPromptBar *)promptBar {
-    objc_setAssociatedObject(self, "YBImageBrowserPromptBar", promptBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)yb_hidePromptImmediately {
+    YBImageBrowserPromptBar *promptBar = self.ybImageBrowserPromptBar;
+    if (!promptBar || !promptBar.superview) return;
+    [NSObject cancelPreviousPerformRequestsWithTarget:promptBar];
+    [self removePromptBar:promptBar];
 }
 
-- (YBImageBrowserPromptBar *)promptBar {
+- (void)setYbImageBrowserPromptBar:(YBImageBrowserPromptBar *)ybImageBrowserPromptBar {
+    objc_setAssociatedObject(self, "YBImageBrowserPromptBar", ybImageBrowserPromptBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (YBImageBrowserPromptBar *)ybImageBrowserPromptBar {
     return objc_getAssociatedObject(self, "YBImageBrowserPromptBar");
 }
-
 
 @end
 
@@ -74,7 +81,6 @@
 @property (nonatomic, strong) CAShapeLayer *shapeLayer;
 @property (nonatomic, strong) UIBezierPath *bezierPath;
 @property (nonatomic, strong) CABasicAnimation *baseAnimation;
-@property (nonatomic, assign) YBImageBrowserPromptBarType barType;
 @property (nonatomic, strong) UILabel *textLabel;
 
 @end

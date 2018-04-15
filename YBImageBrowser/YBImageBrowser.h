@@ -12,6 +12,7 @@
 #import "YBImageBrowserFunctionBar.h"
 #import "YBImageBrowserToolBar.h"
 #import "YBImageBrowserCopywriter.h"
+#import "YBImageBrowserScreenOrientationProtocol.h"
 
 @class YBImageBrowser;
 
@@ -19,7 +20,7 @@
 
 @end
 
-@interface YBImageBrowser : UIViewController
+@interface YBImageBrowser : UIViewController <YBImageBrowserScreenOrientationProtocol>
 
 /**
  数据源

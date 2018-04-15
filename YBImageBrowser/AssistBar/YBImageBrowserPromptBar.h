@@ -12,21 +12,39 @@
 
 @interface UIView (YBImageBrowserPromptBar)
 
-@property (nonatomic, strong) YBImageBrowserPromptBar *promptBar;
+@property (nonatomic, strong) YBImageBrowserPromptBar *ybImageBrowserPromptBar;
 
-- (void)showHookWithText:(NSString *)text;
-- (void)showForkWithText:(NSString *)text;
+/**
+ 显示勾勾的弹框
+
+ @param text 显示文案
+ */
+- (void)yb_showHookPromptWithText:(NSString *)text;
+
+/**
+ 显示叉叉的弹框
+
+ @param text 显示文案
+ */
+- (void)yb_showForkPromptWithText:(NSString *)text;
+
+/**
+ 立刻消失
+ */
+- (void)yb_hidePromptImmediately;
 
 @end
 
 typedef NS_ENUM(NSInteger, YBImageBrowserPromptBarType) {
-    YBImageBrowserPromptBarTypeHook, //正确的勾勾
-    YBImageBrowserPromptBarTypeFork  //错误的叉叉
+    YBImageBrowserPromptBarTypeHook,
+    YBImageBrowserPromptBarTypeFork
 };
 
 @interface YBImageBrowserPromptBar : UIView
 
 @property (nonatomic, strong, readonly) UILabel *textLabel;
+
+@property (nonatomic, assign) YBImageBrowserPromptBarType barType;
 
 - (instancetype)initWithFrame:(CGRect)frame barType:(YBImageBrowserPromptBarType)barType;
 

@@ -30,25 +30,27 @@
         _maxScaleOfOperationBar = 0.7;
         _timeOfAnimation = 0.2;
         _isShow = NO;
-        [self resetUserInterfaceLayout];
         [self addSubview:self.tableView];
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
     }
     return self;
 }
 
 #pragma mark public
 
+- (void)show {
+    [self showToView:[UIApplication sharedApplication].keyWindow];
+}
+
 - (void)showToView:(UIView *)view {
     if (self.isShow) {
         return;
     }
     self.frame = view.bounds;
-    [self resetUserInterfaceLayout];
-    [view addSubview:self];
     self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
+    [self resetTableViewFrameWithSuperView:view];
     self.tableView.frame = hideFrameOfTableView;
     [self.tableView reloadData];
+    [view addSubview:self];
     [UIView animateWithDuration:self.timeOfAnimation animations:^{
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.3];
         self.tableView.frame = showFrameOfTableView;
@@ -74,18 +76,13 @@
     }];
 }
 
-- (void)resetUserInterfaceLayout {
-    CGRect bounds = [UIScreen mainScreen].bounds;
+- (void)resetTableViewFrameWithSuperView:(UIView *)superView {
+    CGRect bounds = superView.bounds;
     CGFloat maxHeight = self.maxScaleOfOperationBar * bounds.size.height;
     CGFloat cellsHeight = self.heightOfCell * self.dataArray.count + self.heightOfCell+5;
     CGFloat resultHeight = maxHeight >= cellsHeight ? cellsHeight : maxHeight;
     showFrameOfTableView = CGRectMake(0, bounds.size.height - resultHeight, bounds.size.width, resultHeight);
     hideFrameOfTableView = CGRectMake(0, bounds.size.height, bounds.size.width, resultHeight);
-    if (_isShow) {
-        self.frame = bounds;
-        self.tableView.frame = showFrameOfTableView;;
-        [self.tableView reloadData];
-    }
 }
 
 #pragma mark setter
@@ -96,8 +93,6 @@
         return;
     }
     _dataArray = dataArray;
-    [self resetUserInterfaceLayout];
-    [self.tableView reloadData];
 }
 
 - (void)setMaxScaleOfOperationBar:(CGFloat)maxScaleOfOperationBar {
@@ -110,8 +105,6 @@
     } else {
         _maxScaleOfOperationBar = maxScaleOfOperationBar;
     }
-    [self resetUserInterfaceLayout];
-    [self.tableView reloadData];
 }
 
 - (void)setHeightOfCell:(CGFloat)heightOfCell {
@@ -120,11 +113,7 @@
         return;
     }
     _heightOfCell = heightOfCell;
-    [self resetUserInterfaceLayout];
-    [self.tableView reloadData];
 }
-
-
 
 #pragma mark UITableViewDataSource
 

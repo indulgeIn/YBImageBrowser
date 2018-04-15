@@ -22,4 +22,7 @@
 //保存图片数据到相册失败
 @property (nonatomic, copy) NSString *saveImageDataToAlbumFailed;
 
+//加载图片失败占位文字
+@property (nonatomic, copy) NSString *loadFailedText;
+
 @end

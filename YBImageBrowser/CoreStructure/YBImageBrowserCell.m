@@ -20,6 +20,11 @@
 
 @implementation YBImageBrowserCell
 
+@synthesize so_screenOrientation = _so_screenOrientation;
+@synthesize so_frameOfVertical = _so_frameOfVertical;
+@synthesize so_frameOfHorizontal = _so_frameOfHorizontal;
+@synthesize so_isUpdateUICompletely = _so_isUpdateUICompletely;
+
 #pragma mark life cycle
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -94,15 +99,19 @@
     }
 }
 
-- (void)resetUserInterfaceLayout {
-    UIScrollView *scrollView = self.scrollView;
-    [scrollView setZoomScale:1 animated:YES];
-    scrollView.frame = self.bounds;
-    scrollView.contentSize = CGSizeMake(scrollView.bounds.size.width, scrollView.bounds.size.height);
-    self.progressBar.frame = self.bounds;
+#pragma mark private
+
+- (void)showProgressBar {
+    if (!self.progressBar.superview) {
+        [self.contentView addSubview:self.progressBar];
+    }
 }
 
-#pragma mark private
+- (void)hideProgressBar {
+    if (self.progressBar.superview) {
+        [self.progressBar removeFromSuperview];
+    }
+}
 
 - (void)loadImageWithModel:(YBImageBrowserModel *)model isPreview:(BOOL)isPreview {
     if (!model) return;
@@ -110,13 +119,13 @@
     if (model.image) {
         
         //展示图片
-        self.imageView.frame = [self getFrameOfImageViewWithImage:model.image];
+        [self countLayoutWithImage:model.image];
         self.imageView.image = model.image;
         
     } else if (model.animatedImage) {
         
         //展示gif
-        self.imageView.frame = [self getFrameOfImageViewWithImage:model.animatedImage];
+        [self countLayoutWithImage:model.animatedImage];
         self.imageView.animatedImage = model.animatedImage;
         
     } else if (model.url) {
@@ -155,9 +164,7 @@
         if (progress < 0) return;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            if (!self.progressBar.superview) {
-                [self.contentView addSubview:self.progressBar];
-            }
+            [self showProgressBar];
             self.progressBar.progress = progress;
         });
         
@@ -169,7 +176,8 @@
         if (error) {
             [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_isLoadFailed];
             if (self.model == model) {
-                [self.progressBar showLoadFailedGraphics];
+                [self showProgressBar];
+                [self.progressBar showLoadFailedGraphicsWithText:self.loadFailedText];
             }
             return;
         }
@@ -185,9 +193,7 @@
         
         //移除 HUD 并且刷新图片
         if (self.model == model) {
-            if (self.progressBar.superview) {
-                [self.progressBar removeFromSuperview];
-            }
+            [self hideProgressBar];
             [self loadImageWithModel:model isPreview:NO];
         }
         
@@ -199,50 +205,50 @@
     }
 }
 
-- (CGRect)getFrameOfImageViewWithImage:(id)image {
++ (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale))completed {
     
     CGSize imageSize = [FLAnimatedImage sizeForImage:image];
-    CGFloat scrollViewWidth = self.scrollView.bounds.size.width;
-    CGFloat scrollViewHeight = self.scrollView.bounds.size.height;
-    CGFloat scrollViewScale = scrollViewWidth / scrollViewHeight;
+    CGFloat containerWidth = containerSize.width;
+    CGFloat containerHeight = containerSize.height;
+    CGFloat containerScale = containerWidth / containerHeight;
     
     CGFloat width = 0, height = 0, x = 0, y = 0, minimumZoomScale = 1;
     CGSize contentSize = CGSizeZero;
     
-    YBImageBrowserImageViewFillType currentFillType = scrollViewScale < 1 ? self.verticalScreenImageViewFillType : self.horizontalScreenImageViewFillType;
+    YBImageBrowserImageViewFillType currentFillType = screenOrientation == YBImageBrowserScreenOrientationVertical ? verticalFillType : horizontalFillType;
     
     switch (currentFillType) {
         case YBImageBrowserImageViewFillTypeFullWidth: {
             
-            width = scrollViewWidth;
-            height = scrollViewWidth * (imageSize.height / imageSize.width);
-            if (imageSize.width / imageSize.height >= scrollViewScale) {
+            width = containerWidth;
+            height = containerWidth * (imageSize.height / imageSize.width);
+            if (imageSize.width / imageSize.height >= containerScale) {
                 x = 0;
-                y = (scrollViewHeight - height) / 2.0;
-                contentSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
+                y = (containerHeight - height) / 2.0;
+                contentSize = CGSizeMake(containerWidth, containerHeight);
                 minimumZoomScale = 1;
             } else {
                 x = 0;
                 y = 0;
-                contentSize = CGSizeMake(scrollViewWidth, height);
-                minimumZoomScale = scrollViewHeight / height;
+                contentSize = CGSizeMake(containerWidth, height);
+                minimumZoomScale = containerHeight / height;
             }
         }
             break;
         case YBImageBrowserImageViewFillTypeCompletely: {
             
-            if (imageSize.width / imageSize.height >= scrollViewScale) {
-                width = scrollViewWidth;
-                height = scrollViewWidth * (imageSize.height / imageSize.width);
+            if (imageSize.width / imageSize.height >= containerScale) {
+                width = containerWidth;
+                height = containerWidth * (imageSize.height / imageSize.width);
                 x = 0;
-                y = (scrollViewHeight - height) / 2.0;
+                y = (containerHeight - height) / 2.0;
             } else {
-                height = scrollViewHeight;
-                width = scrollViewHeight * (imageSize.width / imageSize.height);
-                x = (scrollViewWidth - width) / 2.0;
+                height = containerHeight;
+                width = containerHeight * (imageSize.width / imageSize.height);
+                x = (containerWidth - width) / 2.0;
                 y = 0;
             }
-            contentSize = CGSizeMake(scrollViewWidth, scrollViewHeight);
+            contentSize = CGSizeMake(containerWidth, containerHeight);
             minimumZoomScale = 1;
         }
             break;
@@ -250,10 +256,15 @@
             break;
     }
     
-    self.scrollView.contentSize = contentSize;
-    self.scrollView.minimumZoomScale = minimumZoomScale;
-    
-    return CGRectMake(x, y, width, height);
+    if (completed) completed(CGRectMake(x, y, width, height), contentSize, minimumZoomScale);
+}
+
+- (void)countLayoutWithImage:(id)image {
+    [self.class countWithContainerSize:self.scrollView.bounds.size image:image screenOrientation:_so_screenOrientation verticalFillType:self.verticalScreenImageViewFillType horizontalFillType:self.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
+        self.scrollView.contentSize = contentSize;
+        self.scrollView.minimumZoomScale = minimumZoomScale;
+        self.imageView.frame = imageFrame;
+    }];
 }
 
 #pragma mark UIScrollViewDelegate
@@ -283,15 +294,31 @@
     return self.imageView;
 }
 
+#pragma mark YBImageBrowserScreenOrientationProtocol
+
+- (void)so_setFrameInfoWithSuperViewScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation superViewSize:(CGSize)size {}
+
+- (void)so_updateFrameWithScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation {
+    if (screenOrientation == _so_screenOrientation) return;
+    
+    _so_isUpdateUICompletely = NO;
+    
+    _so_screenOrientation = screenOrientation;
+    
+    UIScrollView *scrollView = self.scrollView;
+    [scrollView setZoomScale:1 animated:YES];
+    scrollView.frame = self.bounds;
+    scrollView.contentSize = CGSizeMake(scrollView.bounds.size.width, scrollView.bounds.size.height);
+    self.progressBar.frame = self.bounds;
+    
+    _so_isUpdateUICompletely = YES;
+}
+
 #pragma mark setter
 
 - (void)setModel:(YBImageBrowserModel *)model {
     if (!model) return;
     _model = model;
-    if ([[model valueForKey:YBImageBrowser_KVCKey_needUpdateUI] boolValue]) {
-        [self resetUserInterfaceLayout];
-        [model setValue:@(NO) forKey:YBImageBrowser_KVCKey_needUpdateUI];
-    }
     [self loadImageWithModel:model isPreview:NO];
 }
 

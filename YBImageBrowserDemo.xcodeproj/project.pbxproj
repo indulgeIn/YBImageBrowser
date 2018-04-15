@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m */; };
 		23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */; };
+		2360ADE92083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */; };
 		2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2394EBAC207FB4340084D297 /* YBImageBrowser.m */; };
 		239822062081BBBA00086EEF /* ybImageBrowser_save.png in Resources */ = {isa = PBXBuildFile; fileRef = 239822052081BBBA00086EEF /* ybImageBrowser_save.png */; };
 		239822092081D32D00086EEF /* YBImageBrowserPromptBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */; };
@@ -31,8 +33,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserAnimatedTransitioningManager.h; sourceTree = "<group>"; };
+		233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserAnimatedTransitioningManager.m; sourceTree = "<group>"; };
 		23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserModel.h; sourceTree = "<group>"; };
 		23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserModel.m; sourceTree = "<group>"; };
+		2360ADE620833E13002DF7E1 /* YBImageBrowserScreenOrientationProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserScreenOrientationProtocol.h; sourceTree = "<group>"; };
+		2360ADE72083956A002DF7E1 /* YBImageBrowerInteractiveTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowerInteractiveTransition.h; sourceTree = "<group>"; };
+		2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowerInteractiveTransition.m; sourceTree = "<group>"; };
 		2394EBAB207FB4340084D297 /* YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowser.h; sourceTree = "<group>"; };
 		2394EBAC207FB4340084D297 /* YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowser.m; sourceTree = "<group>"; wrapsLines = 1; };
 		239822052081BBBA00086EEF /* ybImageBrowser_save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ybImageBrowser_save.png; sourceTree = "<group>"; };
@@ -83,6 +90,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		233852822082F8C200D7ADB8 /* TransitioningManager */ = {
+			isa = PBXGroup;
+			children = (
+				233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.h */,
+				233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m */,
+				2360ADE72083956A002DF7E1 /* YBImageBrowerInteractiveTransition.h */,
+				2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */,
+			);
+			path = TransitioningManager;
+			sourceTree = "<group>";
+		};
 		2398220D20820D2900086EEF /* CoreStructure */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,19 +148,13 @@
 		2398221120820D2A00086EEF /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				70A67665207DAFA3000EB602 /* YBImageBrowserUtilities.h */,
-				70A67666207DAFA3000EB602 /* YBImageBrowserUtilities.m */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
-		23982213208212A500086EEF /* Copywriter */ = {
-			isa = PBXGroup;
-			children = (
 				23982214208212DA00086EEF /* YBImageBrowserCopywriter.h */,
 				23982215208212DA00086EEF /* YBImageBrowserCopywriter.m */,
+				70A67665207DAFA3000EB602 /* YBImageBrowserUtilities.h */,
+				70A67666207DAFA3000EB602 /* YBImageBrowserUtilities.m */,
+				2360ADE620833E13002DF7E1 /* YBImageBrowserScreenOrientationProtocol.h */,
 			);
-			path = Copywriter;
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		23E433FE2080D5EA00C8DBFB /* File */ = {
@@ -202,7 +214,7 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				23982213208212A500086EEF /* Copywriter */,
+				233852822082F8C200D7ADB8 /* TransitioningManager */,
 				2398220F20820D2900086EEF /* AssistBar */,
 				2398220D20820D2900086EEF /* CoreStructure */,
 				2398221020820D2A00086EEF /* FunctionBar */,
@@ -356,12 +368,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m in Sources */,
 				706BF143207CAAB30034663E /* ViewController.m in Sources */,
 				706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */,
 				23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */,
 				2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */,
 				706BF14E207CAAB30034663E /* main.m in Sources */,
 				23982216208212DA00086EEF /* YBImageBrowserCopywriter.m in Sources */,
+				2360ADE92083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m in Sources */,
 				706BF140207CAAB30034663E /* AppDelegate.m in Sources */,
 				23E434032080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m in Sources */,
 				706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */,

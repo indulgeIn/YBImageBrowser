@@ -8,12 +8,10 @@
 
 #import "YBImageBrowserModel.h"
 
-NSString * const YBImageBrowser_KVCKey_needUpdateUI = @"needUpdateUI";
 NSString * const YBImageBrowser_KVCKey_isLoading = @"isLoading";
 NSString * const YBImageBrowser_KVCKey_isLoadFailed = @"isLoadFailed";
 
 @interface YBImageBrowserModel () {
-    BOOL needUpdateUI;
     BOOL isLoading;
     BOOL isLoadFailed;
 }
@@ -27,7 +25,6 @@ NSString * const YBImageBrowser_KVCKey_isLoadFailed = @"isLoadFailed";
 - (instancetype)init {
     self = [super init];
     if (self) {
-        needUpdateUI = NO;
         isLoading = NO;
         isLoadFailed = NO;
     }

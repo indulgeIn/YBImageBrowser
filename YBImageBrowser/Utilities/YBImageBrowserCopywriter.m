@@ -18,6 +18,7 @@
         _albumAuthorizationDenied = @"请为本APP开启相册权限";
         _saveImageDataToAlbumSuccessful = @"保存成功";
         _saveImageDataToAlbumFailed = @"保存失败";
+        _loadFailedText = @"哎呀，图片加载失败了";
     }
     return self;
 }

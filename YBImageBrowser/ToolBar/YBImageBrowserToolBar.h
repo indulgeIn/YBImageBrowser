@@ -7,6 +7,7 @@
 //
 
 #import "YBImageBrowserUtilities.h"
+#import "YBImageBrowserScreenOrientationProtocol.h"
 
 @class YBImageBrowserToolBar;
 
@@ -16,14 +17,12 @@
 
 @end
 
-@interface YBImageBrowserToolBar : UIView
+@interface YBImageBrowserToolBar : UIView <YBImageBrowserScreenOrientationProtocol>
 
 @property (nonatomic, weak) id <YBImageBrowserToolBarDelegate> delegate;
 
 @property (nonatomic, strong, readonly) UILabel *titleLabel;
 @property (nonatomic, strong, readonly) UIButton *rightButton;
-
-- (void)resetUserInterfaceLayout;
 
 - (void)setTitleLabelWithCurrentIndex:(NSUInteger)index totalCount:(NSUInteger)totalCount;
 

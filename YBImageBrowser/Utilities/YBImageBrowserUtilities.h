@@ -39,6 +39,12 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserImageViewFillType) {
     YBImageBrowserImageViewFillTypeCompletely   //保证图片完整显示情况下最大限度填充
 };
 
+typedef NS_ENUM(NSUInteger, YBImageBrowserScreenOrientation) {
+    YBImageBrowserScreenOrientationUnknown, //未知
+    YBImageBrowserScreenOrientationVertical, //屏幕竖直方向展示
+    YBImageBrowserScreenOrientationHorizontal   //屏幕水平方向展示
+};
+
 @interface YBImageBrowserUtilities : NSObject
 
 + (BOOL)isGif:(NSData *)data;

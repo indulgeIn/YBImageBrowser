@@ -11,11 +11,15 @@
 
 @interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate> {
     NSPointerArray *downloaderTokens;
-    BOOL isAdjustingDirection; //正在调整方向
 }
 @end
 
 @implementation YBImageBrowserView
+
+@synthesize so_screenOrientation = _so_screenOrientation;
+@synthesize so_frameOfVertical = _so_frameOfVertical;
+@synthesize so_frameOfHorizontal = _so_frameOfHorizontal;
+@synthesize so_isUpdateUICompletely = _so_isUpdateUICompletely;
 
 #pragma mark life cycle
 
@@ -26,7 +30,6 @@
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
     self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
-        isAdjustingDirection = NO;
         downloaderTokens = [NSPointerArray weakObjectsPointerArray];
         [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:@"YBImageBrowserCell"];
         self.collectionViewLayout = layout;
@@ -42,20 +45,6 @@
         [self visibleCells];
     }
     return self;
-}
-
-#pragma mark public
-
-- (void)resetUserInterfaceLayout {
-    isAdjustingDirection = YES;
-    self.frame = self.superview.frame;
-    for (YBImageBrowserModel *model in self.dataArray) {
-        [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_needUpdateUI];
-    }
-    [self reloadData];
-    [self layoutIfNeeded];
-    [self scrollToPageWithIndex:self.currentIndex animated:NO];
-    isAdjustingDirection = NO;
 }
 
 #pragma mark private
@@ -88,6 +77,32 @@
     [self reloadData];
 }
 
+#pragma mark YBImageBrowserScreenOrientationProtocol
+
+- (void)so_setFrameInfoWithSuperViewScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation superViewSize:(CGSize)size {
+    
+    BOOL isVertical = screenOrientation == YBImageBrowserScreenOrientationVertical;
+    CGRect rect0 = CGRectMake(0, 0, size.width, size.height), rect1 = CGRectMake(0, 0, size.height, size.width);
+    _so_frameOfVertical = isVertical ? rect0 : rect1;
+    _so_frameOfHorizontal = !isVertical ? rect0 : rect1;
+}
+
+- (void)so_updateFrameWithScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation {
+    if (screenOrientation == _so_screenOrientation) return;
+    
+    _so_isUpdateUICompletely = NO;
+    
+    self.frame = screenOrientation == YBImageBrowserScreenOrientationVertical ? _so_frameOfVertical : _so_frameOfHorizontal;
+    
+    _so_screenOrientation = screenOrientation;
+    
+    [self reloadData];
+    [self layoutIfNeeded];
+    [self scrollToPageWithIndex:self.currentIndex animated:NO];
+    
+    _so_isUpdateUICompletely = YES;
+}
+
 #pragma mark YBImageBrowserCellDelegate
 
 - (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell didAddDownLoaderTaskWithToken:(SDWebImageDownloadToken *)token {
@@ -115,8 +130,10 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     YBImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"YBImageBrowserCell" forIndexPath:indexPath];
     cell.delegate = self;
+    cell.loadFailedText = self.loadFailedText;
     cell.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
     cell.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
+    [cell so_updateFrameWithScreenOrientation:_so_screenOrientation];
     cell.model = self.dataArray[indexPath.row];
     return cell;
 }
@@ -145,7 +162,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     NSUInteger index = (NSUInteger)((scrollView.contentOffset.x / scrollView.bounds.size.width) + 0.5);
     if (index > self.dataArray.count) return;
-    if (self.currentIndex != index && !isAdjustingDirection) {
+    if (self.currentIndex != index && _so_isUpdateUICompletely) {
         self.currentIndex = index;
         if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(yBImageBrowserView:didScrollToIndex:)]) {
             [_yb_delegate yBImageBrowserView:self didScrollToIndex:self.currentIndex];

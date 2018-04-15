@@ -10,6 +10,7 @@
 #import "YBImageBrowser.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import <SDWebImage/SDWebImageDownloader.h>
+#import "YBImageBrowserAnimatedTransitioningManager.h"
 
 #define CELLSIZE CGSizeMake(YB_SCREEN_WIDTH/3, (YB_SCREEN_WIDTH/3))
 static int tagOfImageOfCell = 100;
@@ -107,16 +108,26 @@ static int tagOfImageOfCell = 100;
     
     YBImageBrowserModel *model0 = [YBImageBrowserModel new];
     model0.imageName = dataArr[0];
+    model0.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     YBImageBrowserModel *model1 = [YBImageBrowserModel new];
     model1.gifName = dataArr[1];
+    model1.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     YBImageBrowserModel *model2 = [YBImageBrowserModel new];
     model2.imageUrl = dataArr[2];
+    model2.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
     YBImageBrowserModel *model3 = [YBImageBrowserModel new];
     model3.imageUrl = dataArr[3];
+    model3.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:3 inSection:0]];
     
     YBImageBrowser *browser = [YBImageBrowser new];
     browser.currentIndex = indexPath.row;
     browser.dataArray = @[model0, model1, model2, model3];
+    browser.yb_supportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
+    
+    YBImageBrowserFunctionModel *shareModel = [YBImageBrowserFunctionModel new];
+    shareModel.name = @"分享给好友";
+    browser.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum], shareModel];
+    
     [browser show];
 }
 
@@ -139,8 +150,11 @@ static int tagOfImageOfCell = 100;
 }
 
 - (BOOL)shouldAutorotate {
-    return NO;
+    return YES;
 }
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskAllButUpsideDown;
+}
 
 @end

@@ -40,6 +40,7 @@
  展示到view
  @param view 目标view
  */
+- (void)show;
 - (void)showToView:(UIView *)view;
 
 /**
@@ -58,6 +59,5 @@
  */
 @property (nonatomic, assign, readonly) BOOL isShow;
 
-- (void)resetUserInterfaceLayout;
 
 @end

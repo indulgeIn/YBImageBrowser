@@ -8,6 +8,7 @@
 
 #import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserModel.h"
+#import "YBImageBrowserScreenOrientationProtocol.h"
 
 @class YBImageBrowserView;
 
@@ -19,7 +20,7 @@
 
 @end
 
-@interface YBImageBrowserView : UICollectionView
+@interface YBImageBrowserView : UICollectionView <YBImageBrowserScreenOrientationProtocol>
 
 @property (nonatomic, weak) id <YBImageBrowserViewDelegate> yb_delegate;
 
@@ -30,7 +31,7 @@
 @property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
 @property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
 
-- (void)resetUserInterfaceLayout;
+@property (nonatomic, strong) NSString *loadFailedText;
 
 - (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated;
 

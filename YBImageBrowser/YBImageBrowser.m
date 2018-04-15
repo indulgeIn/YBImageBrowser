@@ -12,16 +12,16 @@
 #import <Photos/Photos.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "YBImageBrowserPromptBar.h"
+#import "YBImageBrowserAnimatedTransitioningManager.h"
+#import "YBImageBrowerInteractiveTransition.h"
 
-@interface YBImageBrowser () <YBImageBrowserViewDelegate, YBImageBrowserToolBarDelegate, YBImageBrowserFunctionBarDelegate> {
-    CGRect frameOfSelfForOrientationPortrait;
-    CGRect frameOfSelfForOrientationLandscapeRight;
-    CGRect frameOfSelfForOrientationLandscapeLeft;
-    CGRect frameOfSelfForOrientationPortraitUpsideDown;
+@interface YBImageBrowser () <YBImageBrowserViewDelegate, YBImageBrowserToolBarDelegate, YBImageBrowserFunctionBarDelegate, UIViewControllerTransitioningDelegate> {
     UIInterfaceOrientationMask supportAutorotateTypes;
     pthread_mutex_t lock;
     UIWindow *window;
-    BOOL isDealViewWillAppear;
+    BOOL isDealViewDidAppear;
+    YBImageBrowserAnimatedTransitioningManager *animatedTransitioningManager;
+    YBImageBrowerInteractiveTransition *interactiveTransition;
 }
 
 @property (nonatomic, strong) YBImageBrowserView *browserView;
@@ -32,9 +32,15 @@
 
 @implementation YBImageBrowser
 
+@synthesize so_screenOrientation = _so_screenOrientation;
+@synthesize so_frameOfVertical = _so_frameOfVertical;
+@synthesize so_frameOfHorizontal = _so_frameOfHorizontal;
+@synthesize so_isUpdateUICompletely = _so_isUpdateUICompletely;
+
 #pragma mark life cycle
 
 - (void)dealloc {
+    YBLOG(@"%@, dealloc", self.class);
     pthread_mutex_destroy(&lock);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -43,6 +49,8 @@
     self = [super init];
     if (self) {
         self.automaticallyAdjustsScrollViewInsets = NO;
+        self.modalPresentationStyle = UIModalPresentationCustom;
+        self.transitioningDelegate = self;
         [self initData];
         [self addNotification];
     }
@@ -51,21 +59,22 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self configSupportAutorotateTypes];
+    self.view.backgroundColor = [UIColor blackColor];
     [self.view addSubview:self.browserView];
     [self.view addSubview:self.toolBar];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     //此刻 statusBar 的方向才是当前控制器设定的方向
-    if (!isDealViewWillAppear) {
-        [self.browserView resetUserInterfaceLayout];
-        [self.toolBar resetUserInterfaceLayout];
+    if (!isDealViewDidAppear) {
+        [self setInfoToBrowerView];
+        [self so_setFrameInfoWithSuperViewScreenOrientation:YBImageBrowserScreenOrientationVertical superViewSize:CGSizeMake(YB_SCREEN_WIDTH, YB_SCREEN_HEIGHT)];
+        [self so_updateFrameWithScreenOrientation:[self getScreenOrientationByStatusBar]];
         [self.browserView scrollToPageWithIndex:self.currentIndex animated:NO];
-        [self configFrameForStatusBarOrientation];
         [self addDeviceOrientationNotification];
-        isDealViewWillAppear = YES;
+        isDealViewDidAppear = YES;
+        [self configSupportAutorotateTypes];
     }
 }
 
@@ -77,13 +86,35 @@
 
 //初始化数据
 - (void)initData {
-    isDealViewWillAppear = NO;
+    animatedTransitioningManager = [YBImageBrowserAnimatedTransitioningManager new];
+    interactiveTransition = [YBImageBrowerInteractiveTransition new];
+    isDealViewDidAppear = NO;
     _showStatusBar = NO;
     pthread_mutex_init(&lock, NULL);
     window = [YBImageBrowserUtilities getNormalWindow];
     self.verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     self.horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     self.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum]];
+}
+
+//browerview 赋值
+- (void)setInfoToBrowerView {
+    self.browserView.loadFailedText = self.copywriter.loadFailedText;
+    self.browserView.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
+    self.browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
+    self.browserView.dataArray = self.dataArray;
+}
+
+//获取屏幕展示的方向
+- (YBImageBrowserScreenOrientation)getScreenOrientationByStatusBar {
+    UIInterfaceOrientation obr = [UIApplication sharedApplication].statusBarOrientation;
+    if ((obr == UIInterfaceOrientationPortrait) || (obr == UIInterfaceOrientationPortraitUpsideDown)) {
+        return YBImageBrowserScreenOrientationVertical;
+    } else if ((obr == UIInterfaceOrientationLandscapeLeft) || (obr == UIInterfaceOrientationLandscapeRight)) {
+        return YBImageBrowserScreenOrientationHorizontal;
+    } else {
+        return YBImageBrowserScreenOrientationUnknown;
+    }
 }
 
 //找到 keywidow 和当前 Controller 支持屏幕旋转方向的交集
@@ -94,44 +125,28 @@
     supportAutorotateTypes = keyWindowSupport & selfSupport;
 }
 
-//根据当前 statusBar 的方向，配置 statusBar 在不同方向下 self 的 frame
-- (void)configFrameForStatusBarOrientation {
-    CGRect frame = window.bounds;
-    UIInterfaceOrientation statusBarOrientation = YB_STATUSBAR_ORIENTATION;
-    if (statusBarOrientation == UIInterfaceOrientationPortrait || statusBarOrientation == UIInterfaceOrientationPortraitUpsideDown) {
-        frameOfSelfForOrientationPortrait = frame;
-        frameOfSelfForOrientationPortraitUpsideDown = frame;
-        frameOfSelfForOrientationLandscapeLeft = CGRectMake(frame.origin.y, frame.origin.x, frame.size.height, frame.size.width);
-        frameOfSelfForOrientationLandscapeRight = frameOfSelfForOrientationLandscapeLeft;
-    } else if(statusBarOrientation == UIInterfaceOrientationLandscapeLeft || statusBarOrientation == UIInterfaceOrientationLandscapeRight) {
-        frameOfSelfForOrientationPortrait = CGRectMake(frame.origin.y, frame.origin.x, frame.size.height, frame.size.width);
-        frameOfSelfForOrientationPortraitUpsideDown = frameOfSelfForOrientationPortrait;
-        frameOfSelfForOrientationLandscapeLeft = frame;
-        frameOfSelfForOrientationLandscapeRight = frame;
-    }
-}
-
 //根据 device 方向改变 UI
 - (void)resetUserInterfaceLayoutByDeviceOrientation {
-    CGRect *tagetRect = NULL;
+    YBImageBrowserScreenOrientation so;
     UIDeviceOrientation deviceOrientation = [UIDevice currentDevice].orientation;
-    if (deviceOrientation == UIDeviceOrientationPortrait && (supportAutorotateTypes & UIInterfaceOrientationMaskPortrait)) {
-        tagetRect = &frameOfSelfForOrientationPortrait;
-    } else if(deviceOrientation == UIDeviceOrientationLandscapeRight && (supportAutorotateTypes & UIInterfaceOrientationMaskLandscapeLeft)) {
-        tagetRect = &frameOfSelfForOrientationLandscapeLeft;
-    } else if (deviceOrientation == UIDeviceOrientationLandscapeLeft && (supportAutorotateTypes & UIInterfaceOrientationMaskLandscapeRight)) {
-        tagetRect = &frameOfSelfForOrientationLandscapeRight;
-    } else if (deviceOrientation == UIInterfaceOrientationPortraitUpsideDown && (supportAutorotateTypes & UIInterfaceOrientationMaskPortraitUpsideDown)) {
-        tagetRect = &frameOfSelfForOrientationPortraitUpsideDown;
+    BOOL isVertical = (deviceOrientation == UIDeviceOrientationPortrait && (supportAutorotateTypes & UIInterfaceOrientationMaskPortrait)) || (deviceOrientation == UIInterfaceOrientationPortraitUpsideDown && (supportAutorotateTypes & UIInterfaceOrientationMaskPortraitUpsideDown));
+    BOOL isHorizontal = (deviceOrientation == UIDeviceOrientationLandscapeRight && (supportAutorotateTypes & UIInterfaceOrientationMaskLandscapeLeft)) || (deviceOrientation == UIDeviceOrientationLandscapeLeft && (supportAutorotateTypes & UIInterfaceOrientationMaskLandscapeRight));
+    if (isVertical) {
+        so = YBImageBrowserScreenOrientationVertical;
+    } else if(isHorizontal) {
+        so = YBImageBrowserScreenOrientationHorizontal;
     } else {
         return;
     }
-    self.view.frame = *tagetRect;
-    [self.browserView resetUserInterfaceLayout];
-    [self.toolBar resetUserInterfaceLayout];
+    
+    //隐藏额外功能栏、隐藏提示框
     if (_functionBar && _functionBar.superview) {
         [_functionBar hideWithAnimate:NO];
     }
+    [self.view yb_hidePromptImmediately];
+    
+    //更新UI
+    [self so_updateFrameWithScreenOrientation:so];
 }
 
 #pragma mark public
@@ -141,11 +156,12 @@
         YBLOG_WARNING(@"dataArray is invalid")
         return;
     }
-    [[YBImageBrowserUtilities getTopController] presentViewController:self animated:NO completion:nil];
+    UIViewController *fromVC = [YBImageBrowserUtilities getTopController];
+    [fromVC presentViewController:self animated:YES completion:nil];
 }
 
 - (void)hide {
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark notification
@@ -158,6 +174,34 @@
     [self hide];
 }
 
+#pragma mark YBImageBrowserScreenOrientationProtocol
+
+- (void)so_setFrameInfoWithSuperViewScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation superViewSize:(CGSize)size {
+    
+    BOOL isVertical = screenOrientation == YBImageBrowserScreenOrientationVertical;
+    CGRect rect0 = CGRectMake(0, 0, size.width, size.height), rect1 = CGRectMake(0, 0, size.height, size.width);
+    _so_frameOfVertical = isVertical ? rect0 : rect1;
+    _so_frameOfHorizontal = !isVertical ? rect0 : rect1;
+    
+    [self.browserView so_setFrameInfoWithSuperViewScreenOrientation:YBImageBrowserScreenOrientationVertical superViewSize:_so_frameOfVertical.size];
+    [self.toolBar so_setFrameInfoWithSuperViewScreenOrientation:YBImageBrowserScreenOrientationVertical superViewSize:_so_frameOfVertical.size];
+}
+
+- (void)so_updateFrameWithScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation {
+    if (screenOrientation == _so_screenOrientation) return;
+    
+    _so_isUpdateUICompletely = NO;
+    
+    self.view.frame = screenOrientation == YBImageBrowserScreenOrientationVertical ? _so_frameOfVertical : _so_frameOfHorizontal;
+    
+    _so_screenOrientation = screenOrientation;
+    
+    [self.browserView so_updateFrameWithScreenOrientation:screenOrientation];
+    [self.toolBar so_updateFrameWithScreenOrientation:screenOrientation];
+    
+    _so_isUpdateUICompletely = YES;
+}
+
 #pragma mark YBImageBrowserViewDelegate
 
 - (void)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView didScrollToIndex:(NSUInteger)index {
@@ -168,7 +212,7 @@
     if (self.fuctionDataArray.count > 1) {
         //弹出额外操作栏
         if (_functionBar) {
-            [_functionBar showToView:self.view];
+            [_functionBar show];
         }
     }
 }
@@ -183,7 +227,7 @@
     } else {
         //弹出额外操作栏
         if (_functionBar) {
-            [_functionBar showToView:self.view];
+            [_functionBar show];
         }
     }
 }
@@ -199,11 +243,29 @@
     }
 }
 
+#pragma mark UIViewControllerTransitioningDelegate
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source {
+    animatedTransitioningManager.currentModel = self.dataArray[self.currentIndex];
+    animatedTransitioningManager.imageBrowser = self;
+    return animatedTransitioningManager;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
+    animatedTransitioningManager.currentModel = self.dataArray[self.browserView.currentIndex];
+    animatedTransitioningManager.imageBrowser = self;
+    return animatedTransitioningManager;
+}
+
+//- (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator {
+//    return interactiveTransition;
+//}
+
 #pragma mark setter
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex {
     _currentIndex = currentIndex;
-    if (_browserView) {
+    if (isDealViewDidAppear && _browserView) {
         [_browserView scrollToPageWithIndex:self.currentIndex animated:NO];
     }
 }
@@ -255,9 +317,6 @@
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         _browserView = [[YBImageBrowserView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
         _browserView.yb_delegate = self;
-        _browserView.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
-        _browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
-        _browserView.dataArray = self.dataArray;
     }
     return _browserView;
 }
@@ -341,7 +400,7 @@
         if (!preview) {
             [self savePhotoToAlbumWithModel:model.previewModel preview:YES];
         } else {
-            [self.view showForkWithText:self.copywriter.noImageDataToSave];
+            [self.view yb_showForkPromptWithText:self.copywriter.noImageDataToSave];
         }
     }
 }
@@ -349,7 +408,7 @@
 - (void)judgeAlbumAuthorizationStatusSuccess:(void(^)(void))success {
     PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
     if (status == PHAuthorizationStatusDenied) {
-        [self.view showForkWithText:self.copywriter.albumAuthorizationDenied];
+        [self.view yb_showForkPromptWithText:self.copywriter.albumAuthorizationDenied];
     } else if(status == PHAuthorizationStatusNotDetermined){
         [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status){
             if (status == PHAuthorizationStatusAuthorized) {
@@ -367,9 +426,9 @@
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library writeImageDataToSavedPhotosAlbum:data metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
         if (!error) {
-            [self.view showHookWithText:self.copywriter.saveImageDataToAlbumSuccessful];
+            [self.view yb_showHookPromptWithText:self.copywriter.saveImageDataToAlbumSuccessful];
         } else {
-            [self.view showHookWithText:self.copywriter.saveImageDataToAlbumFailed];
+            [self.view yb_showForkPromptWithText:self.copywriter.saveImageDataToAlbumFailed];
         }
     }];
 }
@@ -380,9 +439,9 @@
 
 - (void)completedWithImage:(UIImage *)image error:(NSError *)error context:(void *)context {
     if (!error) {
-        [self.view showHookWithText:self.copywriter.saveImageDataToAlbumSuccessful];
+        [self.view yb_showHookPromptWithText:self.copywriter.saveImageDataToAlbumSuccessful];
     } else {
-        [self.view showHookWithText:self.copywriter.saveImageDataToAlbumFailed];
+        [self.view yb_showForkPromptWithText:self.copywriter.saveImageDataToAlbumFailed];
     }
 }
 

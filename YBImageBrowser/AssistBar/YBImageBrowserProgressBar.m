@@ -33,7 +33,6 @@
         radius = 17;
         strokeWidth = 3;
         textAttributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:10], NSForegroundColorAttributeName:[UIColor whiteColor]};
-        loadFailedAttr = [[NSMutableAttributedString alloc] initWithString:@"图片加载失败了" attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:13], NSForegroundColorAttributeName:[UIColor whiteColor]}];
         isLoadFailed = NO;
     }
     return self;
@@ -41,8 +40,9 @@
 
 #pragma mark public
 
-- (void)showLoadFailedGraphics {
+- (void)showLoadFailedGraphicsWithText:(NSString *)text {
     isLoadFailed = YES;
+    loadFailedAttr = [[NSMutableAttributedString alloc] initWithString:text?:@"图片加载失败了" attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSForegroundColorAttributeName:[UIColor whiteColor]}];
     [self setNeedsDisplay];
 }
 
