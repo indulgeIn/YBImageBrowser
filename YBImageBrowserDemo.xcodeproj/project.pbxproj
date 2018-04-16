@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m */; };
 		23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */; };
-		2360ADE92083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */; };
 		2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2394EBAC207FB4340084D297 /* YBImageBrowser.m */; };
 		239822062081BBBA00086EEF /* ybImageBrowser_save.png in Resources */ = {isa = PBXBuildFile; fileRef = 239822052081BBBA00086EEF /* ybImageBrowser_save.png */; };
 		239822092081D32D00086EEF /* YBImageBrowserPromptBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */; };
@@ -38,8 +37,6 @@
 		23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserModel.h; sourceTree = "<group>"; };
 		23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserModel.m; sourceTree = "<group>"; };
 		2360ADE620833E13002DF7E1 /* YBImageBrowserScreenOrientationProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserScreenOrientationProtocol.h; sourceTree = "<group>"; };
-		2360ADE72083956A002DF7E1 /* YBImageBrowerInteractiveTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowerInteractiveTransition.h; sourceTree = "<group>"; };
-		2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowerInteractiveTransition.m; sourceTree = "<group>"; };
 		2394EBAB207FB4340084D297 /* YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowser.h; sourceTree = "<group>"; };
 		2394EBAC207FB4340084D297 /* YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowser.m; sourceTree = "<group>"; wrapsLines = 1; };
 		239822052081BBBA00086EEF /* ybImageBrowser_save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ybImageBrowser_save.png; sourceTree = "<group>"; };
@@ -95,8 +92,6 @@
 			children = (
 				233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.h */,
 				233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m */,
-				2360ADE72083956A002DF7E1 /* YBImageBrowerInteractiveTransition.h */,
-				2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */,
 			);
 			path = Transition;
 			sourceTree = "<group>";
@@ -375,7 +370,6 @@
 				2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */,
 				706BF14E207CAAB30034663E /* main.m in Sources */,
 				23982216208212DA00086EEF /* YBImageBrowserCopywriter.m in Sources */,
-				2360ADE92083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m in Sources */,
 				706BF140207CAAB30034663E /* AppDelegate.m in Sources */,
 				23E434032080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m in Sources */,
 				706BF15D207CB7060034663E /* YBImageBrowserCell.m in Sources */,
@@ -524,7 +518,7 @@
 				INFOPLIST_FILE = YBImageBrowserDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowserDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowserDemo1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -542,7 +536,7 @@
 				INFOPLIST_FILE = YBImageBrowserDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowserDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowserDemo1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

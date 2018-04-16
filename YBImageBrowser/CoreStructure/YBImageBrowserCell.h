@@ -14,7 +14,7 @@
 
 @protocol YBImageBrowserCellDelegate <NSObject>
 
-- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture;
+- (void)yBImageBrowserCell:(YBImageBrowserCell *)imageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture;
 
 @end
 

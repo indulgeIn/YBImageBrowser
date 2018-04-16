@@ -52,10 +52,13 @@
 - (void)addGesture {
     UITapGestureRecognizer *tapSingle = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapSingle:)];
     tapSingle.numberOfTapsRequired = 1;
+    tapSingle.cancelsTouchesInView = NO;
     UITapGestureRecognizer *tapDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapDouble:)];
     tapDouble.numberOfTapsRequired = 2;
+    tapDouble.cancelsTouchesInView = NO;
     [tapSingle requireGestureRecognizerToFail:tapDouble];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToLongPress:)];
+    longPress.cancelsTouchesInView = NO;
     [self.scrollView addGestureRecognizer:tapSingle];
     [self.scrollView addGestureRecognizer:tapDouble];
     [self.scrollView addGestureRecognizer:longPress];
@@ -128,12 +131,27 @@
     } else if (model.url) {
         
         //读取缓存
-        UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:model.url.absoluteString];
-        if (cacheImage) {
-            model.image = cacheImage;
-            [self loadImageWithModel:model isPreview:NO];
+        BOOL imageDataExists = [[SDImageCache sharedImageCache] diskImageDataExistsWithKey:model.url.absoluteString];
+        if (imageDataExists) {
+            [[SDImageCache sharedImageCache] queryCacheOperationForKey:model.url.absoluteString options:SDImageCacheQueryDiskSync|SDImageCacheQueryDataWhenInMemory done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
+                if ([YBImageBrowserUtilities isGif:data]) {
+                    if (data) {
+                        model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
+                        if (self.model == model) {
+                            [self loadImageWithModel:model isPreview:NO];
+                        }
+                    }
+                } else {
+                    if (image) {
+                        model.image = image;
+                        if (self.model == model) {
+                            [self loadImageWithModel:model isPreview:NO];
+                        }
+                    }
+                }
+            }];
             return;
-        }        
+        }
         
         //若该缩略图无缓存，放弃下载逻辑以节约资源
         if (isPreview) return;
@@ -149,6 +167,8 @@
 }
 
 - (void)downLoadImageWithModel:(YBImageBrowserModel *)model {
+    
+    [self showProgressBar];
     
     YBImageBrowserDownloadProgressBlock progressBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         //下载中，进度显示
@@ -182,7 +202,7 @@
 
 - (void)countLayoutWithImage:(id)image {
     [self.class countWithContainerSize:self.scrollView.bounds.size image:image screenOrientation:_so_screenOrientation verticalFillType:self.verticalScreenImageViewFillType horizontalFillType:self.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
-        self.scrollView.contentSize = contentSize;
+        self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height);
         self.scrollView.minimumZoomScale = minimumZoomScale;
         self.imageView.frame = imageFrame;
     }];
@@ -242,8 +262,6 @@
     if (completed) completed(CGRectMake(x, y, width, height), contentSize, minimumZoomScale);
 }
 
-
-
 #pragma mark UIScrollViewDelegate
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
@@ -266,6 +284,23 @@
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
     return self.imageView;
+}
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    
+    UIPanGestureRecognizer *pan = scrollView.panGestureRecognizer;
+    CGFloat height = self.bounds.size.height;
+    CGFloat width = self.bounds.size.width;
+    CGPoint point = [pan locationInView:self];
+
+    if (pan.state == UIGestureRecognizerStateBegan) {
+        
+    } else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible) {
+        
+    } else if (pan.state == UIGestureRecognizerStateChanged) {
+//        self.superview.layer.transform = CATransform3DMakeTranslation(point.x - width/2.0, point.y - height/2.0, 1);
+    }
 }
 
 #pragma mark YBImageBrowserScreenOrientationProtocol
@@ -316,6 +351,8 @@
         _scrollView.maximumZoomScale = 5;
         _scrollView.minimumZoomScale = 1;
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width, _scrollView.bounds.size.height);
+        _scrollView.alwaysBounceHorizontal = NO;
+        _scrollView.alwaysBounceVertical = YES;
         if (@available(iOS 11.0, *)) {
             _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }

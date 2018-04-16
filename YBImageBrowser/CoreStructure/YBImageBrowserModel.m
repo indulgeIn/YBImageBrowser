@@ -56,13 +56,13 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
     successBlock = success;
     failedBlock = failed;
     
-    if (isLoading) return;      //仍然处理回调转接（主要是预下载与正式下载可能会同时请求）
+    if (isLoading) return;      //仍然处理回调转接（预下载与正式下载可能会同时请求）
     
     isLoading = YES;
     
     SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:model.url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         
-        if (progress) progress(model, receivedSize, expectedSize, targetURL);
+        if (self->progressBlock) self->progressBlock(model, receivedSize, expectedSize, targetURL);
         
     } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
         
@@ -70,7 +70,7 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
         
         if (error) {
             isLoadFailed = YES;
-            if (failed) failed(model, error, finished);
+            if (self->failedBlock) self->failedBlock(model, error, finished);
             return;
         }
         
@@ -80,24 +80,13 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
         //缓存处理
         if ([YBImageBrowserUtilities isGif:data]) {
             model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-            
-            [[SDImageCache sharedImageCache] storeImage:image imageData:data forKey:model.url.absoluteString toDisk:YES completion:^{
-                
-                if ([[SDImageCache sharedImageCache] diskImageDataExistsWithKey:model.url.absoluteString]) {
-                    NSLog(@"YES");
-                }
-                
-                [[SDImageCache sharedImageCache] queryCacheOperationForKey:model.url.absoluteString options:SDImageCacheQueryDiskSync|SDImageCacheQueryDataWhenInMemory done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
-                    
-                }];
-            }];
-            
+            [[SDImageCache sharedImageCache] storeImage:image imageData:data forKey:model.url.absoluteString toDisk:YES completion:nil];
         } else {
             model.image = image;
-            [[SDImageCache sharedImageCache] storeImage:image forKey:model.url.absoluteString completion:nil];
+            [[SDImageCache sharedImageCache] storeImage:image imageData:nil forKey:model.url.absoluteString toDisk:YES completion:nil];
         }
         
-        if (success) success(model, image, data, finished);
+        if (self->successBlock) self->successBlock(model, image, data, finished);
     }];
     
     downloadToken = token;

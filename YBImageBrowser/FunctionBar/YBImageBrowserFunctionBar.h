@@ -58,5 +58,9 @@
  */
 @property (nonatomic, assign, readonly) BOOL isShow;
 
+/**
+ 取消按钮的文案
+ */
+@property (nonatomic, copy) NSString *cancelText;
 
 @end

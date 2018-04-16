@@ -30,6 +30,7 @@
         _maxScaleOfOperationBar = 0.7;
         _timeOfAnimation = 0.2;
         _isShow = NO;
+        _cancelText = @"取消";
         [self addSubview:self.tableView];
     }
     return self;
@@ -151,7 +152,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         label = [UILabel new];
         label.textColor = [UIColor darkTextColor];
-        label.font = [UIFont boldSystemFontOfSize:16];
+        label.font = [UIFont italicSystemFontOfSize:16];
         label.textAlignment = NSTextAlignmentCenter;
         label.tag = 1000;
         [cell.contentView addSubview:label];
@@ -166,7 +167,7 @@
     if (indexPath.section == 0) {
         label.text = self.dataArray[indexPath.row].name;
     } else {
-        label.text = @"取消";
+        label.text = _cancelText;
     }
     return cell;
 }

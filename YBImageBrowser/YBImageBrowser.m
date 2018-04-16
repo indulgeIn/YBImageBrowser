@@ -12,14 +12,13 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "YBImageBrowserPromptBar.h"
 #import "YBImageBrowserAnimatedTransitioning.h"
-#import "YBImageBrowerInteractiveTransition.h"
 
 @interface YBImageBrowser () <YBImageBrowserViewDelegate, YBImageBrowserViewDataSource, YBImageBrowserToolBarDelegate, YBImageBrowserFunctionBarDelegate, UIViewControllerTransitioningDelegate> {
     UIInterfaceOrientationMask supportAutorotateTypes;
     UIWindow *window;
     BOOL isDealViewDidAppear;
     YBImageBrowserAnimatedTransitioning *animatedTransitioningManager;
-    YBImageBrowerInteractiveTransition *interactiveTransition;
+    UIPercentDrivenInteractiveTransition *interactiveTransition;
 }
 
 @property (nonatomic, strong) YBImageBrowserView *browserView;
@@ -83,7 +82,7 @@
 //初始化数据
 - (void)initData {
     animatedTransitioningManager = [YBImageBrowserAnimatedTransitioning new];
-    interactiveTransition = [YBImageBrowerInteractiveTransition new];
+    interactiveTransition = [UIPercentDrivenInteractiveTransition new];
     isDealViewDidAppear = NO;
     _showStatusBar = NO;
     window = [YBImageBrowserUtilities getNormalWindow];
@@ -299,9 +298,9 @@
     return animatedTransitioningManager;
 }
 
-//- (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator {
-//    return interactiveTransition;
-//}
+- (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator {
+    return interactiveTransition;
+}
 
 #pragma mark setter
 

@@ -162,8 +162,7 @@ static int tagOfImageOfCell = 100;
         }
             break;
         case 3: {
-            imgView.image = nil;
-//            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[3]]];
+            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[3]]];
 //            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:dataArr[3]] options:0 progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
 //                imgView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
 //            }];

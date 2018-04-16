@@ -78,7 +78,7 @@
 
 #pragma mark YBImageBrowserCellDelegate
 
-- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture {
+- (void)yBImageBrowserCell:(YBImageBrowserCell *)imageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture {
     if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(yBImageBrowserView:longPressBegin:)]) {
         [_yb_delegate yBImageBrowserView:self longPressBegin:gesture];
     }
@@ -150,5 +150,6 @@
         [cell reDownloadImageUrl];
     }
 }
+
 
 @end
