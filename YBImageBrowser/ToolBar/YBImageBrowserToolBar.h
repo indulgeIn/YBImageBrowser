@@ -9,6 +9,8 @@
 #import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserScreenOrientationProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class YBImageBrowserToolBar;
 
 @protocol YBImageBrowserToolBarDelegate <NSObject>
@@ -27,7 +29,9 @@
 - (void)setTitleLabelWithCurrentIndex:(NSUInteger)index totalCount:(NSUInteger)totalCount;
 
 - (void)setRightButtonHide:(BOOL)hide;
-- (void)setRightButtonImage:(UIImage *)image;
-- (void)setRightButtonTitle:(NSString *)title;
+- (void)setRightButtonImage:(nullable UIImage *)image;
+- (void)setRightButtonTitle:(nullable NSString *)title;
 
 @end
+
+NS_ASSUME_NONNULL_END

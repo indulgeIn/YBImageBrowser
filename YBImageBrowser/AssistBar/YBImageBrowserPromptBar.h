@@ -8,11 +8,13 @@
 
 #import "YBImageBrowserUtilities.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class YBImageBrowserPromptBar;
 
 @interface UIView (YBImageBrowserPromptBar)
 
-@property (nonatomic, strong) YBImageBrowserPromptBar *ybImageBrowserPromptBar;
+@property (nonatomic, strong, readonly) YBImageBrowserPromptBar *ybImageBrowserPromptBar;
 
 /**
  显示勾勾的弹框
@@ -35,6 +37,7 @@
 
 @end
 
+
 typedef NS_ENUM(NSInteger, YBImageBrowserPromptBarType) {
     YBImageBrowserPromptBarTypeHook,
     YBImageBrowserPromptBarTypeFork
@@ -46,10 +49,12 @@ typedef NS_ENUM(NSInteger, YBImageBrowserPromptBarType) {
 
 @property (nonatomic, assign) YBImageBrowserPromptBarType barType;
 
-- (instancetype)initWithFrame:(CGRect)frame barType:(YBImageBrowserPromptBarType)barType;
+- (instancetype _Nullable)initWithFrame:(CGRect)frame barType:(YBImageBrowserPromptBarType)barType;
 
 - (void)drawView;
 
 - (void)resetUserInterfaceLayout_textLabel;
 
 @end
+
+NS_ASSUME_NONNULL_END

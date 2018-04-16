@@ -9,6 +9,7 @@
 #import "YBImageBrowserCell.h"
 #import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserProgressBar.h"
+#import <objc/message.h>
 
 @interface YBImageBrowserCell () <UIScrollViewDelegate>
 
@@ -51,14 +52,10 @@
 - (void)addGesture {
     UITapGestureRecognizer *tapSingle = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapSingle:)];
     tapSingle.numberOfTapsRequired = 1;
-    
     UITapGestureRecognizer *tapDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapDouble:)];
     tapDouble.numberOfTapsRequired = 2;
-    
     [tapSingle requireGestureRecognizerToFail:tapDouble];
-    
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToLongPress:)];
-    
     [self.scrollView addGestureRecognizer:tapSingle];
     [self.scrollView addGestureRecognizer:tapDouble];
     [self.scrollView addGestureRecognizer:longPress];
@@ -93,9 +90,9 @@
 
 #pragma mark public
 
-- (void)reLoad {
-    if (![[self.model valueForKey:YBImageBrowser_KVCKey_isLoading] boolValue]) {
-        [self loadImageWithModel:self.model isPreview:NO];
+- (void)reDownloadImageUrl {
+    if ([[self.model valueForKey:YBImageBrowserModel_KVCKey_isLoadFailed] boolValue] && ![[self.model valueForKey:YBImageBrowserModel_KVCKey_isLoading] boolValue]) {
+        [self downLoadImageWithModel:self.model];
     }
 }
 
@@ -131,12 +128,12 @@
     } else if (model.url) {
         
         //读取缓存
-        UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:model.imageUrl];
+        UIImage *cacheImage = [[SDImageCache sharedImageCache] imageFromCacheForKey:model.url.absoluteString];
         if (cacheImage) {
             model.image = cacheImage;
             [self loadImageWithModel:model isPreview:NO];
             return;
-        }
+        }        
         
         //若该缩略图无缓存，放弃下载逻辑以节约资源
         if (isPreview) return;
@@ -147,62 +144,48 @@
         }
         
         //下载逻辑
-        [self downloadImageWithModel:model];
+        [self downLoadImageWithModel:model];
     }
 }
 
-- (void)downloadImageWithModel:(YBImageBrowserModel *)model {
+- (void)downLoadImageWithModel:(YBImageBrowserModel *)model {
     
-    NSURL *url = model.url;
-    
-    [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_isLoading];
-    
-    SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-        
-        if (self.model != model || expectedSize <= 0) return;
+    YBImageBrowserDownloadProgressBlock progressBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+        //下载中，进度显示
+        if (self.model != backModel || expectedSize <= 0) return;
         CGFloat progress = receivedSize * 1.0 / expectedSize;
         if (progress < 0) return;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
+        YB_MAINTHREAD_ASYNC(^{
             [self showProgressBar];
             self.progressBar.progress = progress;
-        });
-        
-    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-        
-        [model setValue:@(NO) forKey:YBImageBrowser_KVCKey_isLoading];
-        
-        //下载失败，展示错误 HUD
-        if (error) {
-            [model setValue:@(YES) forKey:YBImageBrowser_KVCKey_isLoadFailed];
-            if (self.model == model) {
-                [self showProgressBar];
-                [self.progressBar showLoadFailedGraphicsWithText:self.loadFailedText];
-            }
-            return;
-        }
-        [model setValue:@(NO) forKey:YBImageBrowser_KVCKey_isLoadFailed];
-        
-        //将下载完成的图片存入内存/磁盘
-        if ([YBImageBrowserUtilities isGif:data]) {
-            model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-        } else {
-            model.image = image;
-            [[SDImageCache sharedImageCache] storeImage:image forKey:model.imageUrl completion:nil];
-        }
-        
-        //移除 HUD 并且刷新图片
-        if (self.model == model) {
-            [self hideProgressBar];
-            [self loadImageWithModel:model isPreview:NO];
-        }
-        
-    }];
+        })
+    };
     
-    //将 token 给集合视图统一处理
-    if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowserCell:didAddDownLoaderTaskWithToken:)]) {
-        [_delegate yBImageBrowserCell:self didAddDownLoaderTaskWithToken:token];
-    }
+    YBImageBrowserDownloadSuccessBlock successBlock = ^(YBImageBrowserModel * _Nonnull backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished) {
+        //下载成功，移除 ProgressBar 并且刷新图片
+        if (self.model == backModel) {
+            [self hideProgressBar];
+            [self loadImageWithModel:backModel isPreview:NO];
+        }
+    };
+    
+    YBImageBrowserDownloadFailedBlock failedBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSError * _Nullable error, BOOL finished) {
+        //下载失败，更新 ProgressBar 为错误提示
+        if (self.model == backModel) {
+            [self showProgressBar];
+            [self.progressBar showLoadFailedGraphicsWithText:self.loadFailedText];
+        }
+    };
+    
+    ((void(*)(id, SEL, YBImageBrowserDownloadProgressBlock, YBImageBrowserDownloadSuccessBlock, YBImageBrowserDownloadFailedBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_download), progressBlock, successBlock, failedBlock);
+}
+
+- (void)countLayoutWithImage:(id)image {
+    [self.class countWithContainerSize:self.scrollView.bounds.size image:image screenOrientation:_so_screenOrientation verticalFillType:self.verticalScreenImageViewFillType horizontalFillType:self.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
+        self.scrollView.contentSize = contentSize;
+        self.scrollView.minimumZoomScale = minimumZoomScale;
+        self.imageView.frame = imageFrame;
+    }];
 }
 
 + (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale))completed {
@@ -259,23 +242,15 @@
     if (completed) completed(CGRectMake(x, y, width, height), contentSize, minimumZoomScale);
 }
 
-- (void)countLayoutWithImage:(id)image {
-    [self.class countWithContainerSize:self.scrollView.bounds.size image:image screenOrientation:_so_screenOrientation verticalFillType:self.verticalScreenImageViewFillType horizontalFillType:self.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
-        self.scrollView.contentSize = contentSize;
-        self.scrollView.minimumZoomScale = minimumZoomScale;
-        self.imageView.frame = imageFrame;
-    }];
-}
+
 
 #pragma mark UIScrollViewDelegate
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
-
     CGRect imageViewFrame = self.imageView.frame;
     CGFloat width = imageViewFrame.size.width, height = imageViewFrame.size.height;
     CGFloat scrollViewHeight = scrollView.bounds.size.height;
     CGFloat scrollViewWidth = scrollView.bounds.size.width;
-    
     if (height > scrollViewHeight) {
         imageViewFrame.origin.y = 0;
     } else {
@@ -286,7 +261,6 @@
     } else {
         imageViewFrame.origin.x = (scrollViewWidth - width) / 2.0;
     }
-    
     self.imageView.frame = imageViewFrame;
 }
 

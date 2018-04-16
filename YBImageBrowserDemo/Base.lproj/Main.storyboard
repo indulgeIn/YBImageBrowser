@@ -21,18 +21,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TbJ-YP-aHa">
-                                <rect key="frame" x="162" y="308.5" width="50" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="6Cv-6c-3DB"/>
-                                    <constraint firstAttribute="height" constant="50" id="Z6T-qn-Baw"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="clickShowButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ytb-wp-Rne"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ITj-6Y-sRd">
-                                <rect key="frame" x="137" y="398.5" width="100" height="50"/>
+                                <rect key="frame" x="137" y="567" width="100" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="100" id="kVK-eS-xDj"/>
                                     <constraint firstAttribute="height" constant="50" id="nbR-Rg-my7"/>
@@ -45,10 +35,8 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="TbJ-YP-aHa" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="iDm-AO-y0O"/>
-                            <constraint firstItem="ITj-6Y-sRd" firstAttribute="centerX" secondItem="TbJ-YP-aHa" secondAttribute="centerX" id="mks-MO-70n"/>
-                            <constraint firstItem="ITj-6Y-sRd" firstAttribute="top" secondItem="TbJ-YP-aHa" secondAttribute="bottom" constant="40" id="otL-Pk-1D5"/>
-                            <constraint firstItem="TbJ-YP-aHa" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="y9B-xS-mLi"/>
+                            <constraint firstItem="CMh-GN-aYA" firstAttribute="top" secondItem="ITj-6Y-sRd" secondAttribute="bottom" constant="50" id="9OU-0v-5Nk"/>
+                            <constraint firstItem="ITj-6Y-sRd" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ZHZ-sa-7Wa"/>
                         </constraints>
                     </view>
                 </viewController>

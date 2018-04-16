@@ -14,8 +14,6 @@
 
 @protocol YBImageBrowserCellDelegate <NSObject>
 
-- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell didAddDownLoaderTaskWithToken:(SDWebImageDownloadToken *)token;
-
 - (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture;
 
 @end
@@ -33,7 +31,7 @@
 
 @property (nonatomic, strong, readonly) FLAnimatedImageView *imageView;
 
-- (void)reLoad;
+- (void)reDownloadImageUrl;
 
 + (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale))completed;
 

@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface YBImageBrowserCopywriter : NSObject
 
 //当前无图片数据可保存
@@ -26,3 +28,5 @@
 @property (nonatomic, copy) NSString *loadFailedText;
 
 @end
+
+NS_ASSUME_NONNULL_END

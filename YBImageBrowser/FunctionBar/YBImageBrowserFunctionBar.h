@@ -37,8 +37,7 @@
 @property (nonatomic, assign) CGFloat maxScaleOfOperationBar;
 
 /**
- 展示到view
- @param view 目标view
+ 展示
  */
 - (void)show;
 - (void)showToView:(UIView *)view;

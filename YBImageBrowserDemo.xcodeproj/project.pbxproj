@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m */; };
+		233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m */; };
 		23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */; };
 		2360ADE92083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */; };
 		2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2394EBAC207FB4340084D297 /* YBImageBrowser.m */; };
@@ -33,8 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserAnimatedTransitioningManager.h; sourceTree = "<group>"; };
-		233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserAnimatedTransitioningManager.m; sourceTree = "<group>"; };
+		233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserAnimatedTransitioning.h; sourceTree = "<group>"; };
+		233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserAnimatedTransitioning.m; sourceTree = "<group>"; };
 		23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserModel.h; sourceTree = "<group>"; };
 		23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserModel.m; sourceTree = "<group>"; };
 		2360ADE620833E13002DF7E1 /* YBImageBrowserScreenOrientationProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserScreenOrientationProtocol.h; sourceTree = "<group>"; };
@@ -90,15 +90,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		233852822082F8C200D7ADB8 /* TransitioningManager */ = {
+		233852822082F8C200D7ADB8 /* Transition */ = {
 			isa = PBXGroup;
 			children = (
-				233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.h */,
-				233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m */,
+				233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.h */,
+				233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m */,
 				2360ADE72083956A002DF7E1 /* YBImageBrowerInteractiveTransition.h */,
 				2360ADE82083956A002DF7E1 /* YBImageBrowerInteractiveTransition.m */,
 			);
-			path = TransitioningManager;
+			path = Transition;
 			sourceTree = "<group>";
 		};
 		2398220D20820D2900086EEF /* CoreStructure */ = {
@@ -214,13 +214,13 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				233852822082F8C200D7ADB8 /* TransitioningManager */,
+				23E433FE2080D5EA00C8DBFB /* File */,
+				2398221120820D2A00086EEF /* Utilities */,
 				2398220F20820D2900086EEF /* AssistBar */,
-				2398220D20820D2900086EEF /* CoreStructure */,
 				2398221020820D2A00086EEF /* FunctionBar */,
 				2398220E20820D2900086EEF /* ToolBar */,
-				2398221120820D2A00086EEF /* Utilities */,
-				23E433FE2080D5EA00C8DBFB /* File */,
+				233852822082F8C200D7ADB8 /* Transition */,
+				2398220D20820D2900086EEF /* CoreStructure */,
 				2394EBAB207FB4340084D297 /* YBImageBrowser.h */,
 				2394EBAC207FB4340084D297 /* YBImageBrowser.m */,
 			);
@@ -368,7 +368,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioningManager.m in Sources */,
+				233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m in Sources */,
 				706BF143207CAAB30034663E /* ViewController.m in Sources */,
 				706BF160207CB72F0034663E /* YBImageBrowserView.m in Sources */,
 				23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */,

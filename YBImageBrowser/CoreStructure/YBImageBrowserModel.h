@@ -8,8 +8,17 @@
 
 #import "YBImageBrowserUtilities.h"
 
-FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_isLoading;
-FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_isLoadFailed;
+NS_ASSUME_NONNULL_BEGIN
+
+@class YBImageBrowserModel;
+
+typedef void(^YBImageBrowserDownloadProgressBlock)(YBImageBrowserModel *backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL);
+typedef void(^YBImageBrowserDownloadSuccessBlock)(YBImageBrowserModel *backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished);
+typedef void(^YBImageBrowserDownloadFailedBlock)(YBImageBrowserModel *backModel, NSError * _Nullable error, BOOL finished);
+
+FOUNDATION_EXTERN NSString * const YBImageBrowserModel_KVCKey_isLoading;
+FOUNDATION_EXTERN NSString * const YBImageBrowserModel_KVCKey_isLoadFailed;
+FOUNDATION_EXTERN char * const YBImageBrowserModel_SELName_download;
 
 @interface YBImageBrowserModel : NSObject
 
@@ -17,36 +26,39 @@ FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_isLoadFailed;
  本地图片
  （若图片不在 Assets 中，尽量使用 setImageWithFileName:fileType: 以避免图片缓存过多导致内存飙升）
  */
-@property (nonatomic, copy) NSString *imageName;
-@property (nonatomic, strong) UIImage *image;
+@property (nonatomic, strong, nullable) UIImage *image;
 - (void)setImageWithFileName:(NSString *)fileName fileType:(NSString *)type;
 
 /**
  本地 gif 名字
  （请不要带后缀）
  */
-@property (nonatomic, copy) NSString *gifName;
+@property (nonatomic, copy, nullable) NSString *gifName;
 
 /**
  网络图片 url
+ （setUrlWithDownloadInAdvance: 设置 url 的时候异步预下载）
  */
-@property (nonatomic, copy) NSString *imageUrl;
-@property (nonatomic, strong) NSURL *url;
+@property (nonatomic, strong, nullable) NSURL *url;
+- (void)setUrlWithDownloadInAdvance:(NSURL *)url;
 
 /**
  本地或者网络 gif 最终转换类型
  */
-@property (nonatomic, strong) FLAnimatedImage *animatedImage;
+@property (nonatomic, strong, nullable) FLAnimatedImage *animatedImage;
 
 /**
  来源图片视图
  （用于做入场和出场动效）
  */
-@property (nonatomic, strong) UIImageView *sourceImageView;
+@property (nonatomic, strong, nullable) UIImageView *sourceImageView;
 
 /**
  预览缩略图
  */
-@property (nonatomic, strong) YBImageBrowserModel *previewModel;
+@property (nonatomic, strong, nullable) YBImageBrowserModel *previewModel;
+
 
 @end
+
+NS_ASSUME_NONNULL_END

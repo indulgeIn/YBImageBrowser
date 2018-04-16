@@ -20,11 +20,18 @@
 
 @end
 
+@protocol YBImageBrowserViewDataSource <NSObject>
+
+- (NSInteger)numberInYBImageBrowserView:(YBImageBrowserView *)imageBrowserView;
+
+- (YBImageBrowserModel *)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView modelForCellAtIndex:(NSInteger)index;
+
+@end
+
 @interface YBImageBrowserView : UICollectionView <YBImageBrowserScreenOrientationProtocol>
 
 @property (nonatomic, weak) id <YBImageBrowserViewDelegate> yb_delegate;
-
-@property (nonatomic, copy) NSArray<YBImageBrowserModel *> *dataArray;
+@property (nonatomic, weak) id <YBImageBrowserViewDataSource> yb_dataSource;
 
 @property (nonatomic, assign) NSUInteger currentIndex;
 

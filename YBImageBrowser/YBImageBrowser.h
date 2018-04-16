@@ -14,11 +14,37 @@
 #import "YBImageBrowserCopywriter.h"
 #import "YBImageBrowserScreenOrientationProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class YBImageBrowser;
 
+
 @protocol YBImageBrowserDelegate <NSObject>
+@optional
+
+//滚动时下标切换的实时回调
+- (void)yBImageBrowser:(YBImageBrowser *)imageBrowser didScrollToIndex:(NSInteger)index;
+
+//点击弹出功能栏的回调
+- (void)yBImageBrowser:(YBImageBrowser *)imageBrowser clickFunctionBarWithModel:(YBImageBrowserFunctionModel *)model;
 
 @end
+
+
+@protocol YBImageBrowserDataSource <NSObject>
+@required
+
+//返回点击的那个 UIImageView （用于做动效）
+- (UIImageView * _Nullable)imageViewOfTouchForImageBrowser:(YBImageBrowser *)imageBrowser;
+
+//返回数量
+- (NSInteger)numberInYBImageBrowser:(YBImageBrowser *)imageBrowser;
+
+//返回当前 index 的数据模型
+- (YBImageBrowserModel *)yBImageBrowser:(YBImageBrowser *)imageBrowser modelForCellAtIndex:(NSInteger)index;
+
+@end
+
 
 @interface YBImageBrowser : UIViewController <YBImageBrowserScreenOrientationProtocol>
 
@@ -29,9 +55,20 @@
 @property (nonatomic, copy) NSArray<YBImageBrowserModel *> *dataArray;
 
 /**
+ 数据源代理
+ （请在设置 dataArray 和实现 dataSource 代理中选其一，注意 dataArray 优先级高于代理）
+ */
+@property (nonatomic, weak) id <YBImageBrowserDataSource> dataSource;
+
+/**
  展示
  */
 - (void)show;
+
+/**
+ 当前下标
+ */
+@property (nonatomic, assign) NSUInteger currentIndex;
 
 /**
  隐藏
@@ -39,9 +76,9 @@
 - (void)hide;
 
 /**
- 当前下标
+ 代理回调
  */
-@property (nonatomic, assign) NSUInteger currentIndex;
+@property (nonatomic, weak) id <YBImageBrowserDelegate> delegate;
 
 /**
  支持旋转的方向
@@ -60,13 +97,13 @@
 @property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
 
 /**
- 额外操作弹出框的数据源
+ 弹出功能栏的数据源
  （默认有图片/gif保存功能）
  */
-@property (nonatomic, copy) NSArray<YBImageBrowserFunctionModel *> *fuctionDataArray;
+@property (nonatomic, copy, nullable) NSArray<YBImageBrowserFunctionModel *> *fuctionDataArray;
 
 /**
- 额外操作弹出框
+ 弹出功能栏
  */
 @property (nonatomic, strong, readonly) YBImageBrowserFunctionBar *functionBar;
 
@@ -87,3 +124,5 @@
 @property (nonatomic, strong) YBImageBrowserCopywriter *copywriter;
 
 @end
+
+NS_ASSUME_NONNULL_END

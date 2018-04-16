@@ -12,10 +12,8 @@
 #import "YBImageBrowser.h"
 #import "YBImageBrowserView.h"
 
-@interface YBImageBrowserAnimatedTransitioningManager : NSObject <UIViewControllerAnimatedTransitioning>
+@interface YBImageBrowserAnimatedTransitioning : NSObject <UIViewControllerAnimatedTransitioning>
 
-@property (nonatomic, strong) YBImageBrowserModel *currentModel;
-
-@property (nonatomic, weak) YBImageBrowser *imageBrowser;
+- (void)setInfoWithImageBrowser:(YBImageBrowser *)browser;
 
 @end

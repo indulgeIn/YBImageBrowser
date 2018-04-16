@@ -9,6 +9,7 @@
 #import "YBImageBrowserUtilities.h"
 
 NSString * const YBImageBrowser_notificationName_hideSelf = @"YBImageBrowser_notificationName_hideSelf";
+NSString * const YBImageBrowser_KVCKey_browserView = @"browserView";
 
 @implementation YBImageBrowserUtilities
 

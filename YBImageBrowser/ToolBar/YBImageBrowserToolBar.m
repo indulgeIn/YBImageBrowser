@@ -102,7 +102,7 @@
     gradient = [CAGradientLayer layer];
     gradient.startPoint = CGPointMake(0.5, 0);
     gradient.endPoint = CGPointMake(0.5, 0.9);
-    gradient.colors = @[(id)[UIColor colorWithRed:0  green:0  blue:0 alpha:0.5].CGColor, (id)[UIColor colorWithRed:0  green:0  blue:0 alpha:0].CGColor];
+    gradient.colors = @[(id)[UIColor colorWithRed:0  green:0  blue:0 alpha:0.3].CGColor, (id)[UIColor colorWithRed:0  green:0  blue:0 alpha:0].CGColor];
     gradient.frame = self.bounds;
     [self.layer addSublayer:gradient];
 }

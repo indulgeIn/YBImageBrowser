@@ -14,13 +14,29 @@
 
 #if DEBUG
 #define YBLOG(format, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:format, ##__VA_ARGS__] UTF8String]);
-#define YBLOG_WARNING(discribe) YBLOG(@"%@ ⚠️ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
-#define YBLOG_ERROR(discribe) YBLOG(@"%@ ❌ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
 #else
 #define YBLOG(format, ...) nil
 #endif
 
+#define YBLOG_WARNING(discribe) YBLOG(@"%@ ⚠️ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
+#define YBLOG_ERROR(discribe) YBLOG(@"%@ ❌ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
+
+#define YB_MAINTHREAD_SYNC(block)\
+if ([NSThread isMainThread]) {\
+block();\
+} else {\
+dispatch_sync(dispatch_get_main_queue(), block);\
+}
+#define YB_MAINTHREAD_ASYNC(block)\
+if ([NSThread isMainThread]) {\
+block();\
+} else {\
+dispatch_async(dispatch_get_main_queue(), block);\
+}
+
 #define YB_READIMAGE_FROMFILE(fileName, fileType) [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:fileName ofType:fileType]]
+
+#define YB_NORMALWINDOW [YBImageBrowserUtilities getNormalWindow]
 
 #define YB_STATUSBAR_ORIENTATION [UIApplication sharedApplication].statusBarOrientation
 #define YB_SCREEN_HEIGHT (((YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortrait) || (YB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortraitUpsideDown)) ? [UIScreen mainScreen].bounds.size.height : [UIScreen mainScreen].bounds.size.width)
@@ -33,6 +49,7 @@
 #define YB_HEIGHT_TOOLBAR (YB_HEIGHT_STATUSBAR + 44)
 
 FOUNDATION_EXTERN NSString * const YBImageBrowser_notificationName_hideSelf;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_browserView;
 
 typedef NS_ENUM(NSUInteger, YBImageBrowserImageViewFillType) {
     YBImageBrowserImageViewFillTypeFullWidth,   //宽度抵满屏幕宽度，高度不定

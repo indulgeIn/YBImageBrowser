@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface YBImageBrowserProgressBar : UIView
 
 //0.0 - 1.0
@@ -16,3 +18,5 @@
 - (void)showLoadFailedGraphicsWithText:(NSString *)text;
 
 @end
+
+NS_ASSUME_NONNULL_END

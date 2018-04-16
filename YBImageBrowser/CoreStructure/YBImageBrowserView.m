@@ -9,9 +9,7 @@
 #import "YBImageBrowserView.h"
 #import "YBImageBrowserCell.h"
 
-@interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate> {
-    NSPointerArray *downloaderTokens;
-}
+@interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate>
 @end
 
 @implementation YBImageBrowserView
@@ -23,14 +21,9 @@
 
 #pragma mark life cycle
 
-- (void)dealloc {
-    [self cancelAllDownloadTask];
-}
-
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
     self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
-        downloaderTokens = [NSPointerArray weakObjectsPointerArray];
         [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:@"YBImageBrowserCell"];
         self.collectionViewLayout = layout;
         self.pagingEnabled = YES;
@@ -50,31 +43,11 @@
 #pragma mark private
 
 - (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated {
-    if (index >= _dataArray.count) {
+    if (index >= [self collectionView:self numberOfItemsInSection:0]) {
         YBLOG_WARNING(@"index is invalid")
         return;
     }
     [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:animated];
-}
-
-- (void)cancelAllDownloadTask {
-    [downloaderTokens addPointer:NULL];
-    [downloaderTokens compact];
-    for (id token in downloaderTokens) {
-        [[SDWebImageDownloader sharedDownloader] cancel:token];
-    }
-}
-
-#pragma mark setter
-
-- (void)setDataArray:(NSArray<YBImageBrowserModel *> *)dataArray {
-    if (!dataArray || !dataArray.count) {
-        YBLOG_WARNING(@"dataArray is invalid")
-        return;
-    }
-    _dataArray = dataArray;
-    [self cancelAllDownloadTask];
-    [self reloadData];
 }
 
 #pragma mark YBImageBrowserScreenOrientationProtocol
@@ -105,12 +78,6 @@
 
 #pragma mark YBImageBrowserCellDelegate
 
-- (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell didAddDownLoaderTaskWithToken:(SDWebImageDownloadToken *)token {
-    [downloaderTokens addPointer:NULL];
-    [downloaderTokens compact];
-    [downloaderTokens addPointer:(__bridge void * _Nullable)(token)];
-}
-
 - (void)yBImageBrowserCell:(YBImageBrowserCell *)yBImageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture {
     if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(yBImageBrowserView:longPressBegin:)]) {
         [_yb_delegate yBImageBrowserView:self longPressBegin:gesture];
@@ -124,7 +91,10 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.dataArray.count;
+    if (_yb_dataSource && [_yb_dataSource respondsToSelector:@selector(numberInYBImageBrowserView:)]) {
+        return [_yb_dataSource numberInYBImageBrowserView:self];
+    }
+    return 0;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -134,7 +104,11 @@
     cell.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
     cell.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
     [cell so_updateFrameWithScreenOrientation:_so_screenOrientation];
-    cell.model = self.dataArray[indexPath.row];
+    if (_yb_dataSource && [_yb_dataSource respondsToSelector:@selector(yBImageBrowserView:modelForCellAtIndex:)]) {
+        cell.model = [_yb_dataSource yBImageBrowserView:self modelForCellAtIndex:indexPath.row];
+    } else {
+        cell.model = nil;
+    }
     return cell;
 }
 
@@ -158,10 +132,10 @@
 }
 
 #pragma mark UIScrollViewDelegate
-//  0.0-0.5 - 0   0.5-1.5 - 1   1.5-2.5 - 2  ......
+
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     NSUInteger index = (NSUInteger)((scrollView.contentOffset.x / scrollView.bounds.size.width) + 0.5);
-    if (index > self.dataArray.count) return;
+    if (index > [self collectionView:self numberOfItemsInSection:0]) return;
     if (self.currentIndex != index && _so_isUpdateUICompletely) {
         self.currentIndex = index;
         if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(yBImageBrowserView:didScrollToIndex:)]) {
@@ -173,9 +147,7 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     NSArray<YBImageBrowserCell *>* array = (NSArray<YBImageBrowserCell *>*)[self visibleCells];
     for (YBImageBrowserCell *cell in array) {
-        if ([[cell.model valueForKey:YBImageBrowser_KVCKey_isLoadFailed] boolValue]) {
-            [cell reLoad];
-        }
+        [cell reDownloadImageUrl];
     }
 }
 

@@ -27,7 +27,8 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
+        self.userInteractionEnabled = NO;
         bottomPathColor = [UIColor lightGrayColor];
         activePathColor = [UIColor whiteColor];
         radius = 17;
