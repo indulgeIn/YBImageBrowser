@@ -9,10 +9,13 @@
 #import "YBImageBrowserUtilities.h"
 
 NSString * const YBImageBrowser_KVCKey_browserView = @"browserView";
+NSString * const YBImageBrowser_notification_willToRespondsDeviceOrientation = @"YBImageBrowser_notification_willToRespondsDeviceOrientation";
 NSString * const YBImageBrowser_notification_changeAlpha = @"YBImageBrowser_notification_changeAlpha";
 NSString * const YBImageBrowser_notificationKey_changeAlpha = @"YBImageBrowser_notificationKey_changeAlpha";
 NSString * const YBImageBrowser_notification_hideBrowerView = @"YBImageBrowser_notification_hideBrowerView";
 NSString * const YBImageBrowser_notification_showBrowerView = @"YBImageBrowser_notification_showBrowerView";
+NSString * const YBImageBrowser_notification_willShowBrowerViewWithTimeInterval = @"YBImageBrowser_notification_willShowBrowerViewWithTimeInterval";
+NSString * const YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval = @"YBImageBrowser_notification_willShowBrowerViewWithTimeInterval";
 
 @implementation YBImageBrowserUtilities
 

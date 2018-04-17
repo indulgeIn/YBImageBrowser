@@ -84,6 +84,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(yBImageBrowser_notification_changeAlpha:) name:YBImageBrowser_notification_changeAlpha object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(yBImageBrowser_notification_showBrowerView) name:YBImageBrowser_notification_showBrowerView object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(yBImageBrowser_notification_hideBrowerView) name:YBImageBrowser_notification_hideBrowerView object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(yBImageBrowser_notification_willShowBrowerViewWithTimeInterval:) name:YBImageBrowser_notification_willShowBrowerViewWithTimeInterval object:nil];
+}
+
+- (void)yBImageBrowser_notification_willShowBrowerViewWithTimeInterval:(NSNotification *)noti {
+    CGFloat timeInterval = [noti.userInfo[YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval] floatValue];
+    [UIView animateWithDuration:timeInterval animations:^{
+        self.view.backgroundColor = [backgroundColor colorWithAlphaComponent:1];
+    }];
 }
 
 - (void)yBImageBrowser_notification_changeAlpha:(NSNotification *)noti {
@@ -97,13 +105,14 @@
 }
 
 - (void)yBImageBrowser_notification_hideBrowerView {
-    if (!self.browserView.isHidden) self.browserView.hidden = YES;
+    if (!self.browserView.isHidden)  self.browserView.hidden = YES;
 }
 
 #pragma mark private
 
 //初始化数据
 - (void)initData {
+    _cancelLongPressGesture = NO;
     backgroundColor = [UIColor blackColor];
     animatedTransitioningManager = [YBImageBrowserAnimatedTransitioning new];
     interactiveTransition = [UIPercentDrivenInteractiveTransition new];
@@ -157,6 +166,12 @@
     } else {
         return;
     }
+    
+    //发送将要转屏更新 UI 的广播
+    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_willToRespondsDeviceOrientation object:nil];
+    
+    //将正在执行的拖拽动画取消
+    [self yBImageBrowser_notification_showBrowerView];
     
     //隐藏弹出功能栏、隐藏提示框
     if (_functionBar && _functionBar.superview) {
@@ -250,6 +265,7 @@
 }
 
 - (void)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView longPressBegin:(UILongPressGestureRecognizer *)gesture {
+    if (_cancelLongPressGesture) return;
     if (self.fuctionDataArray.count > 1) {
         //弹出功能栏
         if (_functionBar) {

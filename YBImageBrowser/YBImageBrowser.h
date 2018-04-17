@@ -113,6 +113,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) YBImageBrowserToolBar *toolBar;
 
 /**
+ 取消长按手势的响应
+ */
+@property (nonatomic, assign) BOOL cancelLongPressGesture;
+
+/**
  显示状态栏
  */
 @property (nonatomic, assign) BOOL showStatusBar;

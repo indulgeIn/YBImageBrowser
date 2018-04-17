@@ -125,6 +125,7 @@ static int tagOfImageOfCell = 100;
 #pragma mark life cycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     dataArr = @[@"image0", @"gif0", @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523382489676&di=bcd55b2dd64141ced8c52b46309280da&imgtype=0&src=http%3A%2F%2Ff2.topitme.com%2F2%2Fb9%2F71%2F112660598401871b92l.jpg", @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523386869420&di=015d95da30b54296e10cb63ee740d8d9&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01c6e25889bd4ca8012060c80f8067.gif", @"imageLong"];
     [self.view addSubview:self.collectionView];
 }

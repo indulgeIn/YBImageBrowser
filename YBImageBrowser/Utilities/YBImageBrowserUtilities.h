@@ -47,10 +47,13 @@ dispatch_async(dispatch_get_main_queue(), block);\
 #define YB_HEIGHT_TOOLBAR (YB_HEIGHT_STATUSBAR + 44)
 
 FOUNDATION_EXTERN NSString * const YBImageBrowser_KVCKey_browserView;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_notification_willToRespondsDeviceOrientation;
 FOUNDATION_EXTERN NSString * const YBImageBrowser_notification_changeAlpha;
 FOUNDATION_EXTERN NSString * const YBImageBrowser_notificationKey_changeAlpha;
 FOUNDATION_EXTERN NSString * const YBImageBrowser_notification_hideBrowerView;
 FOUNDATION_EXTERN NSString * const YBImageBrowser_notification_showBrowerView;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_notification_willShowBrowerViewWithTimeInterval;
+FOUNDATION_EXTERN NSString * const YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval;
 
 typedef NS_ENUM(NSUInteger, YBImageBrowserImageViewFillType) {
     YBImageBrowserImageViewFillTypeFullWidth,   //宽度抵满屏幕宽度，高度不定

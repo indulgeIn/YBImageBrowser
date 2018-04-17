@@ -15,21 +15,32 @@
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     CGRect bounds = self.collectionView.bounds;
     self.itemSize = CGSizeMake(bounds.size.width, bounds.size.height);
-    self.minimumLineSpacing = 20;
+    self.minimumLineSpacing = 0;
     self.minimumInteritemSpacing = 0;
     self.sectionInset = UIEdgeInsetsZero;
 }
 
--(NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
-    NSArray<UICollectionViewLayoutAttributes *> *layoutAttsArray = [[super layoutAttributesForElementsInRect:rect] mutableCopy];
-    CGFloat centerX = self.collectionView.frame.size.width / 2 + self.collectionView.contentOffset.x;
-    [layoutAttsArray enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes  *_Nonnull atts, NSUInteger idx, BOOL * _Nonnull stop) {
-        atts.center = CGPointMake(atts.center.x + (atts.center.x - centerX), atts.center.y);
-    }];
-    return layoutAttsArray;
-}
+//- (NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
+//    NSArray<UICollectionViewLayoutAttributes *> *layoutAttsArray = [super layoutAttributesForElementsInRect:rect];
+//    CGFloat centerX = self.collectionView.frame.size.width / 2 + self.collectionView.contentOffset.x;
+//    
+//    __block CGFloat minDistance = CGFLOAT_MAX;
+//    __block NSIndexPath *indexPath;
+//    [layoutAttsArray enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes  *_Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        if (ABS(obj.center.x - centerX) < minDistance) {
+//            minDistance = ABS(obj.center.x - centerX);
+//            indexPath = obj.indexPath;
+//        }
+//    }];
+//    
+//    [layoutAttsArray enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//        obj.center = CGPointMake(obj.center.x - indexPath.row*self.minimumLineSpacing, obj.center.y);
+//    }];
+    
+//    return layoutAttsArray;
+//}
 
--(BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
+- (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
     return YES;
 }
 
