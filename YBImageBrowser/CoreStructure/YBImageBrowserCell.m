@@ -389,8 +389,6 @@
             if (scale > 1) scale = 1;
             if (scale < 0) scale = 0;
             
-//            YBLOG(@"totalOffsetX : %lf, totalOffsetY : %lf, offsetX : %lf, offsetY : %lf, scale : %lf", totalOffsetXOfAnimateImageView, totalOffsetYOfAnimateImageView, offsetX, offsetY, scale);
-            
             //执行变换
             CGPoint center = CGPointMake(self.animateImageView.center.x + offsetX, self.animateImageView.center.y + offsetY);
             CGFloat w = frameOfOriginalOfImageView.size.width * scale;
@@ -399,7 +397,6 @@
             self.animateImageView.center = center;
             
             [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_changeAlpha object:nil userInfo:@{YBImageBrowser_notificationKey_changeAlpha:@(scale)}];
-       
         }
     }
     

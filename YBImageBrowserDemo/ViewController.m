@@ -42,9 +42,6 @@ static int tagOfImageOfCell = 100;
     YBImageBrowserModel *model2 = [YBImageBrowserModel new];
     model2.url = [NSURL URLWithString:dataArr[2]];
     model2.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:2 inSection:0]];
-    YBImageBrowserModel *preview2 = [YBImageBrowserModel new];
-    preview2.image = [UIImage imageNamed:@"image2"];
-    model2.previewModel = preview2;
     
     YBImageBrowserModel *model3 = [YBImageBrowserModel new];
     model3.url = [NSURL URLWithString:dataArr[3]];
@@ -163,10 +160,10 @@ static int tagOfImageOfCell = 100;
         }
             break;
         case 3: {
-            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[3]]];
-//            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:dataArr[3]] options:0 progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-//                imgView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-//            }];
+//            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[3]]];
+            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:dataArr[3]] options:0 progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+                imgView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
+            }];
         }
             break;
         case 4: {
