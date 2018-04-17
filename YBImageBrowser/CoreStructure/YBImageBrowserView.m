@@ -8,6 +8,7 @@
 
 #import "YBImageBrowserView.h"
 #import "YBImageBrowserCell.h"
+#import "YBImageBrowserViewLayout.h"
 
 @interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate>
 @end
@@ -22,10 +23,10 @@
 #pragma mark life cycle
 
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
-    self = [super initWithFrame:frame collectionViewLayout:layout];
+    self = [super initWithFrame:frame collectionViewLayout:[YBImageBrowserViewLayout new]];
     if (self) {
+        self.backgroundColor = [UIColor clearColor];
         [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:@"YBImageBrowserCell"];
-        self.collectionViewLayout = layout;
         self.pagingEnabled = YES;
         self.showsHorizontalScrollIndicator = NO;
         self.showsVerticalScrollIndicator = NO;
@@ -84,6 +85,12 @@
     }
 }
 
+- (void)applyForHiddenByYBImageBrowserCell:(YBImageBrowserCell *)imageBrowserCell {
+    if (_yb_delegate && [_yb_delegate respondsToSelector:@selector(applyForHiddenByYBImageBrowserView:)]) {
+        [_yb_delegate applyForHiddenByYBImageBrowserView:self];
+    }
+}
+
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
@@ -110,25 +117,6 @@
         cell.model = nil;
     }
     return cell;
-}
-
-#pragma mark UICollectionViewDelegateFlowLayout
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGSize size = collectionView.bounds.size;
-    return CGSizeMake(size.width, size.height);
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section {
-    return 0;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section {
-    return 0;
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsZero;
 }
 
 #pragma mark UIScrollViewDelegate

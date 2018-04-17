@@ -160,12 +160,16 @@
 
 //从图片浏览器拿到当前显示的 model
 - (YBImageBrowserModel *)getCurrentModelFromBrowser:(YBImageBrowser *)browser {
-    return [self getCurrentCellFromBrowser:browser].model;
+    YBImageBrowserCell *cell = [self getCurrentCellFromBrowser:browser];
+    if (!cell) return nil;
+    return cell.model;
 }
 
-//从图片浏览器拿到当前显示的 imageView
+//从图片浏览器拿到当前显示的 imageView （若是手势动画请求的隐藏，应该做动画视图的效果）
 - (UIImageView *)getCurrentImageViewFromBrowser:(YBImageBrowser *)browser {
-    return [self getCurrentCellFromBrowser:browser].imageView;
+    YBImageBrowserCell *cell = [self getCurrentCellFromBrowser:browser];
+    if (!cell) return nil;
+    return cell.animateImageView.superview ? cell.animateImageView : cell.imageView;
 }
 
 //从图片浏览器拿到当前显示的 cell

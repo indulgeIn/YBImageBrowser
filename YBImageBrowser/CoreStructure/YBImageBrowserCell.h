@@ -16,6 +16,8 @@
 
 - (void)yBImageBrowserCell:(YBImageBrowserCell *)imageBrowserCell longPressBegin:(UILongPressGestureRecognizer *)gesture;
 
+- (void)applyForHiddenByYBImageBrowserCell:(YBImageBrowserCell *)imageBrowserCell;
+
 @end
 
 @interface YBImageBrowserCell : UICollectionViewCell <YBImageBrowserScreenOrientationProtocol>
@@ -30,6 +32,7 @@
 @property (nonatomic, strong) NSString *loadFailedText;
 
 @property (nonatomic, strong, readonly) FLAnimatedImageView *imageView;
+@property (nonatomic, strong, readonly) UIImageView *animateImageView;
 
 - (void)reDownloadImageUrl;
 

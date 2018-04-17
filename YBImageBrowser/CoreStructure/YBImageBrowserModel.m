@@ -7,6 +7,7 @@
 //
 
 #import "YBImageBrowserModel.h"
+#import "YBImageBrowserDownloader.h"
 
 NSString * const YBImageBrowserModel_KVCKey_isLoading = @"isLoading";
 NSString * const YBImageBrowserModel_KVCKey_isLoadFailed = @"isLoadFailed";
@@ -16,10 +17,10 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
     BOOL isLoading;
     BOOL isLoadFailed;
     BOOL isLoadSuccess;
-    __weak SDWebImageDownloadToken *downloadToken;
-    YBImageBrowserDownloadProgressBlock progressBlock;
-    YBImageBrowserDownloadSuccessBlock successBlock;
-    YBImageBrowserDownloadFailedBlock failedBlock;
+    __weak id downloadToken;
+    YBImageBrowserModelProgressBlock progressBlock;
+    YBImageBrowserModelSuccessBlock successBlock;
+    YBImageBrowserModelFailedBlock failedBlock;
 }
 
 @end
@@ -30,7 +31,7 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
 
 - (void)dealloc {
     if (downloadToken) {
-        [[SDWebImageDownloader sharedDownloader] cancel:downloadToken];
+        [YBImageBrowserDownloader cancelTaskWithDownloadToken:downloadToken];
     }
 }
 
@@ -46,7 +47,7 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
 
 #pragma mark download
 
-- (void)downloadImageProgress:(YBImageBrowserDownloadProgressBlock)progress success:(YBImageBrowserDownloadSuccessBlock)success failed:(YBImageBrowserDownloadFailedBlock)failed {
+- (void)downloadImageProgress:(YBImageBrowserModelProgressBlock)progress success:(YBImageBrowserModelSuccessBlock)success failed:(YBImageBrowserModelFailedBlock)failed {
     
     YBImageBrowserModel *model = self;
     
@@ -60,36 +61,34 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
     
     isLoading = YES;
     
-    SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:model.url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+    downloadToken = [YBImageBrowserDownloader downloadWebImageWithUrl:model.url progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         
         if (self->progressBlock) self->progressBlock(model, receivedSize, expectedSize, targetURL);
         
-    } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
+    } success:^(UIImage * _Nullable image, NSData * _Nullable data, BOOL finished) {
         
         isLoading = NO;
-        
-        if (error) {
-            isLoadFailed = YES;
-            if (self->failedBlock) self->failedBlock(model, error, finished);
-            return;
-        }
-        
         isLoadFailed = NO;
         isLoadSuccess = YES;
         
         //缓存处理
         if ([YBImageBrowserUtilities isGif:data]) {
             model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-            [[SDImageCache sharedImageCache] storeImage:image imageData:data forKey:model.url.absoluteString toDisk:YES completion:nil];
         } else {
             model.image = image;
-            [[SDImageCache sharedImageCache] storeImage:image imageData:nil forKey:model.url.absoluteString toDisk:YES completion:nil];
         }
+        [YBImageBrowserDownloader storeImageDataWithKey:model.url.absoluteString image:image data:data];
         
         if (self->successBlock) self->successBlock(model, image, data, finished);
+        
+    } failed:^(NSError * _Nullable error, BOOL finished) {
+        
+        isLoading = NO;
+        isLoadFailed = YES;
+        if (self->failedBlock) self->failedBlock(model, error, finished);
+        
     }];
     
-    downloadToken = token;
 }
 
 

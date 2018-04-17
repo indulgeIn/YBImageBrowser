@@ -19,6 +19,7 @@
     BOOL isDealViewDidAppear;
     YBImageBrowserAnimatedTransitioning *animatedTransitioningManager;
     UIPercentDrivenInteractiveTransition *interactiveTransition;
+    UIColor *backgroundColor;
 }
 
 @property (nonatomic, strong) YBImageBrowserView *browserView;
@@ -48,16 +49,14 @@
         self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
         [self initData];
-        [self addNotification];
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor blackColor];
-    [self.view addSubview:self.browserView];
-    [self.view addSubview:self.toolBar];
+    self.view.backgroundColor = backgroundColor;
+    [self addNotification];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -66,6 +65,8 @@
         [self setConfigInfoToChildModules];
         [self so_setFrameInfoWithSuperViewScreenOrientation:YBImageBrowserScreenOrientationVertical superViewSize:CGSizeMake(YB_SCREEN_WIDTH, YB_SCREEN_HEIGHT)];
         [self so_updateFrameWithScreenOrientation:[self getScreenOrientationByStatusBar]];
+        [self.view addSubview:self.browserView];
+        [self.view addSubview:self.toolBar];
         [self.browserView scrollToPageWithIndex:self.currentIndex animated:NO];
         [self addDeviceOrientationNotification];
         isDealViewDidAppear = YES;
@@ -77,10 +78,33 @@
     return !self.showStatusBar;
 }
 
+#pragma mark notification
+
+- (void)addNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(yBImageBrowser_notification_changeAlpha:) name:YBImageBrowser_notification_changeAlpha object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(yBImageBrowser_notification_showBrowerView) name:YBImageBrowser_notification_showBrowerView object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(yBImageBrowser_notification_hideBrowerView) name:YBImageBrowser_notification_hideBrowerView object:nil];
+}
+
+- (void)yBImageBrowser_notification_changeAlpha:(NSNotification *)noti {
+    CGFloat scale = [noti.userInfo[YBImageBrowser_notificationKey_changeAlpha] floatValue];
+    self.view.backgroundColor = [backgroundColor colorWithAlphaComponent:scale];
+}
+
+- (void)yBImageBrowser_notification_showBrowerView {
+    self.view.backgroundColor = [backgroundColor colorWithAlphaComponent:1];
+    if (self.browserView.isHidden) self.browserView.hidden = NO;
+}
+
+- (void)yBImageBrowser_notification_hideBrowerView {
+    if (!self.browserView.isHidden) self.browserView.hidden = YES;
+}
+
 #pragma mark private
 
 //初始化数据
 - (void)initData {
+    backgroundColor = [UIColor blackColor];
     animatedTransitioningManager = [YBImageBrowserAnimatedTransitioning new];
     interactiveTransition = [UIPercentDrivenInteractiveTransition new];
     isDealViewDidAppear = NO;
@@ -154,6 +178,14 @@
     [self.toolBar setTitleLabelWithCurrentIndex:index totalCount:totalCount];
 }
 
+- (void)setTooBarHideWithDataSourceCount:(NSInteger)count {
+    if (count <= 1) {
+        if(!self.toolBar.isHidden) self.toolBar.hidden = YES;
+    } else {
+        if (self.toolBar.isHidden) self.toolBar.hidden = NO;
+    }
+}
+
 #pragma mark public
 
 - (void)show {
@@ -177,16 +209,6 @@
 
 - (void)hide {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark notification
-
-- (void)addNotification {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(notice_hide) name:YBImageBrowser_notificationName_hideSelf object:nil];
-}
-
-- (void)notice_hide {
-    [self hide];
 }
 
 #pragma mark YBImageBrowserScreenOrientationProtocol
@@ -236,13 +258,21 @@
     }
 }
 
+- (void)applyForHiddenByYBImageBrowserView:(YBImageBrowserView *)imageBrowserView {
+    [self hide];
+}
+
 #pragma mark YBImageBrowserViewDataSource
 
 - (NSInteger)numberInYBImageBrowserView:(YBImageBrowserView *)imageBrowserView {
     if (self.dataArray) {
-        return self.dataArray.count;
+        NSUInteger count = self.dataArray.count;
+        [self setTooBarHideWithDataSourceCount:count];
+        return count;
     } else if (_dataSource && [_dataSource respondsToSelector:@selector(numberInYBImageBrowser:)]) {
-        return [_dataSource numberInYBImageBrowser:self];
+        NSUInteger count = [_dataSource numberInYBImageBrowser:self];
+        [self setTooBarHideWithDataSourceCount:count];
+        return count;
     }
     return 0;
 }
@@ -356,9 +386,10 @@
 
 - (YBImageBrowserView *)browserView {
     if (!_browserView) {
-        UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
-        layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-        _browserView = [[YBImageBrowserView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+        _browserView = [[YBImageBrowserView alloc] initWithFrame:CGRectZero collectionViewLayout:nil];
+#pragma clang diagnostic pop
         _browserView.yb_delegate = self;
         _browserView.yb_dataSource = self;
     }

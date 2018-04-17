@@ -10,12 +10,22 @@
 #import "YBImageBrowserUtilities.h"
 #import "YBImageBrowserProgressBar.h"
 #import <objc/message.h>
+#import "YBImageBrowserDownloader.h"
 
-@interface YBImageBrowserCell () <UIScrollViewDelegate>
+@interface YBImageBrowserCell () <UIScrollViewDelegate> {
+    //动画相关
+    CGFloat lastPointX;
+    CGFloat lastPointY;
+    CGFloat totalOffsetXOfAnimateImageView;
+    CGFloat totalOffsetYOfAnimateImageView;
+    CGFloat lastScale;
+    BOOL animateImageViewIsStart;
+}
 
 @property (nonatomic, strong) FLAnimatedImageView *imageView;
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) YBImageBrowserProgressBar *progressBar;
+@property (nonatomic, strong) UIImageView *animateImageView;
 
 @end
 
@@ -27,6 +37,10 @@
 @synthesize so_isUpdateUICompletely = _so_isUpdateUICompletely;
 
 #pragma mark life cycle
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -52,20 +66,19 @@
 - (void)addGesture {
     UITapGestureRecognizer *tapSingle = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapSingle:)];
     tapSingle.numberOfTapsRequired = 1;
-    tapSingle.cancelsTouchesInView = NO;
     UITapGestureRecognizer *tapDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapDouble:)];
     tapDouble.numberOfTapsRequired = 2;
-    tapDouble.cancelsTouchesInView = NO;
     [tapSingle requireGestureRecognizerToFail:tapDouble];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToLongPress:)];
-    longPress.cancelsTouchesInView = NO;
     [self.scrollView addGestureRecognizer:tapSingle];
     [self.scrollView addGestureRecognizer:tapDouble];
     [self.scrollView addGestureRecognizer:longPress];
 }
 
 - (void)respondsToTapSingle:(UITapGestureRecognizer *)tap {
-    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notificationName_hideSelf object:nil];
+    if (_delegate && [_delegate respondsToSelector:@selector(applyForHiddenByYBImageBrowserCell:)]) {
+        [_delegate applyForHiddenByYBImageBrowserCell:self];
+    }
 }
 
 - (void)respondsToTapDouble:(UITapGestureRecognizer *)tap {
@@ -130,39 +143,44 @@
         
     } else if (model.url) {
         
-        //读取缓存
-        BOOL imageDataExists = [[SDImageCache sharedImageCache] diskImageDataExistsWithKey:model.url.absoluteString];
-        if (imageDataExists) {
-            [[SDImageCache sharedImageCache] queryCacheOperationForKey:model.url.absoluteString options:SDImageCacheQueryDiskSync|SDImageCacheQueryDataWhenInMemory done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
-                if ([YBImageBrowserUtilities isGif:data]) {
-                    if (data) {
-                        model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-                        if (self.model == model) {
-                            [self loadImageWithModel:model isPreview:NO];
-                        }
-                    }
+        //判断是否存在缓存
+        [YBImageBrowserDownloader memeryImageDataExistWithKey:model.url.absoluteString exist:^(BOOL exist) {
+            YB_MAINTHREAD_ASYNC(^{
+                if (exist) {
+                    //缓存存在
+                    [YBImageBrowserDownloader queryCacheOperationForKey:model.url.absoluteString completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
+                        YB_MAINTHREAD_ASYNC(^{
+                            if ([YBImageBrowserUtilities isGif:data]) {
+                                if (data) {
+                                    model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
+                                    if (self.model == model) {
+                                        [self loadImageWithModel:model isPreview:NO];
+                                    }
+                                }
+                            } else {
+                                if (image) {
+                                    model.image = image;
+                                    if (self.model == model) {
+                                        [self loadImageWithModel:model isPreview:NO];
+                                    }
+                                }
+                            }
+                        })
+                    }];
                 } else {
-                    if (image) {
-                        model.image = image;
-                        if (self.model == model) {
-                            [self loadImageWithModel:model isPreview:NO];
-                        }
+                    //缓存不存在
+                    //若该缩略图无缓存，放弃下载逻辑以节约资源
+                    if (isPreview) return;
+                    //展示缩略图
+                    if (model.previewModel) {
+                        [self loadImageWithModel:model.previewModel isPreview:YES];
                     }
+                    //下载逻辑
+                    [self downLoadImageWithModel:model];
                 }
-            }];
-            return;
-        }
+            })
+        }];
         
-        //若该缩略图无缓存，放弃下载逻辑以节约资源
-        if (isPreview) return;
-        
-        //展示缩略图
-        if (model.previewModel) {
-            [self loadImageWithModel:model.previewModel isPreview:YES];
-        }
-        
-        //下载逻辑
-        [self downLoadImageWithModel:model];
     }
 }
 
@@ -170,7 +188,7 @@
     
     [self showProgressBar];
     
-    YBImageBrowserDownloadProgressBlock progressBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+    YBImageBrowserModelProgressBlock progressBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         //下载中，进度显示
         if (self.model != backModel || expectedSize <= 0) return;
         CGFloat progress = receivedSize * 1.0 / expectedSize;
@@ -181,7 +199,7 @@
         })
     };
     
-    YBImageBrowserDownloadSuccessBlock successBlock = ^(YBImageBrowserModel * _Nonnull backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished) {
+    YBImageBrowserModelSuccessBlock successBlock = ^(YBImageBrowserModel * _Nonnull backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished) {
         //下载成功，移除 ProgressBar 并且刷新图片
         if (self.model == backModel) {
             [self hideProgressBar];
@@ -189,7 +207,7 @@
         }
     };
     
-    YBImageBrowserDownloadFailedBlock failedBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSError * _Nullable error, BOOL finished) {
+    YBImageBrowserModelFailedBlock failedBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSError * _Nullable error, BOOL finished) {
         //下载失败，更新 ProgressBar 为错误提示
         if (self.model == backModel) {
             [self showProgressBar];
@@ -197,7 +215,7 @@
         }
     };
     
-    ((void(*)(id, SEL, YBImageBrowserDownloadProgressBlock, YBImageBrowserDownloadSuccessBlock, YBImageBrowserDownloadFailedBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_download), progressBlock, successBlock, failedBlock);
+    ((void(*)(id, SEL, YBImageBrowserModelProgressBlock, YBImageBrowserModelSuccessBlock, YBImageBrowserModelFailedBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_download), progressBlock, successBlock, failedBlock);
 }
 
 - (void)countLayoutWithImage:(id)image {
@@ -286,21 +304,77 @@
     return self.imageView;
 }
 
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
     UIPanGestureRecognizer *pan = scrollView.panGestureRecognizer;
-    CGFloat height = self.bounds.size.height;
-    CGFloat width = self.bounds.size.width;
+    CGFloat height = self.contentView.bounds.size.height;
     CGPoint point = [pan locationInView:self];
-
+    
+    BOOL shouldShowAnimateImageView = pan.numberOfTouches == 1 && point.y > lastPointY && scrollView.contentOffset.y < 0 && !self.animateImageView.superview;
+    
+    if (shouldShowAnimateImageView) {
+        //添加动画视图
+        animateImageViewIsStart = YES;
+        totalOffsetYOfAnimateImageView = 0;
+        totalOffsetXOfAnimateImageView = 0;
+        self.animateImageView.image = self.imageView.image;
+        self.animateImageView.frame = self.imageView.frame;
+        [YB_NORMALWINDOW addSubview:self.animateImageView];
+        [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_hideBrowerView object:nil];
+    }
+    
     if (pan.state == UIGestureRecognizerStateBegan) {
+        
+        //手势开始的时候，这个地方可能不会走（应该是其他手势导致的问题）
         
     } else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible) {
         
+        if (self.animateImageView.superview) {
+            if (totalOffsetYOfAnimateImageView > height * 0.3) {
+                //移除图片浏览器
+                [_delegate applyForHiddenByYBImageBrowserCell:self];
+            } else {
+                //复位
+                self.animateImageView.layer.transform = CATransform3DIdentity;
+                [self.animateImageView removeFromSuperview];
+                [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_showBrowerView object:nil];
+            }
+        }
+        
     } else if (pan.state == UIGestureRecognizerStateChanged) {
-//        self.superview.layer.transform = CATransform3DMakeTranslation(point.x - width/2.0, point.y - height/2.0, 1);
+        
+        if (self.animateImageView.superview) {
+            
+            //位移计算
+            CGFloat offsetX = point.x - lastPointX;
+            CGFloat offsetY = point.y - lastPointY;
+            if (animateImageViewIsStart) {
+                offsetX = offsetY = 0;
+                animateImageViewIsStart = NO;
+            }
+            totalOffsetXOfAnimateImageView += offsetX;
+            totalOffsetYOfAnimateImageView += offsetY;
+            
+            //缩放计算
+            CGFloat scale = (1 - totalOffsetYOfAnimateImageView / height);
+            if (scale > 1) scale = 1;
+            if (scale < 0) scale = 0;
+            
+//            YBLOG(@"totalOffsetX : %lf, totalOffsetY : %lf, offsetX : %lf, offsetY : %lf, scale : %lf", totalOffsetXOfAnimateImageView, totalOffsetYOfAnimateImageView, offsetX, offsetY, scale);
+            
+            //执行变换
+            CATransform3D transform3D = CATransform3DScale(CATransform3DMakeTranslation(totalOffsetXOfAnimateImageView, totalOffsetYOfAnimateImageView, 0), scale, scale, 1);
+            self.animateImageView.layer.transform = transform3D;
+            [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_changeAlpha object:nil userInfo:@{YBImageBrowser_notificationKey_changeAlpha:@(scale)}];
+            
+            //记录此刻的缩放
+            lastScale = scale;
+        }
     }
+    
+    //记录此刻的位移
+    lastPointY = point.y;
+    lastPointX = point.x;
 }
 
 #pragma mark YBImageBrowserScreenOrientationProtocol
@@ -351,7 +425,7 @@
         _scrollView.maximumZoomScale = 5;
         _scrollView.minimumZoomScale = 1;
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width, _scrollView.bounds.size.height);
-        _scrollView.alwaysBounceHorizontal = NO;
+        _scrollView.alwaysBounceHorizontal = YES;
         _scrollView.alwaysBounceVertical = YES;
         if (@available(iOS 11.0, *)) {
             _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -365,6 +439,15 @@
         _progressBar = [[YBImageBrowserProgressBar alloc] initWithFrame:self.bounds];
     }
     return _progressBar;
+}
+
+- (UIImageView *)animateImageView {
+    if (!_animateImageView) {
+        _animateImageView = [UIImageView new];
+        _animateImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _animateImageView.layer.masksToBounds = YES;
+    }
+    return _animateImageView;
 }
 
 @end

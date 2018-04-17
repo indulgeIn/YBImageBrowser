@@ -12,9 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class YBImageBrowserModel;
 
-typedef void(^YBImageBrowserDownloadProgressBlock)(YBImageBrowserModel *backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL);
-typedef void(^YBImageBrowserDownloadSuccessBlock)(YBImageBrowserModel *backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished);
-typedef void(^YBImageBrowserDownloadFailedBlock)(YBImageBrowserModel *backModel, NSError * _Nullable error, BOOL finished);
+typedef void(^YBImageBrowserModelProgressBlock)(YBImageBrowserModel *backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL);
+typedef void(^YBImageBrowserModelSuccessBlock)(YBImageBrowserModel *backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished);
+typedef void(^YBImageBrowserModelFailedBlock)(YBImageBrowserModel *backModel, NSError * _Nullable error, BOOL finished);
 
 FOUNDATION_EXTERN NSString * const YBImageBrowserModel_KVCKey_isLoading;
 FOUNDATION_EXTERN NSString * const YBImageBrowserModel_KVCKey_isLoadFailed;

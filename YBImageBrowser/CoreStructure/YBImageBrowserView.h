@@ -18,6 +18,8 @@
 
 - (void)yBImageBrowserView:(YBImageBrowserView *)imageBrowserView longPressBegin:(UILongPressGestureRecognizer *)gesture;
 
+- (void)applyForHiddenByYBImageBrowserView:(YBImageBrowserView *)imageBrowserView;
+
 @end
 
 @protocol YBImageBrowserViewDataSource <NSObject>
