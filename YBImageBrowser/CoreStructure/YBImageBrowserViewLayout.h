@@ -10,6 +10,4 @@
 
 @interface YBImageBrowserViewLayout : UICollectionViewFlowLayout
 
-@property (nonatomic, assign) BOOL shouldInvalidateLayout;
-
 @end

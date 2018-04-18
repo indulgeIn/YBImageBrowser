@@ -8,41 +8,38 @@
 
 #import "YBImageBrowserViewLayout.h"
 
+@interface YBImageBrowserViewLayout () {
+    CGFloat collectionViewWidth;
+    CGFloat totalOffsetX;    //需要左移的总共距离
+    CGFloat maxOffsetX;    //最大偏移
+}
+
+@end
+
 @implementation YBImageBrowserViewLayout
 
 - (void)prepareLayout {
     [super prepareLayout];
     self.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    CGRect bounds = self.collectionView.bounds;
-    _shouldInvalidateLayout = YES;
-    
-    self.itemSize = CGSizeMake(bounds.size.width, bounds.size.height);
-    
+    collectionViewWidth = self.collectionView.bounds.size.width;
+    CGFloat height = self.collectionView.bounds.size.height;
+    self.itemSize = CGSizeMake(collectionViewWidth, height);
     NSInteger number = [self.collectionView numberOfItemsInSection:0];
-    self.sectionInset = UIEdgeInsetsMake(0, 0, 0, - self.minimumLineSpacing * (number - 1));
+    totalOffsetX = self.minimumLineSpacing * (number - 1);
+    maxOffsetX = self.collectionView.bounds.size.width * (number - 1);
+    self.sectionInset = UIEdgeInsetsMake(0, 0, 0, - totalOffsetX);
 }
 
 - (NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray<UICollectionViewLayoutAttributes *> *layoutAttsArray = [[NSArray alloc] initWithArray:[super layoutAttributesForElementsInRect:rect] copyItems:YES];
-    
-    CGFloat centerX = self.collectionView.frame.size.width / 2 + self.collectionView.contentOffset.x;
-    __block CGFloat minDistance = CGFLOAT_MAX;
-    __block NSIndexPath *indexPath;
-    [layoutAttsArray enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes  *_Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (ABS(obj.center.x - centerX) < minDistance) {
-            minDistance = ABS(obj.center.x - centerX);
-            indexPath = obj.indexPath;
-        }
-    }];
     [layoutAttsArray enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        obj.center = CGPointMake(obj.center.x - indexPath.row*self.minimumLineSpacing, obj.center.y);
+        obj.center = CGPointMake(obj.center.x - (self.collectionView.contentOffset.x / maxOffsetX) * totalOffsetX, obj.center.y);
     }];
-    
     return layoutAttsArray;
 }
 
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds {
-    return _shouldInvalidateLayout;
+    return YES;
 }
 
 @end

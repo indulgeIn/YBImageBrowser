@@ -50,7 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  数据源
- （可重载）
  */
 @property (nonatomic, copy) NSArray<YBImageBrowserModel *> *dataArray;
 
