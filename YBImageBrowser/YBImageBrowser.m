@@ -375,9 +375,7 @@
         return;
     }
     _dataArray = dataArray;
-    
     [self.browserView reloadData];
-    
     [self setTooBarNumberCountWithCurrentIndex:1];
 }
 
