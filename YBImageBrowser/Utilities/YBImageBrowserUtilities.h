@@ -79,5 +79,7 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserAnimation) {
 + (UIViewController *)getTopController;
 + (UIWindow *)getNormalWindow;
 + (CGFloat)getWidthWithAttStr:(NSAttributedString *)attStr;
++ (UIImage *)scaleToSizeWithImage:(UIImage *)image size:(CGSize)size;
++ (UIImage *)cutToRectWithImage:(UIImage *)image rect:(CGRect)rect;
 
 @end

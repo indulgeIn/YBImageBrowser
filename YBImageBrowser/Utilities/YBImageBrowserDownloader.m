@@ -11,10 +11,12 @@
 #import <SDWebImage/SDImageCache.h>
 
 static SDImageCache *_imageCache = nil;
+static SDWebImageDownloader *_downloader = nil;
 
 @interface YBImageBrowserDownloader ()
 
 @property (class, strong) SDImageCache *imageCache;
+@property (class, strong) SDWebImageDownloader *downloader;
 
 @end
 
@@ -25,7 +27,7 @@ static SDImageCache *_imageCache = nil;
 + (id)downloadWebImageWithUrl:(NSURL *)url progress:(YBImageBrowserDownloaderProgressBlock)progress success:(YBImageBrowserDownloaderSuccessBlock)success failed:(YBImageBrowserDownloaderFailedBlock)failed {
     if (!url) return nil;
     
-    SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+    SDWebImageDownloadToken *token = [self.downloader downloadImageWithURL:url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         
         if (progress) progress(receivedSize, expectedSize, targetURL);
         
@@ -42,7 +44,8 @@ static SDImageCache *_imageCache = nil;
 }
 
 + (void)cancelTaskWithDownloadToken:(id)token {
-    if (token) [[SDWebImageDownloader sharedDownloader] cancel:token];
+    
+    if (token) [self.downloader cancel:token];
 }
 
 + (void)storeImageDataWithKey:(NSString *)key image:(UIImage *)image data:(NSData *)data {
@@ -63,13 +66,35 @@ static SDImageCache *_imageCache = nil;
     }];
 }
 
-#pragma mark imageCache
++ (void)shouldDecompressImages:(BOOL)should {
+    self.downloader.shouldDecompressImages = should;
+    self.imageCache.config.shouldDecompressImages = should;
+}
+
+#pragma mark getter setter
+
++ (SDWebImageDownloader *)downloader {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        _downloader = [[SDWebImageDownloader alloc] initWithSessionConfiguration:config];
+        _downloader.shouldDecompressImages = YES;
+    });
+    return _downloader;
+}
+
++ (void)setDownloader:(SDWebImageDownloader *)downloader {
+    if (!self.downloader) {
+        _downloader = downloader;
+    }
+}
 
 + (void)setImageCache:(SDImageCache *)x {
     if (!self.imageCache) {
         _imageCache = x;
     }
 }
+
 + (SDImageCache *)imageCache {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -77,5 +102,6 @@ static SDImageCache *_imageCache = nil;
     });
     return _imageCache;
 }
+
 
 @end

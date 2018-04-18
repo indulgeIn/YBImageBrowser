@@ -19,34 +19,64 @@ NS_ASSUME_NONNULL_BEGIN
 @class YBImageBrowser;
 
 
+#pragma mark 事件回调代理
 @protocol YBImageBrowserDelegate <NSObject>
 @optional
 
-//滚动时下标切换的实时回调
+/**
+ 图片浏览器翻页
+
+ @param imageBrowser 当前图片浏览器
+ @param index 目前的下标
+ */
 - (void)yBImageBrowser:(YBImageBrowser *)imageBrowser didScrollToIndex:(NSInteger)index;
 
-//点击弹出功能栏的回调
+/**
+ 点击功能栏的回调
+
+ @param imageBrowser 当前图片浏览器
+ @param model 功能的数据model
+ */
 - (void)yBImageBrowser:(YBImageBrowser *)imageBrowser clickFunctionBarWithModel:(YBImageBrowserFunctionModel *)model;
 
 @end
 
 
+#pragma mark 数据源代理
 @protocol YBImageBrowserDataSource <NSObject>
 @required
 
-//返回点击的那个 UIImageView （用于做动效）
+/**
+ 返回点击的那个 UIImageView（用于做 YBImageBrowserAnimationMove 类型动效）
+
+ @param imageBrowser 当前图片浏览器
+ @return 点击的图片视图
+ */
 - (UIImageView * _Nullable)imageViewOfTouchForImageBrowser:(YBImageBrowser *)imageBrowser;
 
-//返回数量
+/**
+ 配置图片的数量
+
+ @param imageBrowser 当前图片浏览器
+ @return 图片数量
+ */
 - (NSInteger)numberInYBImageBrowser:(YBImageBrowser *)imageBrowser;
 
-//返回当前 index 的数据模型
+/**
+ 返回当前 index 图片对应的数据模型
+
+ @param imageBrowser 当前图片浏览器
+ @param index 当前下标
+ @return 数据模型
+ */
 - (YBImageBrowserModel *)yBImageBrowser:(YBImageBrowser *)imageBrowser modelForCellAtIndex:(NSInteger)index;
 
 @end
 
 
 @interface YBImageBrowser : UIViewController <YBImageBrowserScreenOrientationProtocol>
+
+#pragma mark 基本功能 (basic function)
 
 /**
  数据源
@@ -79,21 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, weak) id <YBImageBrowserDelegate> delegate;
 
-/**
- 支持旋转的方向
- （请保证在 general -> deployment info -> Device Orientation 有对应的配置，目前不支持强制旋转）
- */
-@property (nonatomic, assign) UIInterfaceOrientationMask yb_supportedInterfaceOrientations;
-
-/**
- 纵屏时候图片填充类型
- */
-@property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
-
-/**
- 横屏时候图片填充类型
- */
-@property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
+#pragma mark 功能栏操作 (function bar operation)
 
 /**
  弹出功能栏的数据源
@@ -116,16 +132,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) BOOL cancelLongPressGesture;
 
-/**
- 显示状态栏
- */
-@property (nonatomic, assign) BOOL showStatusBar;
-
-/**
- 文案撰写者
- （可依靠该属性配置自定义的文案）
- */
-@property (nonatomic, strong) YBImageBrowserCopywriter *copywriter;
+#pragma mark 动画相关 (animation)
 
 /**
  转场动画持续时间
@@ -153,9 +160,49 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) YBImageBrowserAnimation outAnimation;
 
 /**
- 页与页之间的距离
+ 页与页之间的间距
  */
 @property (nonatomic, assign) CGFloat distanceBetweenPages;
+
+#pragma mark 屏幕方向相关 (screen direction)
+
+/**
+ 支持旋转的方向
+ （请保证在 general -> deployment info -> Device Orientation 有对应的配置，目前不支持强制旋转）
+ */
+@property (nonatomic, assign) UIInterfaceOrientationMask yb_supportedInterfaceOrientations;
+
+#pragma mark 填充方式
+
+/**
+ 纵屏时候图片填充类型
+ */
+@property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
+
+/**
+ 横屏时候图片填充类型
+ */
+@property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
+
+#pragma mark 性能和内存相关 (performance and memory)
+
+/**
+ 网络图片下载和持久化时，是否做内存缓存，为YES能提高图片第二次显示的性能，为NO能减少图片的内存占用（高清大图请置NO）
+ */
+@property (nonatomic, assign) BOOL downloaderShouldDecompressImages;
+
+#pragma mark 其他 (other)
+
+/**
+ 显示状态栏
+ */
+@property (nonatomic, assign) BOOL showStatusBar;
+
+/**
+ 文案撰写者
+ （可依靠该属性配置自定义的文案）
+ */
+@property (nonatomic, strong) YBImageBrowserCopywriter *copywriter;
 
 @end
 

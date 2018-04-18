@@ -81,4 +81,20 @@ NSString * const YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterv
     return [attStr boundingRectWithSize:CGSizeMake(MAXFLOAT, 0) options:NSStringDrawingUsesLineFragmentOrigin context:nil].size.width;
 }
 
++ (UIImage *)scaleToSizeWithImage:(UIImage *)image size:(CGSize)size {
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return scaledImage;
+}
+
++ (UIImage *)cutToRectWithImage:(UIImage *)image rect:(CGRect)rect {
+    CGImageRef _cgImage = image.CGImage;
+    CGImageRef cgImage = CGImageCreateWithImageInRect(_cgImage, rect);
+    UIImage *resultImage = [UIImage imageWithCGImage:cgImage];
+    CGImageRelease(cgImage);
+    return resultImage;
+}
+
 @end

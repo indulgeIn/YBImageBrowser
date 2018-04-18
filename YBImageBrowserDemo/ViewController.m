@@ -31,15 +31,16 @@ static int tagOfImageOfCell = 100;
     
     touchIndexPath = indexPath;
     
+    UIImage *image0 = [UIImage imageNamed:@"imageBig"];
     YBImageBrowserModel *model0 = [YBImageBrowserModel new];
-//    model0.image = [UIImage imageNamed:@"imageBig1"];
-    model0.image = [UIImage imageNamed:dataArr[0]];
     model0.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
+    model0.image = image0;
+//    model0.image = [YBImageBrowserUtilities scaleToSizeWithImage:image0 size:CGSizeMake(800, 800)];
+//    model0.image = [YBImageBrowserUtilities cutToRectWithImage:image0 rect:CGRectMake(100, 100, 1000, 800)];
     
     
     YBImageBrowserModel *model1 = [YBImageBrowserModel new];
     model1.gifName = dataArr[1];
-//    model1.image = [UIImage imageNamed:@"imageBig"];
     model1.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     
     YBImageBrowserModel *model2 = [YBImageBrowserModel new];
@@ -62,6 +63,7 @@ static int tagOfImageOfCell = 100;
     
     YBImageBrowserFunctionModel *shareModel = [YBImageBrowserFunctionModel new];
     shareModel.name = @"分享给好友";
+    browser.downloaderShouldDecompressImages = NO;
     browser.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum], shareModel];
     
     browser.delegate = self;
@@ -126,7 +128,7 @@ static int tagOfImageOfCell = 100;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    dataArr = @[@"image0", @"gif0", @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523382489676&di=bcd55b2dd64141ced8c52b46309280da&imgtype=0&src=http%3A%2F%2Ff2.topitme.com%2F2%2Fb9%2F71%2F112660598401871b92l.jpg", @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523386869420&di=015d95da30b54296e10cb63ee740d8d9&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01c6e25889bd4ca8012060c80f8067.gif", @"imageLong"];
+    dataArr = @[@"image0", @"gif0", @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524073772689&di=f511441b145ce6788cf60959aadf919a&imgtype=0&src=http%3A%2F%2Fattach.bbs.miui.com%2Fforum%2F201505%2F27%2F172736r8qcystlxcil9s9l.jpg", @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523386869420&di=015d95da30b54296e10cb63ee740d8d9&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01c6e25889bd4ca8012060c80f8067.gif", @"imageLong"];
     [self.view addSubview:self.collectionView];
 }
 #pragma mark UICollectionViewDataSource
@@ -159,7 +161,7 @@ static int tagOfImageOfCell = 100;
         }
             break;
         case 2: {
-            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[2]]];
+//            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[2]]];
         }
             break;
         case 3: {

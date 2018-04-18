@@ -36,6 +36,9 @@ typedef void(^YBImageBrowserDownloaderCacheQueryCompletedBlock)(UIImage * _Nulla
 //查找缓存（采用 block，不管替换框架是异步还是同步都行）
 + (void)queryCacheOperationForKey:(NSString *)key completed:(YBImageBrowserDownloaderCacheQueryCompletedBlock)completed;
 
+//框架下载时候的图片解压
++ (void)shouldDecompressImages:(BOOL)should;
+
 @end
 
 NS_ASSUME_NONNULL_END

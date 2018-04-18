@@ -45,7 +45,7 @@
     } else {
         if (self.titleLabel.isHidden) self.titleLabel.hidden = NO;
     }
-    self.titleLabel.text = [NSString stringWithFormat:@"%ld/%ld", index, totalCount];
+    self.titleLabel.text = [NSString stringWithFormat:@"%ld/%ld", (unsigned long)index, (unsigned long)totalCount];
 }
 
 - (void)setRightButtonImage:(UIImage *)image {

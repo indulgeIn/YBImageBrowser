@@ -13,6 +13,7 @@
 #import "YBImageBrowserPromptBar.h"
 #import "YBImageBrowserAnimatedTransitioning.h"
 #import "YBImageBrowserViewLayout.h"
+#import "YBImageBrowserDownloader.h"
 
 @interface YBImageBrowser () <YBImageBrowserViewDelegate, YBImageBrowserViewDataSource, YBImageBrowserToolBarDelegate, YBImageBrowserFunctionBarDelegate, UIViewControllerTransitioningDelegate> {
     UIInterfaceOrientationMask supportAutorotateTypes;
@@ -406,6 +407,11 @@
         //functionBar 方法仅在此处调用其它地方均用实例变量方式访问
         self.functionBar.dataArray = fuctionDataArray;
     }
+}
+
+- (void)setDownloaderShouldDecompressImages:(BOOL)downloaderShouldDecompressImages {
+    _downloaderShouldDecompressImages = downloaderShouldDecompressImages;
+    [YBImageBrowserDownloader shouldDecompressImages:downloaderShouldDecompressImages];
 }
 
 #pragma mark getter
