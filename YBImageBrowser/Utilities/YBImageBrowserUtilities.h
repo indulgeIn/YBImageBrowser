@@ -66,6 +66,13 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserScreenOrientation) {
     YBImageBrowserScreenOrientationHorizontal   //屏幕水平方向展示
 };
 
+typedef NS_ENUM(NSUInteger, YBImageBrowserAnimation) {
+    YBImageBrowserAnimationNone,    //无动画
+    YBImageBrowserAnimationFade,    //渐隐
+    YBImageBrowserAnimationMove     //移动
+};
+
+
 @interface YBImageBrowserUtilities : NSObject
 
 + (BOOL)isGif:(NSData *)data;

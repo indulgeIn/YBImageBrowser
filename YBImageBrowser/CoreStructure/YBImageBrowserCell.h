@@ -26,13 +26,14 @@
 
 @property (nonatomic, strong) YBImageBrowserModel *model;
 
-@property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
-@property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
-
-@property (nonatomic, strong) NSString *loadFailedText;
-
 @property (nonatomic, strong, readonly) FLAnimatedImageView *imageView;
 @property (nonatomic, strong, readonly) UIImageView *animateImageView;
+
+@property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
+@property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
+@property (nonatomic, strong) NSString *loadFailedText;
+@property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
+@property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
 
 - (void)reDownloadImageUrl;
 

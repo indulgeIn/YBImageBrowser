@@ -14,6 +14,8 @@
 
 @interface YBImageBrowserCell () <UIScrollViewDelegate> {
     //动画相关
+    CGFloat startScaleWidthInAnimationView;
+    CGFloat startScaleheightInAnimationView;
     CGRect frameOfOriginalOfImageView;
     CGFloat lastPointX;
     CGFloat lastPointY;
@@ -46,6 +48,8 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
+        isCancelAnimate = NO;
+        animateImageViewIsStart = NO;
         [self addGesture];
         [self addNotification];
         [self.contentView addSubview:self.scrollView];
@@ -162,25 +166,7 @@
             YB_MAINTHREAD_ASYNC(^{
                 if (exist) {
                     //缓存存在
-                    [YBImageBrowserDownloader queryCacheOperationForKey:model.url.absoluteString completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
-                        YB_MAINTHREAD_ASYNC(^{
-                            if ([YBImageBrowserUtilities isGif:data]) {
-                                if (data) {
-                                    model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-                                    if (self.model == model) {
-                                        [self loadImageWithModel:model isPreview:NO];
-                                    }
-                                }
-                            } else {
-                                if (image) {
-                                    model.image = image;
-                                    if (self.model == model) {
-                                        [self loadImageWithModel:model isPreview:NO];
-                                    }
-                                }
-                            }
-                        })
-                    }];
+                    [self queryCacheWithModel:model];
                 } else {
                     //缓存不存在
                     //若该缩略图无缓存，放弃下载逻辑以节约资源
@@ -196,6 +182,28 @@
         }];
         
     }
+}
+
+- (void)queryCacheWithModel:(YBImageBrowserModel *)model {
+    [YBImageBrowserDownloader queryCacheOperationForKey:model.url.absoluteString completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
+        YB_MAINTHREAD_ASYNC(^{
+            if ([YBImageBrowserUtilities isGif:data]) {
+                if (data) {
+                    model.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
+                    if (self.model == model) {
+                        [self loadImageWithModel:model isPreview:NO];
+                    }
+                }
+            } else {
+                if (image) {
+                    model.image = image;
+                    if (self.model == model) {
+                        [self loadImageWithModel:model isPreview:NO];
+                    }
+                }
+            }
+        })
+    }];
 }
 
 - (void)downLoadImageWithModel:(YBImageBrowserModel *)model {
@@ -240,6 +248,7 @@
     }];
 }
 
+//计算图片大小核心代码
 + (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale))completed {
     
     CGSize imageSize = [FLAnimatedImage sizeForImage:image];
@@ -319,90 +328,98 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self respondsToScrollViewPanGesture];
+}
+
+#pragma mark drag animation
+
+- (void)respondsToScrollViewPanGesture {
+    if (self.cancelDragImageViewAnimation) return;
     
+    UIScrollView *scrollView = self.scrollView;
     UIPanGestureRecognizer *pan = scrollView.panGestureRecognizer;
-    CGFloat height = self.contentView.bounds.size.height;
     CGPoint point = [pan locationInView:self];
     
     BOOL shouldShowAnimateImageView = pan.numberOfTouches == 1 && point.y > lastPointY && scrollView.contentOffset.y < 0 && !self.animateImageView.superview;
-    
     if (shouldShowAnimateImageView) {
-        
-        //添加动画视图
-        [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_hideBrowerView object:nil];
-        animateImageViewIsStart = YES;
-        totalOffsetYOfAnimateImageView = 0;
-        totalOffsetXOfAnimateImageView = 0;
-        frameOfOriginalOfImageView = [self.imageView convertRect:self.imageView.bounds toView:YB_NORMALWINDOW];
-        self.animateImageView.image = self.imageView.image;
-        self.animateImageView.frame = frameOfOriginalOfImageView;
-        [YB_NORMALWINDOW addSubview:self.animateImageView];
-        
+        [self addAnimationImageViewWithPoint:point];
     }
     
     if (pan.state == UIGestureRecognizerStateBegan) {
-        
         //手势开始的时候，这个地方可能不会走
-        
     } else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible) {
-        
         if (self.animateImageView.superview) {
-            if (scrollView.zoomScale <= 1) {
-                scrollView.contentOffset = CGPointZero;
-            }
-            if (totalOffsetYOfAnimateImageView > height * 0.3) {
-                //移除图片浏览器
-                [_delegate applyForHiddenByYBImageBrowserCell:self];
-            } else {
-                //复位
-                if (!isCancelAnimate) {
-                    isCancelAnimate = YES;
-                    CGFloat duration = 0.4;
-                    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_willShowBrowerViewWithTimeInterval object:nil userInfo:@{YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval:@(duration)}];
-                    [UIView animateWithDuration:duration animations:^{
-                        self.animateImageView.frame = frameOfOriginalOfImageView;
-                    } completion:^(BOOL finished) {
-                        [self.animateImageView removeFromSuperview];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_showBrowerView object:nil];
-                        isCancelAnimate = NO;
-                    }];
-                }
-            }
+            [self removeAnimationImageViewWithScrollView:scrollView container:self];
         }
-        
     } else if (pan.state == UIGestureRecognizerStateChanged) {
-        
         if (self.animateImageView.superview) {
-            
-            //位移计算
-            CGFloat offsetX = point.x - lastPointX;
-            CGFloat offsetY = point.y - lastPointY;
-            if (animateImageViewIsStart) {
-                offsetX = offsetY = 0;
-                animateImageViewIsStart = NO;
-            }
-            totalOffsetXOfAnimateImageView += offsetX;
-            totalOffsetYOfAnimateImageView += offsetY;
-            
-            //缩放计算
-            CGFloat scale = (1 - totalOffsetYOfAnimateImageView / height);
-            if (scale > 1) scale = 1;
-            if (scale < 0) scale = 0;
-            
-            //执行变换
-            CGPoint center = CGPointMake(self.animateImageView.center.x + offsetX, self.animateImageView.center.y + offsetY);
-            CGFloat w = frameOfOriginalOfImageView.size.width * scale;
-            CGFloat h = frameOfOriginalOfImageView.size.height * scale;
-            self.animateImageView.bounds = CGRectMake(0, 0, w, h);
-            self.animateImageView.center = center;
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_changeAlpha object:nil userInfo:@{YBImageBrowser_notificationKey_changeAlpha:@(scale)}];
+            [self performAnimationForAnimationImageViewWithPoint:point container:self];
         }
     }
-    
-    //记录此刻的位移
     lastPointY = point.y;
     lastPointX = point.x;
+}
+
+- (void)addAnimationImageViewWithPoint:(CGPoint)point {
+    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_hideBrowerView object:nil];
+    animateImageViewIsStart = YES;
+    totalOffsetYOfAnimateImageView = 0;
+    totalOffsetXOfAnimateImageView = 0;
+    frameOfOriginalOfImageView = [self.imageView convertRect:self.imageView.bounds toView:YB_NORMALWINDOW];
+    startScaleWidthInAnimationView = (point.x - frameOfOriginalOfImageView.origin.x) / frameOfOriginalOfImageView.size.width;
+    startScaleheightInAnimationView = (point.y - frameOfOriginalOfImageView.origin.y) / frameOfOriginalOfImageView.size.height;
+    self.animateImageView.image = self.imageView.image;
+    self.animateImageView.frame = frameOfOriginalOfImageView;
+    [YB_NORMALWINDOW addSubview:self.animateImageView];
+}
+
+- (void)removeAnimationImageViewWithScrollView:(UIScrollView *)scrollView container:(UIView *)container {
+    CGFloat maxHeight = container.bounds.size.height;
+    if (maxHeight <= 0) return;
+    if (scrollView.zoomScale <= 1) {
+        scrollView.contentOffset = CGPointZero;
+    }
+    if (totalOffsetYOfAnimateImageView > maxHeight * _outScaleOfDragImageViewAnimation) {
+        //移除图片浏览器
+        [_delegate applyForHiddenByYBImageBrowserCell:self];
+    } else {
+        //复位
+        if (!isCancelAnimate) {
+            isCancelAnimate = YES;
+            CGFloat duration = 0.25;
+            [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_willShowBrowerViewWithTimeInterval object:nil userInfo:@{YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval:@(duration)}];
+            [UIView animateWithDuration:duration animations:^{
+                self.animateImageView.frame = frameOfOriginalOfImageView;
+            } completion:^(BOOL finished) {
+                [self.animateImageView removeFromSuperview];
+                [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_showBrowerView object:nil];
+                isCancelAnimate = NO;
+            }];
+        }
+    }
+}
+
+- (void)performAnimationForAnimationImageViewWithPoint:(CGPoint)point container:(UIView *)container {
+    CGFloat maxHeight = container.bounds.size.height;
+    if (maxHeight <= 0) return;
+    //偏移
+    CGFloat offsetX = point.x - lastPointX,
+    offsetY = point.y - lastPointY;
+    if (animateImageViewIsStart) {
+        offsetX = offsetY = 0;
+        animateImageViewIsStart = NO;
+    }
+    totalOffsetXOfAnimateImageView += offsetX;
+    totalOffsetYOfAnimateImageView += offsetY;
+    //缩放比例
+    CGFloat scale = (1 - totalOffsetYOfAnimateImageView / maxHeight);
+    if (scale > 1) scale = 1;
+    if (scale < 0) scale = 0;
+    //执行变换
+    CGFloat width = frameOfOriginalOfImageView.size.width * scale, height = frameOfOriginalOfImageView.size.height * scale;
+    self.animateImageView.frame = CGRectMake(point.x - width * startScaleWidthInAnimationView, point.y - height * startScaleheightInAnimationView, width, height);
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_changeAlpha object:nil userInfo:@{YBImageBrowser_notificationKey_changeAlpha:@(scale)}];
 }
 
 #pragma mark YBImageBrowserScreenOrientationProtocol

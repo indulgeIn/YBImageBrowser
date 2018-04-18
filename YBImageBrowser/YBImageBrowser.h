@@ -98,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  弹出功能栏的数据源
- （默认有图片/gif保存功能）
+ （默认有图片保存功能）
  */
 @property (nonatomic, copy, nullable) NSArray<YBImageBrowserFunctionModel *> *fuctionDataArray;
 
@@ -127,6 +127,36 @@ NS_ASSUME_NONNULL_BEGIN
  （可依靠该属性配置自定义的文案）
  */
 @property (nonatomic, strong) YBImageBrowserCopywriter *copywriter;
+
+/**
+ 转场动画持续时间
+ */
+@property (nonatomic, assign) NSTimeInterval transitionDuration;
+
+/**
+ 取消拖拽图片的动画效果
+ */
+@property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
+
+/**
+ 拖拽图片动效触发出场的比例（拖动距离/屏幕高度 默认0.3）
+ */
+@property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
+
+/**
+ 入场动画类型
+ */
+@property (nonatomic, assign) YBImageBrowserAnimation inAnimation;
+
+/**
+ 出场动画类型
+ */
+@property (nonatomic, assign) YBImageBrowserAnimation outAnimation;
+
+/**
+ 页与页之间的距离
+ */
+@property (nonatomic, assign) CGFloat distanceBetweenPages;
 
 @end
 

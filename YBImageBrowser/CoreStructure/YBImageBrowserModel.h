@@ -49,7 +49,7 @@ FOUNDATION_EXTERN char * const YBImageBrowserModel_SELName_download;
 
 /**
  来源图片视图
- （用于做入场和出场动效）
+ （用于做 YBImageBrowserAnimationMove 类型的动效）
  */
 @property (nonatomic, strong, nullable) UIImageView *sourceImageView;
 

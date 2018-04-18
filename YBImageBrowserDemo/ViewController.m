@@ -32,11 +32,14 @@ static int tagOfImageOfCell = 100;
     touchIndexPath = indexPath;
     
     YBImageBrowserModel *model0 = [YBImageBrowserModel new];
+//    model0.image = [UIImage imageNamed:@"imageBig1"];
     model0.image = [UIImage imageNamed:dataArr[0]];
     model0.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
     
+    
     YBImageBrowserModel *model1 = [YBImageBrowserModel new];
     model1.gifName = dataArr[1];
+//    model1.image = [UIImage imageNamed:@"imageBig"];
     model1.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:1 inSection:0]];
     
     YBImageBrowserModel *model2 = [YBImageBrowserModel new];
@@ -53,6 +56,7 @@ static int tagOfImageOfCell = 100;
     
     YBImageBrowser *browser = [YBImageBrowser new];
     browser.currentIndex = indexPath.row;
+    browser.distanceBetweenPages = 20;
     browser.dataArray = @[model0, model1, model2, model3, model4];
     browser.yb_supportedInterfaceOrientations = UIInterfaceOrientationMaskAll;
     
@@ -60,7 +64,6 @@ static int tagOfImageOfCell = 100;
     shareModel.name = @"分享给好友";
     browser.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum], shareModel];
     
-//    browser.dataSource = self;
     browser.delegate = self;
     [browser show];
 }
@@ -160,10 +163,7 @@ static int tagOfImageOfCell = 100;
         }
             break;
         case 3: {
-//            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[3]]];
-            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:dataArr[3]] options:0 progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-                imgView.animatedImage = [FLAnimatedImage animatedImageWithGIFData:data];
-            }];
+            [imgView sd_setImageWithURL:[NSURL URLWithString:dataArr[3]]];
         }
             break;
         case 4: {

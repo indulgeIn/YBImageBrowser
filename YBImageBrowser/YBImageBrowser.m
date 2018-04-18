@@ -12,6 +12,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "YBImageBrowserPromptBar.h"
 #import "YBImageBrowserAnimatedTransitioning.h"
+#import "YBImageBrowserViewLayout.h"
 
 @interface YBImageBrowser () <YBImageBrowserViewDelegate, YBImageBrowserViewDataSource, YBImageBrowserToolBarDelegate, YBImageBrowserFunctionBarDelegate, UIViewControllerTransitioningDelegate> {
     UIInterfaceOrientationMask supportAutorotateTypes;
@@ -67,7 +68,7 @@
         [self so_updateFrameWithScreenOrientation:[self getScreenOrientationByStatusBar]];
         [self.view addSubview:self.browserView];
         [self.view addSubview:self.toolBar];
-        [self.browserView scrollToPageWithIndex:self.currentIndex animated:NO];
+        [self.browserView scrollToPageWithIndex:self.currentIndex];
         [self addDeviceOrientationNotification];
         isDealViewDidAppear = YES;
         [self configSupportAutorotateTypes];
@@ -114,14 +115,22 @@
 - (void)initData {
     _cancelLongPressGesture = NO;
     backgroundColor = [UIColor blackColor];
+    _showStatusBar = NO;
+    _distanceBetweenPages = 10;
     animatedTransitioningManager = [YBImageBrowserAnimatedTransitioning new];
+    _transitionDuration = 0.35;
+    _cancelLongPressGesture = NO;
+    _cancelDragImageViewAnimation = NO;
+    _outScaleOfDragImageViewAnimation = 0.3;
+    _inAnimation = YBImageBrowserAnimationMove;
+    _outAnimation = YBImageBrowserAnimationMove;
     interactiveTransition = [UIPercentDrivenInteractiveTransition new];
     isDealViewDidAppear = NO;
     _showStatusBar = NO;
     window = [YBImageBrowserUtilities getNormalWindow];
-    self.verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
-    self.horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
-    self.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum]];
+    _verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
+    _horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
+    _fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum]];
 }
 
 //给子模块赋值配置
@@ -129,6 +138,9 @@
     self.browserView.loadFailedText = self.copywriter.loadFailedText;
     self.browserView.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
     self.browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
+    self.browserView.cancelDragImageViewAnimation = self.cancelDragImageViewAnimation;
+    self.browserView.outScaleOfDragImageViewAnimation = self.outScaleOfDragImageViewAnimation;
+    ((UICollectionViewFlowLayout *)self.browserView.collectionViewLayout).minimumLineSpacing = self.distanceBetweenPages;
     [self setTooBarNumberCountWithCurrentIndex:1];
 }
 
@@ -353,7 +365,7 @@
 - (void)setCurrentIndex:(NSUInteger)currentIndex {
     _currentIndex = currentIndex;
     if (isDealViewDidAppear && _browserView) {
-        [_browserView scrollToPageWithIndex:_currentIndex animated:NO];
+        [_browserView scrollToPageWithIndex:_currentIndex];
     }
 }
 
@@ -402,10 +414,7 @@
 
 - (YBImageBrowserView *)browserView {
     if (!_browserView) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wnonnull"
-        _browserView = [[YBImageBrowserView alloc] initWithFrame:CGRectZero collectionViewLayout:nil];
-#pragma clang diagnostic pop
+        _browserView = [[YBImageBrowserView alloc] initWithFrame:CGRectZero collectionViewLayout:[YBImageBrowserViewLayout new]];
         _browserView.yb_delegate = self;
         _browserView.yb_dataSource = self;
     }

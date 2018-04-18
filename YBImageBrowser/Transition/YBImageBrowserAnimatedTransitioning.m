@@ -21,7 +21,7 @@
 #pragma mark UIViewControllerAnimatedTransitioning
 
 - (NSTimeInterval)transitionDuration:(nullable id <UIViewControllerContextTransitioning>)transitionContext {
-    return 0.35;
+    return browser.transitionDuration;
 }
 
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
@@ -31,66 +31,152 @@
     UIViewController *toController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     UIView *fromView = fromController.view;
     UIView *toView = toController.view;
-    NSTimeInterval duration = [self transitionDuration:transitionContext];
     
     //入场动效
     if (toController.isBeingPresented) {
-        
         [containerView addSubview:toView];
-        
-        __block CGRect fromFrame = CGRectZero;
-        __block UIImage *image = nil;
-        [self in_getShowInfoFromBrowser:browser complete:^(CGRect _fromFrame, UIImage *_fromImage, BOOL _cancel) {
-            fromFrame = _fromFrame;
-            image = _fromImage;
-        }];
-        if (CGRectEqualToRect(fromFrame, CGRectZero) || !image) {
-            [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
-            return;
+        switch (browser.inAnimation) {
+            case YBImageBrowserAnimationMove: {
+                [self inAnimation_moveWithContext:transitionContext containerView:containerView toView:toView];
+            }
+                break;
+            case YBImageBrowserAnimationFade: {
+                [self inAnimation_fadeWithContext:transitionContext containerView:containerView toView:toView];
+            }
+                break;
+            default:
+                [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+                break;
         }
-        
-        __block CGRect toFrame;
-        [YBImageBrowserCell countWithContainerSize:containerView.bounds.size image:image screenOrientation:browser.so_screenOrientation verticalFillType:browser.verticalScreenImageViewFillType horizontalFillType:browser.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
-            toFrame = imageFrame;
-        }];
-        
-        self.animateImageView.image = image;
-        self.animateImageView.frame = fromFrame;
-        [containerView addSubview:self.animateImageView];
-        toView.alpha = 0;
-        [UIView animateWithDuration:duration animations:^{
-            toView.alpha = 1;
-            self.animateImageView.frame = toFrame;
-        } completion:^(BOOL finished) {
-            [self.animateImageView removeFromSuperview];
-            [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
-        }];
     }
     
     //出场动效
     if (fromController.isBeingDismissed) {
-        
-        CGRect toFrame = [self getFrameInWindowWithView:[self getCurrentModelFromBrowser:browser].sourceImageView];
-        UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
-        if (CGRectEqualToRect(toFrame, CGRectZero) || !fromImageView) {
-            [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
-            return;
+        switch (browser.outAnimation) {
+            case YBImageBrowserAnimationMove: {
+                [self outAnimation_moveWithContext:transitionContext containerView:containerView fromView:fromView];
+            }
+                break;
+            case YBImageBrowserAnimationFade: {
+                [self outAnimation_fadeWithContext:transitionContext containerView:containerView fromView:fromView];
+            }
+                break;
+            default:
+                [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+                break;
         }
-        
-        self.animateImageView.image = fromImageView.image;
-        self.animateImageView.frame = [self getFrameInWindowWithView:fromImageView];
-        [containerView addSubview:self.animateImageView];
-        
-        fromImageView.hidden = YES;
-        
-        [UIView animateWithDuration:duration animations:^{
-            fromView.alpha = 0;
-            self.animateImageView.frame = toFrame;
-        } completion:^(BOOL finished) {
-            [self.animateImageView removeFromSuperview];
-            [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
-        }];
     }
+}
+
+#pragma mark animation -- fade
+
+- (void)inAnimation_fadeWithContext:(id <UIViewControllerContextTransitioning>)transitionContext containerView:(UIView *)containerView toView:(UIView *)toView {
+    
+    __block UIImage *image = nil;
+    [self in_getShowInfoFromBrowser:browser complete:^(CGRect _fromFrame, UIImage *_fromImage) {
+        image = _fromImage;
+    }];
+    if (!image) {
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        return;
+    }
+    __block CGRect toFrame = CGRectZero;
+    [YBImageBrowserCell countWithContainerSize:containerView.bounds.size image:image screenOrientation:browser.so_screenOrientation verticalFillType:browser.verticalScreenImageViewFillType horizontalFillType:browser.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
+        toFrame = imageFrame;
+    }];
+    
+    self.animateImageView.image = image;
+    self.animateImageView.frame = toFrame;
+    [containerView addSubview:self.animateImageView];
+    toView.alpha = 0;
+    self.animateImageView.alpha = 0;
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        toView.alpha = 1;
+        self.animateImageView.alpha = 1;
+    } completion:^(BOOL finished) {
+        [self.animateImageView removeFromSuperview];
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+    }];
+}
+
+- (void)outAnimation_fadeWithContext:(id <UIViewControllerContextTransitioning>)transitionContext containerView:(UIView *)containerView fromView:(UIView *)fromView {
+    
+    UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
+    if (!fromImageView) {
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        return;
+    }
+    
+    self.animateImageView.image = fromImageView.image;
+    self.animateImageView.frame = [self getFrameInWindowWithView:fromImageView];
+    [containerView addSubview:self.animateImageView];
+    fromView.alpha = 1;
+    self.animateImageView.alpha = 1;
+    //因为可能是拖拽动画的视图，索性隐藏掉
+    fromImageView.hidden = YES;
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        fromView.alpha = 0;
+        self.animateImageView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self.animateImageView removeFromSuperview];
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+    }];
+}
+
+#pragma mark animation -- move
+
+- (void)inAnimation_moveWithContext:(id <UIViewControllerContextTransitioning>)transitionContext containerView:(UIView *)containerView toView:(UIView *)toView {
+    
+    __block CGRect fromFrame = CGRectZero;
+    __block UIImage *image = nil;
+    [self in_getShowInfoFromBrowser:browser complete:^(CGRect _fromFrame, UIImage *_fromImage) {
+        fromFrame = _fromFrame;
+        image = _fromImage;
+    }];
+    if (CGRectEqualToRect(fromFrame, CGRectZero) || !image) {
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        return;
+    }
+    __block CGRect toFrame = CGRectZero;
+    [YBImageBrowserCell countWithContainerSize:containerView.bounds.size image:image screenOrientation:browser.so_screenOrientation verticalFillType:browser.verticalScreenImageViewFillType horizontalFillType:browser.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
+        toFrame = imageFrame;
+    }];
+    
+    [containerView addSubview:toView];
+    self.animateImageView.image = image;
+    self.animateImageView.frame = fromFrame;
+    [containerView addSubview:self.animateImageView];
+    toView.alpha = 0;
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        toView.alpha = 1;
+        self.animateImageView.frame = toFrame;
+    } completion:^(BOOL finished) {
+        [self.animateImageView removeFromSuperview];
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+    }];
+}
+
+- (void)outAnimation_moveWithContext:(id <UIViewControllerContextTransitioning>)transitionContext containerView:(UIView *)containerView fromView:(UIView *)fromView {
+    CGRect toFrame = [self getFrameInWindowWithView:[self getCurrentModelFromBrowser:browser].sourceImageView];
+    UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
+    if (CGRectEqualToRect(toFrame, CGRectZero) || !fromImageView) {
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        return;
+    }
+    
+    self.animateImageView.image = fromImageView.image;
+    self.animateImageView.frame = [self getFrameInWindowWithView:fromImageView];
+    [containerView addSubview:self.animateImageView];
+    
+    fromImageView.hidden = YES;
+    
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        fromView.alpha = 0;
+        self.animateImageView.frame = toFrame;
+    } completion:^(BOOL finished) {
+        [self.animateImageView removeFromSuperview];
+        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+    }];
 }
 
 #pragma mark public
@@ -100,14 +186,13 @@
     self->browser = browser;
 }
 
-#pragma mark private
+#pragma mark get info from browser
 
-//入场：从图片浏览器拿到初始化过后首先显示的数据
-- (void)in_getShowInfoFromBrowser:(YBImageBrowser *)browser complete:(void(^)(CGRect fromFrame, UIImage *fromImage, BOOL cancel))complete {
+//从图片浏览器拿到初始化过后首先显示的数据
+- (BOOL)in_getShowInfoFromBrowser:(YBImageBrowser *)browser complete:(void(^)(CGRect fromFrame, UIImage *fromImage))complete {
     
     CGRect _fromFrame = CGRectZero;
     UIImage *_fromImage = nil;
-    BOOL _cancel = NO;
     
     YBImageBrowserModel *firstModel;
     NSArray *models = browser.dataArray;
@@ -129,13 +214,14 @@
         
     } else {
         YBLOG_ERROR(@"you must perform selector(setDataArray:) or implementation protocol(dataSource) of YBImageBrowser to configuration data For user interface")
-        _cancel = YES;
+        return NO;
     }
     
-    if (complete) complete(_fromFrame, _fromImage, _cancel);
+    if (complete) complete(_fromFrame, _fromImage);
+    return YES;
 }
 
-//入场：从 model 里面拿到做动画 image（配置数据源数组时用）
+//从 model 里面拿到做动画 image（配置数据源数组时用）
 - (UIImage *)in_getPosterImageWithModel:(YBImageBrowserModel *)model preview:(BOOL)preview {
     if (!preview && model.sourceImageView && model.sourceImageView.image) {
         return model.sourceImageView.image;

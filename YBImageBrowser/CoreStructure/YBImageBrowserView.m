@@ -10,6 +10,8 @@
 #import "YBImageBrowserCell.h"
 #import "YBImageBrowserViewLayout.h"
 
+static NSString * const YBImageBrowserViewCellIdentifier = @"YBImageBrowserViewCellIdentifier";
+
 @interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, YBImageBrowserCellDelegate>
 @end
 
@@ -23,10 +25,10 @@
 #pragma mark life cycle
 
 - (instancetype)initWithFrame:(CGRect)frame collectionViewLayout:(nonnull UICollectionViewLayout *)layout {
-    self = [super initWithFrame:frame collectionViewLayout:[YBImageBrowserViewLayout new]];
+    self = [super initWithFrame:frame collectionViewLayout:layout];
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:@"YBImageBrowserCell"];
+        [self registerClass:YBImageBrowserCell.class forCellWithReuseIdentifier:YBImageBrowserViewCellIdentifier];
         self.pagingEnabled = YES;
         self.showsHorizontalScrollIndicator = NO;
         self.showsVerticalScrollIndicator = NO;
@@ -43,12 +45,12 @@
 
 #pragma mark private
 
-- (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated {
+- (void)scrollToPageWithIndex:(NSInteger)index {
     if (index >= [self collectionView:self numberOfItemsInSection:0]) {
         YBLOG_WARNING(@"index is invalid")
         return;
     }
-    [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:animated];
+    self.contentOffset = CGPointMake(self.bounds.size.width * index, 0);
 }
 
 #pragma mark YBImageBrowserScreenOrientationProtocol
@@ -72,7 +74,7 @@
     
     [self reloadData];
     [self layoutIfNeeded];
-    [self scrollToPageWithIndex:self.currentIndex animated:NO];
+    [self scrollToPageWithIndex:self.currentIndex];
     
     _so_isUpdateUICompletely = YES;
 }
@@ -105,11 +107,13 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    YBImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"YBImageBrowserCell" forIndexPath:indexPath];
+    YBImageBrowserCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:YBImageBrowserViewCellIdentifier forIndexPath:indexPath];
     cell.delegate = self;
     cell.loadFailedText = self.loadFailedText;
     cell.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
     cell.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
+    cell.cancelDragImageViewAnimation = self.cancelDragImageViewAnimation;
+    cell.outScaleOfDragImageViewAnimation = self.outScaleOfDragImageViewAnimation;
     [cell so_updateFrameWithScreenOrientation:_so_screenOrientation];
     if (_yb_dataSource && [_yb_dataSource respondsToSelector:@selector(yBImageBrowserView:modelForCellAtIndex:)]) {
         cell.model = [_yb_dataSource yBImageBrowserView:self modelForCellAtIndex:indexPath.row];
@@ -122,7 +126,8 @@
 #pragma mark UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    NSUInteger index = (NSUInteger)((scrollView.contentOffset.x / scrollView.bounds.size.width) + 0.5);
+    CGFloat indexF = (scrollView.contentOffset.x / scrollView.bounds.size.width);
+    NSUInteger index = (NSUInteger)(indexF + 0.5);
     if (index > [self collectionView:self numberOfItemsInSection:0]) return;
     if (self.currentIndex != index && _so_isUpdateUICompletely) {
         self.currentIndex = index;

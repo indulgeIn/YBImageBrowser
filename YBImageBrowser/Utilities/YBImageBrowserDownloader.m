@@ -10,7 +10,17 @@
 #import <SDWebImage/SDWebImageDownloader.h>
 #import <SDWebImage/SDImageCache.h>
 
+static SDImageCache *_imageCache = nil;
+
+@interface YBImageBrowserDownloader ()
+
+@property (class, strong) SDImageCache *imageCache;
+
+@end
+
 @implementation YBImageBrowserDownloader
+
+#pragma mark public
 
 + (id)downloadWebImageWithUrl:(NSURL *)url progress:(YBImageBrowserDownloaderProgressBlock)progress success:(YBImageBrowserDownloaderSuccessBlock)success failed:(YBImageBrowserDownloaderFailedBlock)failed {
     if (!url) return nil;
@@ -39,18 +49,33 @@
     if (!image) return;
     BOOL isGif = [YBImageBrowserUtilities isGif:data];
     if (isGif && !data) return;
-    [[SDImageCache sharedImageCache] storeImage:image imageData:isGif?data:nil forKey:key toDisk:YES completion:nil];
+    [self.imageCache storeImage:image imageData:isGif?data:nil forKey:key toDisk:YES completion:nil];
 }
 
 + (void)memeryImageDataExistWithKey:(NSString *)key exist:(void (^)(BOOL))exist {
-    if (exist) exist([[SDImageCache sharedImageCache] diskImageDataExistsWithKey:key]);
+    if (exist) exist([self.imageCache diskImageDataExistsWithKey:key]);
 }
 
 + (void)queryCacheOperationForKey:(NSString *)key completed:(YBImageBrowserDownloaderCacheQueryCompletedBlock)completed {
     if (!key) return;
-    [[SDImageCache sharedImageCache] queryCacheOperationForKey:key done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
+    [self.imageCache queryCacheOperationForKey:key options:SDImageCacheQueryDataWhenInMemory|SDImageCacheQueryDiskSync done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
         if (completed) completed(image, data);
     }];
+}
+
+#pragma mark imageCache
+
++ (void)setImageCache:(SDImageCache *)x {
+    if (!self.imageCache) {
+        _imageCache = x;
+    }
+}
++ (SDImageCache *)imageCache {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _imageCache = [SDImageCache sharedImageCache];
+    });
+    return _imageCache;
 }
 
 @end

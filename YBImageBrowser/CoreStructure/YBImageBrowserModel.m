@@ -88,9 +88,7 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
         if (self->failedBlock) self->failedBlock(model, error, finished);
         
     }];
-    
 }
-
 
 #pragma mark public
 

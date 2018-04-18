@@ -39,9 +39,10 @@
 
 @property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
 @property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
-
 @property (nonatomic, strong) NSString *loadFailedText;
+@property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
+@property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
 
-- (void)scrollToPageWithIndex:(NSInteger)index animated:(BOOL)animated;
+- (void)scrollToPageWithIndex:(NSInteger)index;
 
 @end
