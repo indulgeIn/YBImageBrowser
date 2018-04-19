@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "YBImageBrowser"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "image browser for iOS (powerful, superior performance)"
 
   # This description is used to generate tags and improve search results.
@@ -82,7 +82,7 @@ Pod::Spec.new do |s|
   #
 
 
-  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{"1.0.0"}" }
+  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{s.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #

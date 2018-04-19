@@ -34,15 +34,6 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 #pragma mark 方式一：使用数组配置数据源
 - (void)A_showWithTouchIndexPath:(NSIndexPath *)indexPath {
     
-    YBImageBrowserModel *model = [YBImageBrowserModel new];
-    [model setImageWithFileName:@"localImage0" fileType:@"jpeg"];
-    YBImageBrowserModel *model1 = [YBImageBrowserModel new];
-    [model1 setImageWithFileName:@"localImage1" fileType:@"jpeg"];
-    YBImageBrowser *browser1 = [YBImageBrowser new];
-    browser1.dataArray = @[model];
-    [browser1 show];
-    return;
-    
     //配置数据源（图片浏览器每一张图片对应一个 YBImageBrowserModel 实例）
     NSMutableArray *tempArr = [NSMutableArray array];
     [self.dataArray0 enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
