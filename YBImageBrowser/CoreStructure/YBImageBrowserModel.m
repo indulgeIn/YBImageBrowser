@@ -77,6 +77,8 @@ char * const YBImageBrowserModel_SELName_download = "downloadImageProgress:succe
         } else {
             model.image = image;
         }
+        //该判断是为了防止图片加载框架的BUG影响内部逻辑
+        if (!model.animatedImage || !model.image) return;
         [YBImageBrowserDownloader storeImageDataWithKey:model.url.absoluteString image:image data:data];
         
         if (self->successBlock) self->successBlock(model, image, data, finished);

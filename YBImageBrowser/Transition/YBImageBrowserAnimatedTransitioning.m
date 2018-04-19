@@ -160,6 +160,7 @@
     CGRect toFrame = [self getFrameInWindowWithView:[self getCurrentModelFromBrowser:browser].sourceImageView];
     UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
     if (CGRectEqualToRect(toFrame, CGRectZero) || !fromImageView) {
+        [fromImageView removeFromSuperview];
         [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
         return;
     }

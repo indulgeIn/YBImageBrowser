@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class YBImageBrowser;
 
 
-#pragma mark 事件回调代理
+#pragma mark 事件回调代理 (callback agency)
 @protocol YBImageBrowserDelegate <NSObject>
 @optional
 
@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-#pragma mark 数据源代理
+#pragma mark 数据源代理 (dataSource agency)
 @protocol YBImageBrowserDataSource <NSObject>
 @required
 

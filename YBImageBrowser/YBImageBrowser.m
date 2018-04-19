@@ -131,7 +131,7 @@
     window = [YBImageBrowserUtilities getNormalWindow];
     _verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     _horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
-    _fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum]];
+    self.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum]];
 }
 
 //给子模块赋值配置

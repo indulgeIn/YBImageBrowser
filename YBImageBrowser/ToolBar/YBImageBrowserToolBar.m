@@ -85,7 +85,6 @@
         buttonWidth += size.width + 15 * 2;
     }
     if (!buttonWidth) {
-        YBLOG_WARNING(@"title and image are all nil");
         return;
     }
     
