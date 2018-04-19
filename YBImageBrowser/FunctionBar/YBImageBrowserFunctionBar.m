@@ -90,7 +90,7 @@
 
 - (void)setDataArray:(NSArray<YBImageBrowserFunctionModel *> *)dataArray {
     if (!dataArray || !dataArray.count) {
-        YBLOG_WARNING(@"dataArray is invalid")
+        YBLOG_WARNING(@"dataArray is invalid");
         return;
     }
     _dataArray = dataArray;
@@ -98,7 +98,7 @@
 
 - (void)setMaxScaleOfOperationBar:(CGFloat)maxScaleOfOperationBar {
     if (maxScaleOfOperationBar <= 0) {
-        YBLOG_WARNING(@"maxScaleOfOperationBar mast be greater than zero")
+        YBLOG_WARNING(@"maxScaleOfOperationBar mast be greater than zero");
         return;
     }
     if (maxScaleOfOperationBar > [UIScreen mainScreen].bounds.size.height) {
@@ -110,7 +110,7 @@
 
 - (void)setHeightOfCell:(CGFloat)heightOfCell {
     if (heightOfCell <= 0) {
-        YBLOG_WARNING(@"heightOfCell mast be greater than zero")
+        YBLOG_WARNING(@"heightOfCell mast be greater than zero");
         return;
     }
     _heightOfCell = heightOfCell;

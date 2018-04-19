@@ -47,7 +47,6 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 #pragma mark life cycle
 
 - (void)dealloc {
-    YBLOG(@"%@, dealloc", self);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -245,7 +244,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
             return;
         }
     } else {
-        YBLOG_ERROR(@"the data source is invalid")
+        YBLOG_ERROR(@"the data source is invalid");
         return;
     }
     UIViewController *fromVC = [YBImageBrowserUtilities getTopController];
@@ -359,7 +358,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
         if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowser:clickFunctionBarWithModel:)]) {
             [_delegate yBImageBrowser:self clickFunctionBarWithModel:model];
         } else {
-            YBLOG_WARNING(@"you are not handle events of functionBar")
+            YBLOG_WARNING(@"you are not handle events of functionBar");
         }
     }
 }
@@ -391,7 +390,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 
 - (void)setDataArray:(NSArray<YBImageBrowserModel *> *)dataArray {
     if (!dataArray || !dataArray.count) {
-        YBLOG_ERROR(@"dataArray is invalid")
+        YBLOG_ERROR(@"dataArray is invalid");
         return;
     }
     _dataArray = dataArray;
@@ -417,7 +416,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
         } else {
             [self.toolBar setRightButtonImage:nil];
             [self.toolBar setRightButtonTitle:nil];
-            YBLOG_WARNING(@"the only model in fuctionDataArray is invalid")
+            YBLOG_WARNING(@"the only model in fuctionDataArray is invalid");
         }
     } else {
         [self.toolBar setRightButtonImage:YB_READIMAGE_FROMFILE(@"ybImageBrowser_more", @"png")];
@@ -550,7 +549,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
                 [self saveGifToAlbumWithData:model.animatedImage.data];
             }];
         } else {
-            YBLOG_WARNING(@"instance of FLAnimatedImage is exist, but it's key-data is not exist, this maybe the BUG of the framework of FLAnimatedImage")
+            YBLOG_WARNING(@"instance of FLAnimatedImage is exist, but it's key-data is not exist, this maybe the BUG of the framework of FLAnimatedImage");
         }
     } else {
         if (!preview) {

@@ -11,7 +11,7 @@
 #import <FLAnimatedImage/FLAnimatedImage.h>
 
 #if DEBUG
-#define YBLOG(format, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:format, ##__VA_ARGS__] UTF8String]);
+#define YBLOG(format, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:format, ##__VA_ARGS__] UTF8String])
 #else
 #define YBLOG(format, ...) nil
 #endif

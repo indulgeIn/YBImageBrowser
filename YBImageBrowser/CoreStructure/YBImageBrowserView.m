@@ -47,7 +47,7 @@ static NSString * const YBImageBrowserViewCellIdentifier = @"YBImageBrowserViewC
 
 - (void)scrollToPageWithIndex:(NSInteger)index {
     if (index >= [self collectionView:self numberOfItemsInSection:0]) {
-        YBLOG_WARNING(@"index is invalid")
+        YBLOG_WARNING(@"index is invalid");
         return;
     }
     self.contentOffset = CGPointMake(self.bounds.size.width * index, 0);
