@@ -32,8 +32,11 @@
 
 - (NSArray<UICollectionViewLayoutAttributes *> *)layoutAttributesForElementsInRect:(CGRect)rect {
     NSArray<UICollectionViewLayoutAttributes *> *layoutAttsArray = [[NSArray alloc] initWithArray:[super layoutAttributesForElementsInRect:rect] copyItems:YES];
+    if (self->maxOffsetX <= 0) {
+        return layoutAttsArray;
+    }
     [layoutAttsArray enumerateObjectsUsingBlock:^(UICollectionViewLayoutAttributes * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        obj.center = CGPointMake(obj.center.x - (self.collectionView.contentOffset.x / maxOffsetX) * totalOffsetX, obj.center.y);
+        obj.center = CGPointMake(obj.center.x - (self.collectionView.contentOffset.x / self->maxOffsetX) * self->totalOffsetX, obj.center.y);
     }];
     return layoutAttsArray;
 }

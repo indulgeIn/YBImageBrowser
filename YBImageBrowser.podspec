@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "YBImageBrowser"
-  s.version      = "1.0.0"
+  s.version      = "1.0.1"
   s.summary      = "image browser for iOS (powerful, superior performance)"
 
   # This description is used to generate tags and improve search results.
@@ -81,13 +81,8 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.frameworks = 
-"Foundation","UIKit"
 
-  s.dependency 'SDWebImage', '~> 4.3.3'
-  s.dependency 'FLAnimatedImage', '~> 1.0.12'
-
-  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{"1.0.0"}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -98,7 +93,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "YBImageBrowser", "YBImageBrowser/**/*.{h,m}"
+  s.source_files  = "YBImageBrowser", "YBImageBrowser/**/*"
   s.exclude_files = "YBImageBrowser/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
@@ -126,6 +121,8 @@ Pod::Spec.new do |s|
 
   # s.framework  = "SomeFramework"
   # s.frameworks = "SomeFramework", "AnotherFramework"
+  s.frameworks = 
+"Foundation","UIKit"
 
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
@@ -141,5 +138,8 @@ Pod::Spec.new do |s|
 
   # s.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
   # s.dependency "JSONKit", "~> 1.4"
+
+  s.dependency 'SDWebImage', '~> 4.3.3'
+  s.dependency 'FLAnimatedImage', '~> 1.0.12'
 
 end
