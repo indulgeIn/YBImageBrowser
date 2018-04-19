@@ -81,6 +81,9 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
+  s.frameworks = 
+"Foundation","UIKit"
+
   s.dependency 'SDWebImage', '~> 4.3.3'
   s.dependency 'FLAnimatedImage', '~> 1.0.12'
 

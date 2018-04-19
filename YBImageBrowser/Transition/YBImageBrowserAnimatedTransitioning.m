@@ -221,7 +221,7 @@
         _fromImage = tempImageView.image;
         
     } else {
-        YBLOG_ERROR(@"you must perform selector(setDataArray:) or implementation protocol(dataSource) of YBImageBrowser to configuration data For user interface")
+        YBLOG_ERROR(@"you must perform selector(setDataArray:) or implementation protocol(dataSource) of YBImageBrowser to configuration data For user interface");
         return NO;
     }
     
