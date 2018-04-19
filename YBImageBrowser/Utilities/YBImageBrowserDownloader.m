@@ -27,7 +27,7 @@ static SDWebImageDownloader *_downloader = nil;
 + (id)downloadWebImageWithUrl:(NSURL *)url progress:(YBImageBrowserDownloaderProgressBlock)progress success:(YBImageBrowserDownloaderSuccessBlock)success failed:(YBImageBrowserDownloaderFailedBlock)failed {
     if (!url) return nil;
     
-    SDWebImageDownloadToken *token = [self.downloader downloadImageWithURL:url options:SDWebImageDownloaderLowPriority|SDWebImageDownloaderScaleDownLargeImages progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+    SDWebImageDownloadToken *token = [self.downloader downloadImageWithURL:url options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         
         if (progress) progress(receivedSize, expectedSize, targetURL);
         

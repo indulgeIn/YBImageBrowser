@@ -34,9 +34,10 @@
 @property (nonatomic, strong) NSString *loadFailedText;
 @property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
 @property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
+@property (nonatomic, assign) BOOL autoCountMaximumZoomScale;
 
 - (void)reDownloadImageUrl;
 
-+ (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale))completed;
++ (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale, CGFloat maximumZoomScale))completed;
 
 @end

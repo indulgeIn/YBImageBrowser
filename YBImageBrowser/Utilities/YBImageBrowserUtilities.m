@@ -97,4 +97,12 @@ NSString * const YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterv
     return resultImage;
 }
 
++ (void)countTimeConsumingOfCode:(void(^)(void))code {
+    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
+    code?code():nil;
+    CFAbsoluteTime linkTime = (CFAbsoluteTimeGetCurrent() - startTime);
+    YBLOG(@"TimeConsuming: %f ms", linkTime *1000.0);
+}
+
+
 @end

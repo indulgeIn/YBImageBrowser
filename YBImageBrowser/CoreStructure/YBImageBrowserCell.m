@@ -25,10 +25,11 @@
     BOOL isCancelAnimate;
 }
 
-@property (nonatomic, strong) FLAnimatedImageView *imageView;
+@property (nonatomic, strong) FLAnimatedImageView *imageView;   //显示的图片
+@property (nonatomic, strong) UIImageView *animateImageView;    //做动画的图片
+@property (nonatomic, strong) UIImageView *localImageView;  //用于显示大图的局部图片
 @property (nonatomic, strong) UIScrollView *scrollView;
 @property (nonatomic, strong) YBImageBrowserProgressBar *progressBar;
-@property (nonatomic, strong) UIImageView *animateImageView;
 
 @end
 
@@ -50,10 +51,12 @@
     if (self) {
         isCancelAnimate = NO;
         animateImageViewIsStart = NO;
+        _autoCountMaximumZoomScale = YES;
         [self addGesture];
         [self addNotification];
         [self.contentView addSubview:self.scrollView];
         [self.scrollView addSubview:self.imageView];
+        [self addSubview:self.localImageView];
     }
     return self;
 }
@@ -132,6 +135,20 @@
 
 #pragma mark private
 
+- (void)showLocalImageViewWithImage:(UIImage *)image {
+    if (self.localImageView.isHidden) {
+        self.localImageView.hidden = NO;
+    }
+    self.localImageView.frame = self.bounds;
+    self.localImageView.image = image;
+}
+
+- (void)hideLocalImageView {
+    if (!self.localImageView.isHidden) {
+        self.localImageView.hidden = YES;
+    }
+}
+
 - (void)showProgressBar {
     if (!self.progressBar.superview) {
         [self.contentView addSubview:self.progressBar];
@@ -144,19 +161,37 @@
     }
 }
 
+//加载图片主逻辑
 - (void)loadImageWithModel:(YBImageBrowserModel *)model isPreview:(BOOL)isPreview {
     if (!model) return;
     
     if (model.image) {
         
         //展示图片
-        [self countLayoutWithImage:model.image];
+        //若是压缩过后的图片，用原图计算缩放比例
+        if (model.needCutToShow) {
+            [self countLayoutWithImage:[model valueForKey:YBImageBrowserModel_KVCKey_largeImage] completed:nil];
+        } else {
+            [self countLayoutWithImage:model.image completed:nil];
+        }
         self.imageView.image = model.image;
+        
+    } else if (model.needCutToShow) {
+        
+        //若该缩略图需要压缩，放弃压缩逻辑以节约资源
+        if (isPreview) return;
+        //展示缩略图
+        if (model.previewModel) {
+            [self loadImageWithModel:model.previewModel isPreview:YES];
+        }
+        
+        //压缩
+        [self scaleImageWithModel:model];
         
     } else if (model.animatedImage) {
         
         //展示gif
-        [self countLayoutWithImage:model.animatedImage];
+        [self countLayoutWithImage:model.animatedImage completed:nil];
         self.imageView.animatedImage = model.animatedImage;
         
     } else if (model.url) {
@@ -184,6 +219,7 @@
     }
 }
 
+//查找缓存
 - (void)queryCacheWithModel:(YBImageBrowserModel *)model {
     [YBImageBrowserDownloader queryCacheOperationForKey:model.url.absoluteString completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
         YB_MAINTHREAD_ASYNC(^{
@@ -206,11 +242,39 @@
     }];
 }
 
+//压缩
+- (void)scaleImageWithModel:(YBImageBrowserModel *)model {
+    
+    UIImage *largeImage = [model valueForKey:YBImageBrowserModel_KVCKey_largeImage];
+    
+    [self countLayoutWithImage:largeImage completed:^(CGRect imageFrame) {
+        
+        YBImageBrowserModelScaleImageSuccessBlock successBlock = ^(YBImageBrowserModel *backModel) {
+            if (self && self.model == backModel) {
+                self.imageView.image = backModel.image;
+            }
+        };
+        ((void(*)(id, SEL, CGRect, YBImageBrowserModelScaleImageSuccessBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_scaleImage), imageFrame, successBlock);
+    }];
+}
+
+//裁剪
+- (void)cutImageWithModel:(YBImageBrowserModel *)model targetRect:(CGRect)targetRect {
+    
+    YBImageBrowserModelCutImageSuccessBlock successBlock = ^(YBImageBrowserModel *backModel, UIImage *targetImage){
+        if (self && self.model == backModel) {
+            [self showLocalImageViewWithImage:targetImage];
+        }
+    };
+    ((void(*)(id, SEL, CGRect, YBImageBrowserModelCutImageSuccessBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_cutImage), targetRect, successBlock);
+}
+
+//下载
 - (void)downLoadImageWithModel:(YBImageBrowserModel *)model {
     
     [self showProgressBar];
     
-    YBImageBrowserModelProgressBlock progressBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+    YBImageBrowserModelDownloadProgressBlock progressBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         //下载中，进度显示
         if (self.model != backModel || expectedSize <= 0) return;
         CGFloat progress = receivedSize * 1.0 / expectedSize;
@@ -221,7 +285,7 @@
         })
     };
     
-    YBImageBrowserModelSuccessBlock successBlock = ^(YBImageBrowserModel * _Nonnull backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished) {
+    YBImageBrowserModelDownloadSuccessBlock successBlock = ^(YBImageBrowserModel * _Nonnull backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished) {
         //下载成功，移除 ProgressBar 并且刷新图片
         if (self.model == backModel) {
             [self hideProgressBar];
@@ -229,7 +293,7 @@
         }
     };
     
-    YBImageBrowserModelFailedBlock failedBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSError * _Nullable error, BOOL finished) {
+    YBImageBrowserModelDownloadFailedBlock failedBlock = ^(YBImageBrowserModel * _Nonnull backModel, NSError * _Nullable error, BOOL finished) {
         //下载失败，更新 ProgressBar 为错误提示
         if (self.model == backModel) {
             [self showProgressBar];
@@ -237,28 +301,43 @@
         }
     };
     
-    ((void(*)(id, SEL, YBImageBrowserModelProgressBlock, YBImageBrowserModelSuccessBlock, YBImageBrowserModelFailedBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_download), progressBlock, successBlock, failedBlock);
+    ((void(*)(id, SEL, YBImageBrowserModelDownloadProgressBlock, YBImageBrowserModelDownloadSuccessBlock, YBImageBrowserModelDownloadFailedBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_download), progressBlock, successBlock, failedBlock);
 }
 
-- (void)countLayoutWithImage:(id)image {
-    [self.class countWithContainerSize:self.scrollView.bounds.size image:image screenOrientation:_so_screenOrientation verticalFillType:self.verticalScreenImageViewFillType horizontalFillType:self.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
+- (void)countLayoutWithImage:(id)image completed:(void(^)(CGRect imageFrame))completed {
+    [YBImageBrowserCell countWithContainerSize:self.scrollView.bounds.size image:image screenOrientation:_so_screenOrientation verticalFillType:self.verticalScreenImageViewFillType horizontalFillType:self.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale, CGFloat maximumZoomScale) {
+        
         self.scrollView.contentSize = CGSizeMake(contentSize.width, contentSize.height);
         self.scrollView.minimumZoomScale = minimumZoomScale;
+        if (self.autoCountMaximumZoomScale) {
+            self.scrollView.maximumZoomScale = maximumZoomScale * 1.2;  //多给用户缩放 0.2 倍
+        } else {
+            self.scrollView.maximumZoomScale = self.model.maximumZoomScale;
+        }
         self.imageView.frame = imageFrame;
+        
+        if (completed) completed(imageFrame);
     }];
 }
 
 //计算图片大小核心代码
-+ (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale))completed {
++ (void)countWithContainerSize:(CGSize)containerSize image:(id)image screenOrientation:(YBImageBrowserScreenOrientation)screenOrientation verticalFillType:(YBImageBrowserImageViewFillType)verticalFillType horizontalFillType:(YBImageBrowserImageViewFillType)horizontalFillType completed:(void(^)(CGRect _imageFrame, CGSize _contentSize, CGFloat _minimumZoomScale, CGFloat _maximumZoomScale))completed {
     
     CGSize imageSize = [FLAnimatedImage sizeForImage:image];
     CGFloat containerWidth = containerSize.width;
     CGFloat containerHeight = containerSize.height;
     CGFloat containerScale = containerWidth / containerHeight;
     
-    CGFloat width = 0, height = 0, x = 0, y = 0, minimumZoomScale = 1;
+    CGFloat width = 0, height = 0, x = 0, y = 0, minimumZoomScale = 1, maximumZoomScale = 1;
     CGSize contentSize = CGSizeZero;
     
+    //计算最大缩放比例
+    CGFloat widthScale = imageSize.width / containerWidth,
+    heightScale = imageSize.height / containerHeight,
+    maxScale = widthScale > heightScale ? widthScale : heightScale;
+    maximumZoomScale = maxScale > 1 ? maxScale : 1;
+    
+    //其他计算
     YBImageBrowserImageViewFillType currentFillType = screenOrientation == YBImageBrowserScreenOrientationVertical ? verticalFillType : horizontalFillType;
     
     switch (currentFillType) {
@@ -300,7 +379,7 @@
             break;
     }
     
-    if (completed) completed(CGRectMake(x, y, width, height), contentSize, minimumZoomScale);
+    if (completed) completed(CGRectMake(x, y, width, height), contentSize, minimumZoomScale, maximumZoomScale);
 }
 
 #pragma mark UIScrollViewDelegate
@@ -329,6 +408,15 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self respondsToScrollViewPanGesture];
+}
+
+- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view atScale:(CGFloat)scale {
+    
+    CGFloat _scale = ((UIImage *)[self.model valueForKey:YBImageBrowserModel_KVCKey_largeImage]).size.width / self.scrollView.contentSize.width;
+    CGFloat width = scrollView.bounds.size.width * _scale;
+    CGFloat height = scrollView.bounds.size.height * _scale;
+    [self cutImageWithModel:self.model targetRect:CGRectMake(scrollView.contentOffset.x, scrollView.contentOffset.y, width, height)];
+    YBLOG(@"scale : %lf, _scale : %lf, offset : %@", scale, _scale, NSStringFromCGPoint(scrollView.contentOffset));
 }
 
 #pragma mark drag animation
@@ -460,6 +548,24 @@
     return _imageView;
 }
 
+- (UIImageView *)localImageView {
+    if (!_localImageView) {
+        _localImageView = [UIImageView new];
+        _localImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _localImageView.hidden = YES;
+    }
+    return _localImageView;
+}
+
+- (UIImageView *)animateImageView {
+    if (!_animateImageView) {
+        _animateImageView = [UIImageView new];
+        _animateImageView.contentMode = UIViewContentModeScaleAspectFill;
+        _animateImageView.layer.masksToBounds = YES;
+    }
+    return _animateImageView;
+}
+
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
@@ -467,7 +573,7 @@
         _scrollView.showsHorizontalScrollIndicator = NO;
         _scrollView.showsVerticalScrollIndicator = NO;
         _scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
-        _scrollView.maximumZoomScale = 5;
+        _scrollView.maximumZoomScale = 1;
         _scrollView.minimumZoomScale = 1;
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width, _scrollView.bounds.size.height);
         _scrollView.alwaysBounceHorizontal = YES;
@@ -484,15 +590,6 @@
         _progressBar = [[YBImageBrowserProgressBar alloc] initWithFrame:self.bounds];
     }
     return _progressBar;
-}
-
-- (UIImageView *)animateImageView {
-    if (!_animateImageView) {
-        _animateImageView = [UIImageView new];
-        _animateImageView.contentMode = UIViewContentModeScaleAspectFill;
-        _animateImageView.layer.masksToBounds = YES;
-    }
-    return _animateImageView;
 }
 
 @end

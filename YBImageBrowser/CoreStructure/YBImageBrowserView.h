@@ -42,6 +42,7 @@
 @property (nonatomic, strong) NSString *loadFailedText;
 @property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
 @property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
+@property (nonatomic, assign) BOOL autoCountMaximumZoomScale;
 
 - (void)scrollToPageWithIndex:(NSInteger)index;
 

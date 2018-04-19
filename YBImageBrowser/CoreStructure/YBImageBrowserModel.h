@@ -12,13 +12,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class YBImageBrowserModel;
 
-typedef void(^YBImageBrowserModelProgressBlock)(YBImageBrowserModel *backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL);
-typedef void(^YBImageBrowserModelSuccessBlock)(YBImageBrowserModel *backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished);
-typedef void(^YBImageBrowserModelFailedBlock)(YBImageBrowserModel *backModel, NSError * _Nullable error, BOOL finished);
+typedef void(^YBImageBrowserModelDownloadProgressBlock)(YBImageBrowserModel *backModel, NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL);
+typedef void(^YBImageBrowserModelDownloadSuccessBlock)(YBImageBrowserModel *backModel, UIImage * _Nullable image, NSData * _Nullable data, BOOL finished);
+typedef void(^YBImageBrowserModelDownloadFailedBlock)(YBImageBrowserModel *backModel, NSError * _Nullable error, BOOL finished);
+typedef void(^YBImageBrowserModelScaleImageSuccessBlock)(YBImageBrowserModel *backModel);
+typedef void(^YBImageBrowserModelCutImageSuccessBlock)(YBImageBrowserModel *backModel, UIImage *targetImage);
 
 FOUNDATION_EXTERN NSString * const YBImageBrowserModel_KVCKey_isLoading;
 FOUNDATION_EXTERN NSString * const YBImageBrowserModel_KVCKey_isLoadFailed;
+FOUNDATION_EXTERN NSString * const YBImageBrowserModel_KVCKey_largeImage;
 FOUNDATION_EXTERN char * const YBImageBrowserModel_SELName_download;
+FOUNDATION_EXTERN char * const YBImageBrowserModel_SELName_scaleImage;
+FOUNDATION_EXPORT char * const YBImageBrowserModel_SELName_cutImage;
 
 @interface YBImageBrowserModel : NSObject
 
@@ -58,6 +63,16 @@ FOUNDATION_EXTERN char * const YBImageBrowserModel_SELName_download;
  */
 @property (nonatomic, strong, nullable) YBImageBrowserModel *previewModel;
 
+/**
+ 最大缩放值 默认4
+ （若 YBImageBrowser 的 autoCountMaximumZoomScale 属性为 NO 有效）
+ */
+@property (nonatomic, assign) CGFloat maximumZoomScale;
+
+/**
+ 是否需要裁剪显示
+ */
+@property (nonatomic, assign) BOOL needCutToShow;
 
 @end
 

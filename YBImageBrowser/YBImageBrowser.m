@@ -117,7 +117,9 @@
     _cancelLongPressGesture = NO;
     backgroundColor = [UIColor blackColor];
     _showStatusBar = NO;
-    _distanceBetweenPages = 10;
+    _yb_supportedInterfaceOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
+    _distanceBetweenPages = 18;
+    _autoCountMaximumZoomScale = YES;
     animatedTransitioningManager = [YBImageBrowserAnimatedTransitioning new];
     _transitionDuration = 0.35;
     _cancelLongPressGesture = NO;
@@ -136,6 +138,7 @@
 
 //给子模块赋值配置
 - (void)setConfigInfoToChildModules {
+    self.browserView.autoCountMaximumZoomScale = _autoCountMaximumZoomScale;
     self.browserView.loadFailedText = self.copywriter.loadFailedText;
     self.browserView.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
     self.browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
@@ -376,7 +379,6 @@
         return;
     }
     _dataArray = dataArray;
-    [self.browserView reloadData];
     [self setTooBarNumberCountWithCurrentIndex:1];
 }
 
@@ -483,7 +485,12 @@
 }
 
 - (void)savePhotoToAlbumWithModel:(YBImageBrowserModel *)model preview:(BOOL)preview {
-    if (model.image) {
+    if (model.needCutToShow) {
+        [self judgeAlbumAuthorizationStatusSuccess:^{
+            UIImage *largeImage = [model valueForKey:YBImageBrowserModel_KVCKey_largeImage];
+            if (largeImage) [self savePhotoToAlbumWithImage:largeImage];
+        }];
+    } if (model.image) {
         [self judgeAlbumAuthorizationStatusSuccess:^{
             [self savePhotoToAlbumWithImage:model.image];
         }];

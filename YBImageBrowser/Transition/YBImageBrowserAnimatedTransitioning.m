@@ -81,7 +81,7 @@
         return;
     }
     __block CGRect toFrame = CGRectZero;
-    [YBImageBrowserCell countWithContainerSize:containerView.bounds.size image:image screenOrientation:browser.so_screenOrientation verticalFillType:browser.verticalScreenImageViewFillType horizontalFillType:browser.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
+    [YBImageBrowserCell countWithContainerSize:containerView.bounds.size image:image screenOrientation:browser.so_screenOrientation verticalFillType:browser.verticalScreenImageViewFillType horizontalFillType:browser.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale, CGFloat maximumZoomScale) {
         toFrame = imageFrame;
     }];
     
@@ -123,6 +123,7 @@
     }];
 }
 
+
 #pragma mark animation -- move
 
 - (void)inAnimation_moveWithContext:(id <UIViewControllerContextTransitioning>)transitionContext containerView:(UIView *)containerView toView:(UIView *)toView {
@@ -134,11 +135,11 @@
         image = _fromImage;
     }];
     if (CGRectEqualToRect(fromFrame, CGRectZero) || !image) {
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self inAnimation_fadeWithContext:transitionContext containerView:containerView toView:toView];
         return;
     }
     __block CGRect toFrame = CGRectZero;
-    [YBImageBrowserCell countWithContainerSize:containerView.bounds.size image:image screenOrientation:browser.so_screenOrientation verticalFillType:browser.verticalScreenImageViewFillType horizontalFillType:browser.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale) {
+    [YBImageBrowserCell countWithContainerSize:containerView.bounds.size image:image screenOrientation:browser.so_screenOrientation verticalFillType:browser.verticalScreenImageViewFillType horizontalFillType:browser.horizontalScreenImageViewFillType completed:^(CGRect imageFrame, CGSize contentSize, CGFloat minimumZoomScale, CGFloat maximumZoomScale) {
         toFrame = imageFrame;
     }];
     
@@ -160,8 +161,7 @@
     CGRect toFrame = [self getFrameInWindowWithView:[self getCurrentModelFromBrowser:browser].sourceImageView];
     UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
     if (CGRectEqualToRect(toFrame, CGRectZero) || !fromImageView) {
-        [fromImageView removeFromSuperview];
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self outAnimation_fadeWithContext:transitionContext containerView:containerView fromView:fromView];
         return;
     }
     
@@ -222,7 +222,7 @@
     return YES;
 }
 
-//从 model 里面拿到做动画 image（配置数据源数组时用）
+//从 model 将要显示的图里面拿到入场动画的图片
 - (UIImage *)in_getPosterImageWithModel:(YBImageBrowserModel *)model preview:(BOOL)preview {
     if (!preview && model.sourceImageView && model.sourceImageView.image) {
         return model.sourceImageView.image;

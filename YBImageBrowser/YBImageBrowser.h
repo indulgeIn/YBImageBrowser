@@ -80,6 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  数据源
+ （请不要尝试数据重载，更改数据源请另开辟内存）
  */
 @property (nonatomic, copy) NSArray<YBImageBrowserModel *> *dataArray;
 
@@ -172,7 +173,13 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) UIInterfaceOrientationMask yb_supportedInterfaceOrientations;
 
-#pragma mark 填充方式
+#pragma mark 缩放相关 (scale)
+
+/**
+ 是否需要自动计算缩放
+ （默认是自动的，若改为 NO，可用 YBImageBrowserModel 的 maximumZoomScale 设置希望当前图片的最大缩放比例）
+ */
+@property (nonatomic, assign) BOOL autoCountMaximumZoomScale;
 
 /**
  纵屏时候图片填充类型
