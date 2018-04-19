@@ -41,7 +41,7 @@
 
 #pragma mark public
 
-- (void)showLoadFailedGraphicsWithText:(NSString *)text {
+- (void)showWithText:(NSString *)text {
     isLoadFailed = YES;
     loadFailedAttr = [[NSMutableAttributedString alloc] initWithString:text?:@"图片加载失败了" attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:15], NSForegroundColorAttributeName:[UIColor whiteColor]}];
     [self setNeedsDisplay];
@@ -60,9 +60,13 @@
 - (void)drawRect:(CGRect)rect {
     
     if (isLoadFailed) {
-        [self showFaild];
+        [self showText];
         return;
     }
+    [self showPregress];
+}
+
+- (void)showPregress {
     
     CGPoint selfCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     
@@ -86,7 +90,7 @@
     [atts drawAtPoint:CGPointMake(selfCenter.x-size.width/2.0, selfCenter.y-size.height/2.0)];
 }
 
-- (void)showFaild {
+- (void)showText {
     CGPoint selfCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     CGSize size = loadFailedAttr.size;
     [loadFailedAttr drawAtPoint:CGPointMake(selfCenter.x-size.width/2.0, selfCenter.y-size.height/2.0)];

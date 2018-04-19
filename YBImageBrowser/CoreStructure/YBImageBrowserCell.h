@@ -32,6 +32,7 @@
 @property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
 @property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
 @property (nonatomic, strong) NSString *loadFailedText;
+@property (nonatomic, strong) NSString *isScaleImageText;
 @property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
 @property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
 @property (nonatomic, assign) BOOL autoCountMaximumZoomScale;

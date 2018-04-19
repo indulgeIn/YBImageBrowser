@@ -11,6 +11,7 @@
 #import "YBImageBrowserProgressBar.h"
 #import <objc/message.h>
 #import "YBImageBrowserDownloader.h"
+#import "YBImageBrowser.h"
 
 @interface YBImageBrowserCell () <UIScrollViewDelegate> {
     //动画相关
@@ -68,6 +69,7 @@
     if (self.progressBar.superview) {
         [self.progressBar removeFromSuperview];
     }
+    [self hideLocalImageView];
 }
 
 #pragma mark notification
@@ -249,8 +251,12 @@
     
     [self countLayoutWithImage:largeImage completed:^(CGRect imageFrame) {
         
+        [self showProgressBar];
+        [self.progressBar showWithText:self.isScaleImageText];
+        
         YBImageBrowserModelScaleImageSuccessBlock successBlock = ^(YBImageBrowserModel *backModel) {
             if (self && self.model == backModel) {
+                [self hideProgressBar];
                 self.imageView.image = backModel.image;
             }
         };
@@ -259,14 +265,26 @@
 }
 
 //裁剪
-- (void)cutImageWithModel:(YBImageBrowserModel *)model targetRect:(CGRect)targetRect {
+- (void)cutImage {
+    
+    UIScrollView *scrollView = self.scrollView;
+    
+    CGFloat scale = ((UIImage *)[self.model valueForKey:YBImageBrowserModel_KVCKey_largeImage]).size.width / self.scrollView.contentSize.width;
+    CGFloat x = scrollView.contentOffset.x * scale,
+    y = scrollView.contentOffset.y * scale,
+    width = scrollView.bounds.size.width * scale,
+    height = scrollView.bounds.size.height * scale;
+    
+    if (width > YBImageBrowser.maxDisplaySize || height > YBImageBrowser.maxDisplaySize) {
+        return;
+    }
     
     YBImageBrowserModelCutImageSuccessBlock successBlock = ^(YBImageBrowserModel *backModel, UIImage *targetImage){
         if (self && self.model == backModel) {
             [self showLocalImageViewWithImage:targetImage];
         }
     };
-    ((void(*)(id, SEL, CGRect, YBImageBrowserModelCutImageSuccessBlock)) objc_msgSend)(model, sel_registerName(YBImageBrowserModel_SELName_cutImage), targetRect, successBlock);
+    ((void(*)(id, SEL, CGRect, YBImageBrowserModelCutImageSuccessBlock)) objc_msgSend)(self.model, sel_registerName(YBImageBrowserModel_SELName_cutImage), CGRectMake(x, y, width, height), successBlock);
 }
 
 //下载
@@ -297,7 +315,7 @@
         //下载失败，更新 ProgressBar 为错误提示
         if (self.model == backModel) {
             [self showProgressBar];
-            [self.progressBar showLoadFailedGraphicsWithText:self.loadFailedText];
+            [self.progressBar showWithText:self.loadFailedText];
         }
     };
     
@@ -408,15 +426,17 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self respondsToScrollViewPanGesture];
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cutImage) object:nil];
+    [self performSelector:@selector(cutImage) withObject:nil afterDelay:0.5];
 }
 
-- (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view atScale:(CGFloat)scale {
-    
-    CGFloat _scale = ((UIImage *)[self.model valueForKey:YBImageBrowserModel_KVCKey_largeImage]).size.width / self.scrollView.contentSize.width;
-    CGFloat width = scrollView.bounds.size.width * _scale;
-    CGFloat height = scrollView.bounds.size.height * _scale;
-    [self cutImageWithModel:self.model targetRect:CGRectMake(scrollView.contentOffset.x, scrollView.contentOffset.y, width, height)];
-    YBLOG(@"scale : %lf, _scale : %lf, offset : %@", scale, _scale, NSStringFromCGPoint(scrollView.contentOffset));
+- (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
+    [self hideLocalImageView];
+}
+
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    [self hideLocalImageView];
 }
 
 #pragma mark drag animation
@@ -449,6 +469,8 @@
 }
 
 - (void)addAnimationImageViewWithPoint:(CGPoint)point {
+    if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:YBImageBrowser.statusBarIsHideBefore];
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_hideBrowerView object:nil];
     animateImageViewIsStart = YES;
     totalOffsetYOfAnimateImageView = 0;
@@ -479,6 +501,9 @@
             [UIView animateWithDuration:duration animations:^{
                 self.animateImageView.frame = frameOfOriginalOfImageView;
             } completion:^(BOOL finished) {
+                
+                if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
+                
                 [self.animateImageView removeFromSuperview];
                 [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_showBrowerView object:nil];
                 isCancelAnimate = NO;

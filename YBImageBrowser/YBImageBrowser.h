@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class YBImageBrowser;
 
-
 #pragma mark 事件回调代理 (callback agency)
 @protocol YBImageBrowserDelegate <NSObject>
 @optional
@@ -177,7 +176,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  是否需要自动计算缩放
- （默认是自动的，若改为 NO，可用 YBImageBrowserModel 的 maximumZoomScale 设置希望当前图片的最大缩放比例）
+ （默认是自动的，若改为NO，可用 YBImageBrowserModel 的 maximumZoomScale 设置希望当前图片的最大缩放比例）
  */
 @property (nonatomic, assign) BOOL autoCountMaximumZoomScale;
 
@@ -198,18 +197,33 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, assign) BOOL downloaderShouldDecompressImages;
 
-#pragma mark 其他 (other)
-
 /**
- 显示状态栏
+ 最大显示pt（超过这个数量框架会自动做压缩和裁剪，默认为3500）
  */
-@property (nonatomic, assign) BOOL showStatusBar;
+@property (class, assign) CGFloat maxDisplaySize;
+
+#pragma mark 其他 (other)
 
 /**
  文案撰写者
  （可依靠该属性配置自定义的文案）
  */
 @property (nonatomic, strong) YBImageBrowserCopywriter *copywriter;
+
+/**
+ 显示状态栏
+ */
+@property (class, assign) BOOL showStatusBar;
+
+/**
+ 进入图片浏览器之前状态栏是否隐藏（进入框架内部会判断，若在图片浏览器生命周期之间外部的状态栏显示与否发生改变，你需要改变该属性的值）
+ */
+@property (class, assign) BOOL statusBarIsHideBefore;
+
+/**
+ 状态栏是否是控制器优先
+ */
+@property (class, assign, readonly) BOOL isControllerPreferredForStatusBar;
 
 @end
 

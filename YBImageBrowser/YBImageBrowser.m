@@ -15,6 +15,11 @@
 #import "YBImageBrowserViewLayout.h"
 #import "YBImageBrowserDownloader.h"
 
+static CGFloat _maxDisplaySize = 3500;
+static BOOL _showStatusBar = NO;    //改控制器是否需要隐藏状态栏
+static BOOL _isControllerPreferredForStatusBar = YES; //状态栏是否是控制器优先
+static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是否隐藏
+
 @interface YBImageBrowser () <YBImageBrowserViewDelegate, YBImageBrowserViewDataSource, YBImageBrowserToolBarDelegate, YBImageBrowserFunctionBarDelegate, UIViewControllerTransitioningDelegate> {
     UIInterfaceOrientationMask supportAutorotateTypes;
     UIWindow *window;
@@ -27,6 +32,8 @@
 @property (nonatomic, strong) YBImageBrowserView *browserView;
 @property (nonatomic, strong) YBImageBrowserToolBar *toolBar;
 @property (nonatomic, strong) YBImageBrowserFunctionBar *functionBar;
+
+@property (class, assign) BOOL isControllerPreferredForStatusBar;
 
 @end
 
@@ -51,6 +58,7 @@
         self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
         [self initData];
+        [self getStatusBarConfigByInfoPlist];
     }
     return self;
 }
@@ -59,6 +67,11 @@
     [super viewDidLoad];
     self.view.backgroundColor = backgroundColor;
     [self addNotification];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    _statusBarIsHideBefore = [UIApplication sharedApplication].statusBarHidden;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -77,7 +90,7 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    return !self.showStatusBar;
+    return YBImageBrowser.showStatusBar;
 }
 
 #pragma mark notification
@@ -114,9 +127,11 @@
 
 //初始化数据
 - (void)initData {
-    _cancelLongPressGesture = NO;
+    
     backgroundColor = [UIColor blackColor];
     _showStatusBar = NO;
+    isDealViewDidAppear = NO;
+    _cancelLongPressGesture = NO;
     _yb_supportedInterfaceOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
     _distanceBetweenPages = 18;
     _autoCountMaximumZoomScale = YES;
@@ -128,8 +143,6 @@
     _inAnimation = YBImageBrowserAnimationMove;
     _outAnimation = YBImageBrowserAnimationMove;
     interactiveTransition = [UIPercentDrivenInteractiveTransition new];
-    isDealViewDidAppear = NO;
-    _showStatusBar = NO;
     window = [YBImageBrowserUtilities getNormalWindow];
     _verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     _horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
@@ -140,6 +153,7 @@
 - (void)setConfigInfoToChildModules {
     self.browserView.autoCountMaximumZoomScale = _autoCountMaximumZoomScale;
     self.browserView.loadFailedText = self.copywriter.loadFailedText;
+    self.browserView.isScaleImageText = self.copywriter.isScaleImageText;
     self.browserView.verticalScreenImageViewFillType = self.verticalScreenImageViewFillType;
     self.browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
     self.browserView.cancelDragImageViewAnimation = self.cancelDragImageViewAnimation;
@@ -239,6 +253,8 @@
 }
 
 - (void)hide {
+    if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:YBImageBrowser.statusBarIsHideBefore];
+    
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -450,6 +466,40 @@
     return _copywriter;
 }
 
+#pragma mark class property
+
++ (CGFloat)maxDisplaySize {
+    return _maxDisplaySize;
+}
+
++ (void)setMaxDisplaySize:(CGFloat)maxDisplaySize {
+    _maxDisplaySize = maxDisplaySize;
+}
+
++ (BOOL)showStatusBar {
+    return _showStatusBar;
+}
+
++ (void)setShowStatusBar:(BOOL)showStatusBar {
+    _showStatusBar = showStatusBar;
+}
+
++ (void)setStatusBarIsHideBefore:(BOOL)statusBarIsHideBefore {
+    _statusBarIsHideBefore = statusBarIsHideBefore;
+}
+
++ (BOOL)statusBarIsHideBefore {
+    return _statusBarIsHideBefore;
+}
+
++ (BOOL)isControllerPreferredForStatusBar {
+    return _isControllerPreferredForStatusBar;
+}
+
++ (void)setIsControllerPreferredForStatusBar:(BOOL)isControllerPreferredForStatusBar {
+    _isControllerPreferredForStatusBar = isControllerPreferredForStatusBar;
+}
+
 #pragma mark device orientation
 
 - (void)addDeviceOrientationNotification {
@@ -551,6 +601,19 @@
         [YB_NORMALWINDOW yb_showHookPromptWithText:copywriter.saveImageDataToAlbumSuccessful];
     } else {
         [YB_NORMALWINDOW yb_showForkPromptWithText:copywriter.saveImageDataToAlbumFailed];
+    }
+}
+
+#pragma mark status bar
+
+- (void)getStatusBarConfigByInfoPlist {
+    NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:bundlePath];
+    id value = dict[@"UIViewControllerBasedStatusBarAppearance"];
+    if (value) {
+        _isControllerPreferredForStatusBar = [value boolValue];
+    } else {
+        _isControllerPreferredForStatusBar = YES;
     }
 }
 

@@ -45,7 +45,7 @@
             }
                 break;
             default:
-                [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+                [self completeTransition:transitionContext isIn:YES];
                 break;
         }
     }
@@ -62,10 +62,17 @@
             }
                 break;
             default:
-                [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+                [self completeTransition:transitionContext isIn:NO];
                 break;
         }
     }
+}
+
+#pragma mark private
+
+- (void)completeTransition:(id <UIViewControllerContextTransitioning>)transitionContext isIn:(BOOL)isIn {
+    if (isIn && !YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
+    [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
 }
 
 #pragma mark animation -- fade
@@ -77,7 +84,7 @@
         image = _fromImage;
     }];
     if (!image) {
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self completeTransition:transitionContext isIn:YES];
         return;
     }
     __block CGRect toFrame = CGRectZero;
@@ -95,7 +102,7 @@
         self.animateImageView.alpha = 1;
     } completion:^(BOOL finished) {
         [self.animateImageView removeFromSuperview];
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self completeTransition:transitionContext isIn:YES];
     }];
 }
 
@@ -103,7 +110,7 @@
     
     UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
     if (!fromImageView) {
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self completeTransition:transitionContext isIn:NO];
         return;
     }
     
@@ -119,7 +126,7 @@
         self.animateImageView.alpha = 0;
     } completion:^(BOOL finished) {
         [self.animateImageView removeFromSuperview];
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self completeTransition:transitionContext isIn:NO];
     }];
 }
 
@@ -153,7 +160,7 @@
         self.animateImageView.frame = toFrame;
     } completion:^(BOOL finished) {
         [self.animateImageView removeFromSuperview];
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self completeTransition:transitionContext isIn:YES];
     }];
 }
 
@@ -176,7 +183,7 @@
         self.animateImageView.frame = toFrame;
     } completion:^(BOOL finished) {
         [self.animateImageView removeFromSuperview];
-        [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+        [self completeTransition:transitionContext isIn:NO];
     }];
 }
 

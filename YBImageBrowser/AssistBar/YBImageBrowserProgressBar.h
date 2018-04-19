@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 //0.0 - 1.0
 @property (nonatomic, assign) CGFloat progress;
 
-- (void)showLoadFailedGraphicsWithText:(NSString *)text;
+- (void)showWithText:(NSString *)text;
 
 @end
 

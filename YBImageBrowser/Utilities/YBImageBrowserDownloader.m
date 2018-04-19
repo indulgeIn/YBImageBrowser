@@ -77,7 +77,7 @@ static SDWebImageDownloader *_downloader = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-        _downloader = [[SDWebImageDownloader alloc] initWithSessionConfiguration:config];
+        _downloader = [SDWebImageDownloader sharedDownloader];
         _downloader.shouldDecompressImages = YES;
     });
     return _downloader;

@@ -83,6 +83,8 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 
 
 #pragma mark 其他业务模块（other business module）
+//请忽略测试案例可能存在的性能问题，框架内部有各种内存处理
+
 // tool
 - (UIImageView *)getImageViewOfCellByIndexPath:(NSIndexPath *)indexPath {
     UICollectionViewCell *cell = [self.collectionView cellForItemAtIndexPath:indexPath];
@@ -117,13 +119,12 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
         imgView.layer.masksToBounds = YES;
         imgView.tag = tagOfImageOfCell;
         [cell.contentView addSubview:imgView];
-        CGFloat labelWidth = 30, labelHeight = 20;
+        CGFloat labelWidth = 34, labelHeight = 25;
         label = [[UILabel alloc] initWithFrame:CGRectMake(width-labelWidth, height-labelHeight, labelWidth, labelHeight)];
         label.textAlignment = NSTextAlignmentCenter;
         label.textColor = [UIColor whiteColor];
-        label.font = [UIFont boldSystemFontOfSize:12];
-        label.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.7];
-        label.text = @"gif";
+        label.font = [UIFont boldSystemFontOfSize:14];
+        label.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
         label.layer.masksToBounds = YES;
         label.layer.cornerRadius = 5;   //测试用例，请不要在意此处的性能
         label.tag = tagOfLabelOfCell;
@@ -131,12 +132,27 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     }
     label.hidden = YES;
     if (indexPath.section == 0) {
-//        NSString *filePath = [[NSBundle mainBundle] pathForResource:self.dataArray0[indexPath.row] ofType:@"jpeg"];
-//        NSData *data = [NSData dataWithContentsOfFile:filePath];
-//        imgView.image = [UIImage imageWithData:data];
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:self.dataArray0[indexPath.row] ofType:@"jpeg"];
+        NSData *data = [NSData dataWithContentsOfFile:filePath];
+        UIImage *image = [UIImage imageWithData:data];
+        if (image.size.width > 3500 || image.size.height > 3500) {
+            label.hidden = NO;
+            label.text = @"大图";
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                UIImage *result = [YBImageBrowserUtilities scaleToSizeWithImage:image size:CGSizeMake(800, image.size.height / image.size.width * 800)];
+                YB_MAINTHREAD_ASYNC(^{
+                    imgView.image = result;
+                })
+            });
+        } else {
+            imgView.image = image;
+        }
     } else {
         NSString *urlStr = self.dataArray1[indexPath.row];
-        label.hidden = ![urlStr hasSuffix:@".gif"];
+        if ([urlStr hasSuffix:@".gif"]) {
+            label.hidden = NO;
+            label.text = @"gif";
+        }
         [imgView sd_setImageWithURL:[NSURL URLWithString:urlStr]];
     }
     return cell;
@@ -191,7 +207,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 }
 - (NSArray *)dataArray0 {
     if (!_dataArray0) {
-        _dataArray0 = @[@"localBigImage0", @"localImage1", @"localImage2", @"localImage3", @"localImage4", @"localImage5", @"localImage6", @"localImage7", @"localImage8"];
+        _dataArray0 = @[@"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localImage5", @"localImage6", @"localImage8", @"localBigImage0"];
     }
     return _dataArray0;
 }
@@ -216,6 +232,10 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 - (IBAction)clickClearButton:(id)sender {
     [[SDImageCache sharedImageCache] clearMemory];
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 // device orientation

@@ -27,6 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 //加载图片失败占位文字
 @property (nonatomic, copy) NSString *loadFailedText;
 
+//正在压缩图片的文案
+@property (nonatomic, strong) NSString *isScaleImageText;
+
 @end
 
 NS_ASSUME_NONNULL_END

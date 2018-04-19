@@ -8,6 +8,7 @@
 
 #import "YBImageBrowserModel.h"
 #import "YBImageBrowserDownloader.h"
+#import "YBImageBrowser.h"
 
 NSString * const YBImageBrowserModel_KVCKey_isLoading = @"isLoading";
 NSString * const YBImageBrowserModel_KVCKey_isLoadFailed = @"isLoadFailed";
@@ -145,7 +146,7 @@ char * const YBImageBrowserModel_SELName_cutImage = "cutImageWithTargetRect:comp
 #pragma mark setter
 
 - (void)setImage:(UIImage *)image {
-    if (image.size.width > 3000 || image.size.height > 3000) {
+    if (image.size.width > YBImageBrowser.maxDisplaySize || image.size.height > YBImageBrowser.maxDisplaySize) {
         self.needCutToShow = YES;
         largeImage = image;
     } else {

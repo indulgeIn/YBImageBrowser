@@ -29,16 +29,10 @@ FOUNDATION_EXPORT char * const YBImageBrowserModel_SELName_cutImage;
 
 /**
  本地图片
- （若图片不在 Assets 中，尽量使用 setImageWithFileName:fileType: 以避免图片缓存过多导致内存飙升）
+ （setImageWithFileName:fileType: 若图片不在 Assets 中，尽量使用此方法以避免图片缓存过多导致内存飙升）
  */
 @property (nonatomic, strong, nullable) UIImage *image;
 - (void)setImageWithFileName:(NSString *)fileName fileType:(NSString *)type;
-
-/**
- 本地 gif 名字
- （请不要带后缀）
- */
-@property (nonatomic, copy, nullable) NSString *gifName;
 
 /**
  网络图片 url
@@ -46,6 +40,12 @@ FOUNDATION_EXPORT char * const YBImageBrowserModel_SELName_cutImage;
  */
 @property (nonatomic, strong, nullable) NSURL *url;
 - (void)setUrlWithDownloadInAdvance:(NSURL *)url;
+
+/**
+ 本地 gif 名字
+ （请不要带后缀）
+ */
+@property (nonatomic, copy, nullable) NSString *gifName;
 
 /**
  本地或者网络 gif 最终转换类型
