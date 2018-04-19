@@ -38,8 +38,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     NSMutableArray *tempArr = [NSMutableArray array];
     [self.dataArray0 enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         YBImageBrowserModel *model = [YBImageBrowserModel new];
-//        [model setImageWithFileName:obj fileType:@"jpeg"];
-        model.image = [UIImage imageNamed:obj];
+        [model setImageWithFileName:obj fileType:@"jpeg"];
         model.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
         [tempArr addObject:model];
     }];

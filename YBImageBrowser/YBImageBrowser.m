@@ -224,9 +224,9 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 
 - (void)setTooBarHideWithDataSourceCount:(NSInteger)count {
     if (count <= 1) {
-        if(!self.toolBar.isHidden) self.toolBar.hidden = YES;
+        if(!self.toolBar.titleLabel.isHidden) self.toolBar.titleLabel.hidden = YES;
     } else {
-        if (self.toolBar.isHidden) self.toolBar.hidden = NO;
+        if (self.toolBar.titleLabel.isHidden) self.toolBar.titleLabel.hidden = NO;
     }
 }
 
