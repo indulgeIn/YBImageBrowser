@@ -14,6 +14,7 @@
 		239822092081D32D00086EEF /* YBImageBrowserPromptBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */; };
 		2398220C20820A6200086EEF /* YBImageBrowserFunctionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2398220B20820A6200086EEF /* YBImageBrowserFunctionModel.m */; };
 		23982216208212DA00086EEF /* YBImageBrowserCopywriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 23982215208212DA00086EEF /* YBImageBrowserCopywriter.m */; };
+		23D8ED8F2089BE3600960C30 /* NSBundle+YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 23D8ED8E2089BE3600960C30 /* NSBundle+YBImageBrowser.m */; };
 		23E433FC2080D1E500C8DBFB /* YBImageBrowserToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */; };
 		23E434002080D84900C8DBFB /* ybImageBrowser_more.png in Resources */ = {isa = PBXBuildFile; fileRef = 23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */; };
 		23E434032080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */; };
@@ -57,6 +58,8 @@
 		2398220B20820A6200086EEF /* YBImageBrowserFunctionModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserFunctionModel.m; sourceTree = "<group>"; };
 		23982214208212DA00086EEF /* YBImageBrowserCopywriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserCopywriter.h; sourceTree = "<group>"; };
 		23982215208212DA00086EEF /* YBImageBrowserCopywriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserCopywriter.m; sourceTree = "<group>"; };
+		23D8ED8D2089BE3600960C30 /* NSBundle+YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSBundle+YBImageBrowser.h"; sourceTree = "<group>"; };
+		23D8ED8E2089BE3600960C30 /* NSBundle+YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+YBImageBrowser.m"; sourceTree = "<group>"; };
 		23E433FA2080D1E500C8DBFB /* YBImageBrowserToolBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserToolBar.h; sourceTree = "<group>"; };
 		23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserToolBar.m; sourceTree = "<group>"; };
 		23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ybImageBrowser_more.png; sourceTree = "<group>"; };
@@ -176,17 +179,19 @@
 				2360ADE620833E13002DF7E1 /* YBImageBrowserScreenOrientationProtocol.h */,
 				70F6AF722085874500AD272F /* YBImageBrowserDownloader.h */,
 				70F6AF732085874500AD272F /* YBImageBrowserDownloader.m */,
+				23D8ED8D2089BE3600960C30 /* NSBundle+YBImageBrowser.h */,
+				23D8ED8E2089BE3600960C30 /* NSBundle+YBImageBrowser.m */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		23E433FE2080D5EA00C8DBFB /* File.bundle */ = {
+		23E433FE2080D5EA00C8DBFB /* YBImageBrowser.bundle */ = {
 			isa = PBXGroup;
 			children = (
 				239822052081BBBA00086EEF /* ybImageBrowser_save.png */,
 				23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */,
 			);
-			path = File.bundle;
+			path = YBImageBrowser.bundle;
 			sourceTree = "<group>";
 		};
 		60CB5F15B3CFF1B885DEF91B /* Pods */ = {
@@ -230,7 +235,7 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				23E433FE2080D5EA00C8DBFB /* File.bundle */,
+				23E433FE2080D5EA00C8DBFB /* YBImageBrowser.bundle */,
 				2398221120820D2A00086EEF /* Utilities */,
 				2398220F20820D2900086EEF /* AssistBar */,
 				2398221020820D2A00086EEF /* FunctionBar */,
@@ -449,6 +454,7 @@
 				70A6F066207DD97B004A0CBA /* YBImageBrowserProgressBar.m in Sources */,
 				239822092081D32D00086EEF /* YBImageBrowserPromptBar.m in Sources */,
 				2398220C20820A6200086EEF /* YBImageBrowserFunctionModel.m in Sources */,
+				23D8ED8F2089BE3600960C30 /* NSBundle+YBImageBrowser.m in Sources */,
 				23E433FC2080D1E500C8DBFB /* YBImageBrowserToolBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

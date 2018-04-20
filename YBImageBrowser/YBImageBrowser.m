@@ -14,6 +14,7 @@
 #import "YBImageBrowserAnimatedTransitioning.h"
 #import "YBImageBrowserViewLayout.h"
 #import "YBImageBrowserDownloader.h"
+#import "NSBundle+YBImageBrowser.h"
 
 static CGFloat _maxDisplaySize = 3500;
 static BOOL _showStatusBar = NO;    //改控制器是否需要隐藏状态栏
@@ -419,7 +420,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
             YBLOG_WARNING(@"the only model in fuctionDataArray is invalid");
         }
     } else {
-        [self.toolBar setRightButtonImage:YB_READIMAGE_FROMFILE(@"ybImageBrowser_more", @"png")];
+        [self.toolBar setRightButtonImage:[UIImage imageWithContentsOfFile:[[NSBundle yBImageBrowserBundle] pathForResource:@"ybImageBrowser_more" ofType:@"png"]]];
         [self.toolBar setRightButtonTitle:nil];
         //functionBar 方法仅在此处调用其它地方均用实例变量方式访问
         self.functionBar.dataArray = fuctionDataArray;
