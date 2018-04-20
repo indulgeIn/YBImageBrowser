@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{s.version}" }
 
-  s.source_files  = "YBImageBrowser", "YBImageBrowser/**/*.{h,m}"
+  s.source_files  = "YBImageBrowser", "YBImageBrowser/**/*"
   # s.exclude_files = "YBImageBrowser/Exclude"
 
   s.resources = "YBImageBrowser/YBImageBrowser/File.bundle"
