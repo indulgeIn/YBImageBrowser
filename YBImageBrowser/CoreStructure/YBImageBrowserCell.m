@@ -470,6 +470,8 @@
 }
 
 - (void)addAnimationImageViewWithPoint:(CGPoint)point {
+    if (self.imageView.frame.size.width <= 0 || self.imageView.frame.size.height <= 0) return;
+    
     if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:YBImageBrowser.statusBarIsHideBefore];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_hideBrowerView object:nil];

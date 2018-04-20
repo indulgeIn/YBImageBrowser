@@ -180,13 +180,13 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		23E433FE2080D5EA00C8DBFB /* File */ = {
+		23E433FE2080D5EA00C8DBFB /* File.bundle */ = {
 			isa = PBXGroup;
 			children = (
 				239822052081BBBA00086EEF /* ybImageBrowser_save.png */,
 				23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */,
 			);
-			path = File;
+			path = File.bundle;
 			sourceTree = "<group>";
 		};
 		60CB5F15B3CFF1B885DEF91B /* Pods */ = {
@@ -230,7 +230,7 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				23E433FE2080D5EA00C8DBFB /* File */,
+				23E433FE2080D5EA00C8DBFB /* File.bundle */,
 				2398221120820D2A00086EEF /* Utilities */,
 				2398220F20820D2900086EEF /* AssistBar */,
 				2398221020820D2A00086EEF /* FunctionBar */,
