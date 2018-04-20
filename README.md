@@ -51,13 +51,44 @@ browser.currentIndex = ...
 ### 使用代理配置数据源
 
 当然，除了使用数组直接赋值的方式配置数据源，框架还支持使用代理配置，用过`UITableView`的朋友应该很容易理解：
+
 <pre><code>YBImageBrowser *browser = [YBImageBrowser new];
-    //设置数据源代理
-    browser.dataSource = self;
-    browser.currentIndex = ...
-    [browser show];
+//设置数据源代理
+browser.dataSource = self;
+browser.currentIndex = ...
+[browser show];
 </code></pre>
+
 然后通过实现下列的方法完成数据源的配置：
-<pre><code>
+
+<pre><code>@protocol YBImageBrowserDataSource <NSObject>
+@required
+
+/**
+ 返回点击的那个 UIImageView（用于做 YBImageBrowserAnimationMove 类型动效）
+
+ @param imageBrowser 当前图片浏览器
+ @return 点击的图片视图
+ */
+- (UIImageView * _Nullable)imageViewOfTouchForImageBrowser:(YBImageBrowser *)imageBrowser;
+
+/**
+ 配置图片的数量
+
+ @param imageBrowser 当前图片浏览器
+ @return 图片数量
+ */
+- (NSInteger)numberInYBImageBrowser:(YBImageBrowser *)imageBrowser;
+
+/**
+ 返回当前 index 图片对应的数据模型
+
+ @param imageBrowser 当前图片浏览器
+ @param index 当前下标
+ @return 数据模型
+ */
+- (YBImageBrowserModel *)yBImageBrowser:(YBImageBrowser *)imageBrowser modelForCellAtIndex:(NSInteger)index;
+
+@end
 </code></pre>
 
