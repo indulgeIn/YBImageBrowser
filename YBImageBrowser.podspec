@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   s.source_files  = "YBImageBrowser", "YBImageBrowser/**/*.{h,m}"
   # s.exclude_files = "YBImageBrowser/Exclude"
 
-  s.resources = "YBImageBrowser/File.bundle"
+  s.resources = "YBImageBrowser/YBImageBrowser/File.bundle"
 
   s.frameworks = 
 "Foundation","UIKit"
