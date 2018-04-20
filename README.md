@@ -29,7 +29,7 @@ pod 'FLAnimatedImage', '~> 1.0.12'
 
 ## 用法
 
-框架设计为每一个图片都是一个`YBImageBrowserModel`的实例模型，使用时只需要配置足够的`YBImageBrowserModel`实例，然后用数组或者实现代理的方式传给图片浏览器`YBImageBrowser`，然后调用`show`方法展示出来。
+框架设计为每一个图片都是一个`YBImageBrowserModel`的实例模型，使用时只需要配置足够的`YBImageBrowserModel`实例，然后用数组或者实现代理的方式传给图片浏览器`YBImageBrowser`，然后调用`show`方法展示出来。注意本文会有一些伪代码，具体可以看框架API，有详尽的注释。
 
 ### 最简易的使用：
 <pre><code>//创建数据源
@@ -61,34 +61,9 @@ browser.currentIndex = ...
 
 然后通过实现下列的方法完成数据源的配置：
 
-<pre><code>@protocol YBImageBrowserDataSource <NSObject>
-@required
-
-/**
- 返回点击的那个 UIImageView（用于做 YBImageBrowserAnimationMove 类型动效）
-
- @param imageBrowser 当前图片浏览器
- @return 点击的图片视图
- */
+<pre><code>
 - (UIImageView * _Nullable)imageViewOfTouchForImageBrowser:(YBImageBrowser *)imageBrowser;
-
-/**
- 配置图片的数量
-
- @param imageBrowser 当前图片浏览器
- @return 图片数量
- */
 - (NSInteger)numberInYBImageBrowser:(YBImageBrowser *)imageBrowser;
-
-/**
- 返回当前 index 图片对应的数据模型
-
- @param imageBrowser 当前图片浏览器
- @param index 当前下标
- @return 数据模型
- */
 - (YBImageBrowserModel *)yBImageBrowser:(YBImageBrowser *)imageBrowser modelForCellAtIndex:(NSInteger)index;
-
-@end
 </code></pre>
 
