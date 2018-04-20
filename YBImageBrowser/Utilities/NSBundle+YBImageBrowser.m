@@ -16,7 +16,9 @@ static NSBundle *imageBrowserBundle = nil;
 + (instancetype)yBImageBrowserBundle
 {
     if (imageBrowserBundle == nil) {
-        imageBrowserBundle = [NSBundle bundleForClass:YBImageBrowser.class];
+        NSBundle *bundle = [NSBundle bundleForClass:YBImageBrowser.class];
+        NSString *path = [bundle pathForResource:@"YBImageBrowser" ofType:@"bundle"];
+        imageBrowserBundle = [NSBundle bundleWithPath:path];
     }
     return imageBrowserBundle;
 }
