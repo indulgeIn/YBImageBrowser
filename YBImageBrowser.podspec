@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "YBImageBrowser"
-  s.version      = "1.0.3"
+  s.version      = "1.0.4"
   s.summary      = "image browser for iOS (powerful, superior performance)"
   s.description  = <<-DESC
   					image browser for iOS (powerful, superior performance), 
@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{s.version}" }
 
   s.source_files  = "YBImageBrowser", "YBImageBrowser/**/*.{h,m}"
-  s.exclude_files = "YBImageBrowser/Exclude"
+  # s.exclude_files = "YBImageBrowser/Exclude"
 
   s.resources = "YBImageBrowser/File.bundle"
 
