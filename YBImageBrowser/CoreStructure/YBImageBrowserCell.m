@@ -428,7 +428,7 @@
     [self respondsToScrollViewPanGesture];
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cutImage) object:nil];
-    [self performSelector:@selector(cutImage) withObject:nil afterDelay:0.5];
+    [self performSelector:@selector(cutImage) withObject:nil afterDelay:0.25];
 }
 
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
@@ -437,6 +437,11 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     [self hideLocalImageView];
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    //防止拖动手势最终回调 state 为 2 情况（暂不清楚原因）
+    [self removeAnimationImageViewWithScrollView:scrollView container:self];
 }
 
 #pragma mark drag animation
@@ -448,21 +453,17 @@
     UIPanGestureRecognizer *pan = scrollView.panGestureRecognizer;
     CGPoint point = [pan locationInView:self];
     
-    BOOL shouldShowAnimateImageView = pan.numberOfTouches == 1 && point.y > lastPointY && scrollView.contentOffset.y < 0 && !self.animateImageView.superview;
+    BOOL shouldShowAnimateImageView = pan.numberOfTouches == 1 && point.y > lastPointY && scrollView.contentOffset.y < -10 && !self.animateImageView.superview;
     if (shouldShowAnimateImageView) {
         [self addAnimationImageViewWithPoint:point];
     }
-    
+    YBLOG(@"state : %ld", pan.state);
     if (pan.state == UIGestureRecognizerStateBegan) {
         //手势开始的时候，这个地方可能不会走
     } else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible) {
-        if (self.animateImageView.superview) {
-            [self removeAnimationImageViewWithScrollView:scrollView container:self];
-        }
+        //手势结束的时候，这个地方可能不会走
     } else if (pan.state == UIGestureRecognizerStateChanged) {
-        if (self.animateImageView.superview) {
-            [self performAnimationForAnimationImageViewWithPoint:point container:self];
-        }
+        [self performAnimationForAnimationImageViewWithPoint:point container:self];
     }
     lastPointY = point.y;
     lastPointX = point.x;
@@ -484,6 +485,10 @@
 }
 
 - (void)removeAnimationImageViewWithScrollView:(UIScrollView *)scrollView container:(UIView *)container {
+    if (!self.animateImageView.superview) {
+        return;
+    }
+    
     CGFloat maxHeight = container.bounds.size.height;
     if (maxHeight <= 0) return;
     if (scrollView.zoomScale <= 1) {
@@ -513,6 +518,10 @@
 }
 
 - (void)performAnimationForAnimationImageViewWithPoint:(CGPoint)point container:(UIView *)container {
+    if (!self.animateImageView.superview) {
+        return;
+    }
+    
     CGFloat maxHeight = container.bounds.size.height;
     if (maxHeight <= 0) return;
     //偏移
