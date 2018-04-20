@@ -1,10 +1,10 @@
 # YBImageBrowser
 iOS图片浏览器（功能强大，性能优越）  image browser for iOS (powerful, superior performance)
 
+README 主要讲解用户可以配置的 API，设计思路及技术原理方面可以看笔者的简书文章：(待完成。。)
+
 <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/YBImageBrowserShowGif.gif">
 
-
-README 主要讲解用户可以配置的 API，设计思路及技术原理方面可以看笔者的简书文章：(待完成。。)
 
 
 # 中文说明
