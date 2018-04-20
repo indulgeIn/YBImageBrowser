@@ -29,5 +29,15 @@ pod 'FLAnimatedImage', '~> 1.0.12'
 
 ## 用法
 
+最简易的方式：
+<pre><code>YBImageBrowserModel *model0 = [YBImageBrowserModel new];
+    [model0 setImageWithFileName:obj fileType:@"jpeg"];
+    YBImageBrowserModel *model1 = ...
+
+    YBImageBrowser *browser = [YBImageBrowser new];
+    browser.dataArray = @[model0, model1, ...];
+    browser.currentIndex = indexPath.row;
+    [browser show];
+</code></pre>
 
 
