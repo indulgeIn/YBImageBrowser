@@ -21,7 +21,7 @@ iOS图片浏览器（功能强大，性能优越）==   image browser for iOS (p
 ### 手动导入
 
 直接将该 Demo 的 `YBImageBrowser` 文件夹拖入你的工程中，并在你的 Podfile 里面添加：
-<pre><code>pod 'SDWebImage', '~> 4.3.3'
+<pre><code> pod 'SDWebImage', '~> 4.3.3'
 pod 'FLAnimatedImage', '~> 1.0.12'
 </code></pre>
 
@@ -30,15 +30,14 @@ pod 'FLAnimatedImage', '~> 1.0.12'
 ## 用法
 
 最简易的方式：
-<pre><code>
-    YBImageBrowserModel *model0 = [YBImageBrowserModel new];
-    [model0 setImageWithFileName:obj fileType:@"jpeg"];
-    YBImageBrowserModel *model1 = ...
+<pre><code> YBImageBrowserModel *model0 = [YBImageBrowserModel new];
+[model0 setImageWithFileName:obj fileType:@"jpeg"];
+YBImageBrowserModel *model1 = ...
 
-    YBImageBrowser *browser = [YBImageBrowser new];
-    browser.dataArray = @[model0, model1, ...];
-    browser.currentIndex = indexPath.row;
-    [browser show];
+YBImageBrowser *browser = [YBImageBrowser new];
+browser.dataArray = @[model0, model1, ...];
+browser.currentIndex = indexPath.row;
+[browser show];
 </code></pre>
 
 
