@@ -30,7 +30,8 @@ pod 'FLAnimatedImage', '~> 1.0.12'
 ## 用法
 
 最简易的方式：
-<pre><code>YBImageBrowserModel *model0 = [YBImageBrowserModel new];
+<pre><code>
+    YBImageBrowserModel *model0 = [YBImageBrowserModel new];
     [model0 setImageWithFileName:obj fileType:@"jpeg"];
     YBImageBrowserModel *model1 = ...
 
