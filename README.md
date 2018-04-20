@@ -12,7 +12,7 @@ iOS图片浏览器（功能强大，性能优越）==   image browser for iOS (p
 ## 安装
 
 ### 使用 cocoapods 
-pod 'YBImageBrowser', '~> 1.0.3'
+pod 'YBImageBrowser', '~> 1.0.3' </p>
 若搜索不到库，可使用`rm ~/Library/Caches/CocoaPods/search_index.json`移除本地索引然后再执行安装，或者更新一下 cocoapods 版本。
 
 ### 手动导入
