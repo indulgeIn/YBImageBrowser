@@ -7,16 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		23348F222089CBD300E4D524 /* YBImageBrowser.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 23348F212089CBD300E4D524 /* YBImageBrowser.bundle */; };
 		233852852082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m */; };
 		23552135207CE3CB00769FD4 /* YBImageBrowserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23552134207CE3CB00769FD4 /* YBImageBrowserModel.m */; };
 		2394EBAD207FB4340084D297 /* YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2394EBAC207FB4340084D297 /* YBImageBrowser.m */; };
-		239822062081BBBA00086EEF /* ybImageBrowser_save.png in Resources */ = {isa = PBXBuildFile; fileRef = 239822052081BBBA00086EEF /* ybImageBrowser_save.png */; };
 		239822092081D32D00086EEF /* YBImageBrowserPromptBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */; };
 		2398220C20820A6200086EEF /* YBImageBrowserFunctionModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2398220B20820A6200086EEF /* YBImageBrowserFunctionModel.m */; };
 		23982216208212DA00086EEF /* YBImageBrowserCopywriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 23982215208212DA00086EEF /* YBImageBrowserCopywriter.m */; };
 		23D8ED8F2089BE3600960C30 /* NSBundle+YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 23D8ED8E2089BE3600960C30 /* NSBundle+YBImageBrowser.m */; };
 		23E433FC2080D1E500C8DBFB /* YBImageBrowserToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */; };
-		23E434002080D84900C8DBFB /* ybImageBrowser_more.png in Resources */ = {isa = PBXBuildFile; fileRef = 23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */; };
 		23E434032080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */; };
 		701D04252085F23900E31FDA /* YBImageBrowserViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 701D04242085F23900E31FDA /* YBImageBrowserViewLayout.m */; };
 		706BF140207CAAB30034663E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF13F207CAAB30034663E /* AppDelegate.m */; };
@@ -44,6 +43,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		23348F212089CBD300E4D524 /* YBImageBrowser.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = YBImageBrowser.bundle; sourceTree = "<group>"; };
 		233852832082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserAnimatedTransitioning.h; sourceTree = "<group>"; };
 		233852842082F8DD00D7ADB8 /* YBImageBrowserAnimatedTransitioning.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserAnimatedTransitioning.m; sourceTree = "<group>"; };
 		23552133207CE3CB00769FD4 /* YBImageBrowserModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserModel.h; sourceTree = "<group>"; };
@@ -51,7 +51,6 @@
 		2360ADE620833E13002DF7E1 /* YBImageBrowserScreenOrientationProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserScreenOrientationProtocol.h; sourceTree = "<group>"; };
 		2394EBAB207FB4340084D297 /* YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowser.h; sourceTree = "<group>"; };
 		2394EBAC207FB4340084D297 /* YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowser.m; sourceTree = "<group>"; wrapsLines = 1; };
-		239822052081BBBA00086EEF /* ybImageBrowser_save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ybImageBrowser_save.png; sourceTree = "<group>"; };
 		239822072081D32D00086EEF /* YBImageBrowserPromptBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserPromptBar.m; sourceTree = "<group>"; };
 		239822082081D32D00086EEF /* YBImageBrowserPromptBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserPromptBar.h; sourceTree = "<group>"; };
 		2398220A20820A6200086EEF /* YBImageBrowserFunctionModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserFunctionModel.h; sourceTree = "<group>"; };
@@ -62,7 +61,6 @@
 		23D8ED8E2089BE3600960C30 /* NSBundle+YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSBundle+YBImageBrowser.m"; sourceTree = "<group>"; };
 		23E433FA2080D1E500C8DBFB /* YBImageBrowserToolBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserToolBar.h; sourceTree = "<group>"; };
 		23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserToolBar.m; sourceTree = "<group>"; };
-		23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ybImageBrowser_more.png; sourceTree = "<group>"; };
 		23E434012080F3BA00C8DBFB /* YBImageBrowserFunctionBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserFunctionBar.h; sourceTree = "<group>"; };
 		23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserFunctionBar.m; sourceTree = "<group>"; };
 		701D04232085F23900E31FDA /* YBImageBrowserViewLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserViewLayout.h; sourceTree = "<group>"; };
@@ -185,15 +183,6 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		23E433FE2080D5EA00C8DBFB /* YBImageBrowser.bundle */ = {
-			isa = PBXGroup;
-			children = (
-				239822052081BBBA00086EEF /* ybImageBrowser_save.png */,
-				23E433FF2080D84900C8DBFB /* ybImageBrowser_more.png */,
-			);
-			path = YBImageBrowser.bundle;
-			sourceTree = "<group>";
-		};
 		60CB5F15B3CFF1B885DEF91B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -235,7 +224,7 @@
 		706BF154207CAAD80034663E /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
-				23E433FE2080D5EA00C8DBFB /* YBImageBrowser.bundle */,
+				23348F212089CBD300E4D524 /* YBImageBrowser.bundle */,
 				2398221120820D2A00086EEF /* Utilities */,
 				2398220F20820D2900086EEF /* AssistBar */,
 				2398221020820D2A00086EEF /* FunctionBar */,
@@ -360,14 +349,13 @@
 				706BF14B207CAAB30034663E /* LaunchScreen.storyboard in Resources */,
 				70D0FBFE2088371B0026D7DE /* localImage7.jpeg in Resources */,
 				706BF148207CAAB30034663E /* Assets.xcassets in Resources */,
-				239822062081BBBA00086EEF /* ybImageBrowser_save.png in Resources */,
 				70D0FC04208839550026D7DE /* localImage5.jpeg in Resources */,
 				70D0FBFB2088371B0026D7DE /* localImage3.jpeg in Resources */,
 				70D0FBFF2088371B0026D7DE /* localImage4.jpeg in Resources */,
 				70D0FBFD2088371B0026D7DE /* localImage0.jpeg in Resources */,
 				70D0FBFA2088371B0026D7DE /* localImage2.jpeg in Resources */,
 				70D0FC0920886DE30026D7DE /* localBigImage0.jpeg in Resources */,
-				23E434002080D84900C8DBFB /* ybImageBrowser_more.png in Resources */,
+				23348F222089CBD300E4D524 /* YBImageBrowser.bundle in Resources */,
 				70D0FC002088371B0026D7DE /* localImage6.jpeg in Resources */,
 				706BF146207CAAB30034663E /* Main.storyboard in Resources */,
 				70D0FBF92088371B0026D7DE /* localImage8.jpeg in Resources */,
