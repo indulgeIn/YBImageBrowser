@@ -71,6 +71,7 @@
 #pragma mark private
 
 - (void)completeTransition:(id <UIViewControllerContextTransitioning>)transitionContext isIn:(BOOL)isIn {
+    if (_animateImageView && _animateImageView.superview) [_animateImageView removeFromSuperview];
     if (isIn && !YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
     [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
 }
@@ -101,7 +102,6 @@
         toView.alpha = 1;
         self.animateImageView.alpha = 1;
     } completion:^(BOOL finished) {
-        [self.animateImageView removeFromSuperview];
         [self completeTransition:transitionContext isIn:YES];
     }];
 }
@@ -125,7 +125,6 @@
         fromView.alpha = 0;
         self.animateImageView.alpha = 0;
     } completion:^(BOOL finished) {
-        [self.animateImageView removeFromSuperview];
         [self completeTransition:transitionContext isIn:NO];
     }];
 }
@@ -159,7 +158,6 @@
         toView.alpha = 1;
         self.animateImageView.frame = toFrame;
     } completion:^(BOOL finished) {
-        [self.animateImageView removeFromSuperview];
         [self completeTransition:transitionContext isIn:YES];
     }];
 }
@@ -182,7 +180,6 @@
         fromView.alpha = 0;
         self.animateImageView.frame = toFrame;
     } completion:^(BOOL finished) {
-        [self.animateImageView removeFromSuperview];
         [self completeTransition:transitionContext isIn:NO];
     }];
 }
