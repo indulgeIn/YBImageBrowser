@@ -120,7 +120,9 @@ browser.currentIndex = ...
 
 状态栏组件会自动判断你在`info.plist`里的配置，所有不需担心兼容性问题，方向使用，不管你是何种配置，都可以通过`showStatusBar`属性来显示或者隐藏状态栏。
 
+### 更换图片下载库
 
+若你想更换`SDWebImage`库为其他图片库，可以更改`NSBundle+YBImageBrowser`延展，所有与`SDWebImage`有关的使用都在里面，替换并不困难。
 
 
 
