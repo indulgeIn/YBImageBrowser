@@ -26,7 +26,6 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     UIWindow *window;
     BOOL isDealViewDidAppear;
     YBImageBrowserAnimatedTransitioning *animatedTransitioningManager;
-    UIPercentDrivenInteractiveTransition *interactiveTransition;
     UIColor *backgroundColor;
 }
 
@@ -142,7 +141,6 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     _outScaleOfDragImageViewAnimation = 0.3;
     _inAnimation = YBImageBrowserAnimationMove;
     _outAnimation = YBImageBrowserAnimationMove;
-    interactiveTransition = [UIPercentDrivenInteractiveTransition new];
     window = [YBImageBrowserUtilities getNormalWindow];
     _verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     _horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
@@ -374,10 +372,6 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 - (id<UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed {
     [animatedTransitioningManager setInfoWithImageBrowser:self];
     return animatedTransitioningManager;
-}
-
-- (nullable id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator {
-    return interactiveTransition;
 }
 
 #pragma mark setter

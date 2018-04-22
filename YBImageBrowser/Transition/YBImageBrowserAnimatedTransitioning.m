@@ -45,7 +45,7 @@
             }
                 break;
             default:
-                [self completeTransition:transitionContext isIn:YES];
+                [self inAnimation_noWithContext:transitionContext];
                 break;
         }
     }
@@ -62,7 +62,7 @@
             }
                 break;
             default:
-                [self completeTransition:transitionContext isIn:NO];
+                [self outAnimation_noWithContext:transitionContext];
                 break;
         }
     }
@@ -71,9 +71,24 @@
 #pragma mark private
 
 - (void)completeTransition:(id <UIViewControllerContextTransitioning>)transitionContext isIn:(BOOL)isIn {
+    
     if (_animateImageView && _animateImageView.superview) [_animateImageView removeFromSuperview];
-    if (isIn && !YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
+
+    if (isIn && !YBImageBrowser.isControllerPreferredForStatusBar)  [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
+    
     [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
+}
+
+#pragma mark animation -- no
+
+- (void)inAnimation_noWithContext:(id <UIViewControllerContextTransitioning>)transitionContext {
+    [self completeTransition:transitionContext isIn:YES];
+}
+
+- (void)outAnimation_noWithContext:(id <UIViewControllerContextTransitioning>)transitionContext {
+    UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
+    if (fromImageView) fromImageView.hidden = YES;
+    [self completeTransition:transitionContext isIn:NO];
 }
 
 #pragma mark animation -- fade
@@ -175,13 +190,13 @@
     [containerView addSubview:self.animateImageView];
     
     fromImageView.hidden = YES;
-    
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromView.alpha = 0;
         self.animateImageView.frame = toFrame;
     } completion:^(BOOL finished) {
         [self completeTransition:transitionContext isIn:NO];
     }];
+    
 }
 
 #pragma mark public

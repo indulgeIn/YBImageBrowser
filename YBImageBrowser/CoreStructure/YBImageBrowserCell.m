@@ -457,7 +457,7 @@
     if (shouldShowAnimateImageView) {
         [self addAnimationImageViewWithPoint:point];
     }
-    YBLOG(@"state : %ld", pan.state);
+    
     if (pan.state == UIGestureRecognizerStateBegan) {
         //手势开始的时候，这个地方可能不会走
     } else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible) {
