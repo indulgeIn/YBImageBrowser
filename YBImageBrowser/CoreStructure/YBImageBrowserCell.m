@@ -15,16 +15,17 @@
 
 @interface YBImageBrowserCell () <UIScrollViewDelegate> {
     //动画相关
-    CGFloat startScaleWidthInAnimationView;
-    CGFloat startScaleheightInAnimationView;
-    CGRect frameOfOriginalOfImageView;
-    CGPoint startOffsetOfScrollView;
-    CGFloat lastPointX;
-    CGFloat lastPointY;
-    CGFloat totalOffsetXOfAnimateImageView;
-    CGFloat totalOffsetYOfAnimateImageView;
-    BOOL animateImageViewIsStart;
-    BOOL isCancelAnimate;
+    CGFloat startScaleWidthInAnimationView; //开始拖动时比例
+    CGFloat startScaleheightInAnimationView;    //开始拖动时比例
+    CGRect frameOfOriginalOfImageView;  //开始拖动时图片frame
+    CGPoint startOffsetOfScrollView;    //开始拖动时scrollview的偏移
+    CGFloat lastPointX; //上一次触摸点x值
+    CGFloat lastPointY; //上一次触摸点y值
+    CGFloat totalOffsetXOfAnimateImageView; //总共的拖动偏移x
+    CGFloat totalOffsetYOfAnimateImageView; //总共的拖动偏移y
+    BOOL animateImageViewIsStart;   //拖动动效是否第一次触发
+    BOOL isCancelAnimate;   //正在取消拖动动效
+    BOOL isZooming; //是否正在释放
 }
 
 @property (nonatomic, strong) FLAnimatedImageView *imageView;   //显示的图片
@@ -426,28 +427,30 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [self respondsToScrollViewPanGesture];
+    [self dragAnimation_respondsToScrollViewPanGesture];
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(cutImage) object:nil];
     [self performSelector:@selector(cutImage) withObject:nil afterDelay:0.25];
 }
 
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
+    isZooming = YES;
     [self hideLocalImageView];
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     [self hideLocalImageView];
-    [self recordInfoForDargAnimationWithScrollView:scrollView];
+    [self dragAnimation_recordInfoWithScrollView:scrollView];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    [self removeAnimationImageViewWithScrollView:scrollView container:self];
+    isZooming = NO;
+    [self dragAnimation_removeAnimationImageViewWithScrollView:scrollView container:self];
 }
 
 #pragma mark drag animation
 
-- (void)recordInfoForDargAnimationWithScrollView:(UIScrollView *)scrollView {
+- (void)dragAnimation_recordInfoWithScrollView:(UIScrollView *)scrollView {
     if (self.cancelDragImageViewAnimation) return;
     
     CGPoint point = [scrollView.panGestureRecognizer locationInView:self];
@@ -457,27 +460,28 @@
     startScaleheightInAnimationView = (point.y - frameOfOriginalOfImageView.origin.y) / frameOfOriginalOfImageView.size.height;
 }
 
-- (void)respondsToScrollViewPanGesture {
-    if (self.cancelDragImageViewAnimation) return;
+- (void)dragAnimation_respondsToScrollViewPanGesture {
+    if (self.cancelDragImageViewAnimation || isZooming) return;
     
     UIScrollView *scrollView = self.scrollView;
     UIPanGestureRecognizer *pan = scrollView.panGestureRecognizer;
-    CGPoint point = [pan locationInView:self];
+    if (pan.numberOfTouches != 1) return;
     
-    BOOL shouldShowAnimateImageView = pan.numberOfTouches == 1 && point.y > lastPointY && scrollView.contentOffset.y < -10 && !self.animateImageView.superview;
-    if (shouldShowAnimateImageView) {
-        [self addAnimationImageViewWithPoint:point];
+    CGPoint point = [pan locationInView:self];
+    BOOL shouldAddAnimationView = point.y > lastPointY && scrollView.contentOffset.y < -10 && !self.animateImageView.superview;
+    if (shouldAddAnimationView) {
+        [self dragAnimation_addAnimationImageViewWithPoint:point];
     }
     
     if (pan.state == UIGestureRecognizerStateChanged) {
-        [self performAnimationForAnimationImageViewWithPoint:point container:self];
+        [self dragAnimation_performAnimationForAnimationImageViewWithPoint:point container:self];
     }
     
     lastPointY = point.y;
     lastPointX = point.x;
 }
 
-- (void)addAnimationImageViewWithPoint:(CGPoint)point {
+- (void)dragAnimation_addAnimationImageViewWithPoint:(CGPoint)point {
     if (self.imageView.frame.size.width <= 0 || self.imageView.frame.size.height <= 0) return;
     
     if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:YBImageBrowser.statusBarIsHideBefore];
@@ -492,7 +496,7 @@
     [YB_NORMALWINDOW addSubview:self.animateImageView];
 }
 
-- (void)removeAnimationImageViewWithScrollView:(UIScrollView *)scrollView container:(UIView *)container {
+- (void)dragAnimation_removeAnimationImageViewWithScrollView:(UIScrollView *)scrollView container:(UIView *)container {
     if (!self.animateImageView.superview) return;
     
     CGFloat maxHeight = container.bounds.size.height;
@@ -527,7 +531,7 @@
     }
 }
 
-- (void)performAnimationForAnimationImageViewWithPoint:(CGPoint)point container:(UIView *)container {
+- (void)dragAnimation_performAnimationForAnimationImageViewWithPoint:(CGPoint)point container:(UIView *)container {
     if (!self.animateImageView.superview) return;
     
     CGFloat maxHeight = container.bounds.size.height;

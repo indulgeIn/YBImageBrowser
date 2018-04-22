@@ -84,7 +84,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 
 
 #pragma mark 其他业务模块（other business module）
-//请忽略测试案例可能存在的性能问题，框架内部有各种内存处理
+//注意：请忽略测试案例可能存在的性能问题
 
 // tool
 - (UIImageView *)getImageViewOfCellByIndexPath:(NSIndexPath *)indexPath {
