@@ -104,7 +104,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 - (void)yBImageBrowser_notification_willShowBrowerViewWithTimeInterval:(NSNotification *)noti {
     CGFloat timeInterval = [noti.userInfo[YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval] floatValue];
     [UIView animateWithDuration:timeInterval animations:^{
-        self.view.backgroundColor = [backgroundColor colorWithAlphaComponent:1];
+        self.view.backgroundColor = [self->backgroundColor colorWithAlphaComponent:1];
     }];
 }
 
@@ -126,7 +126,6 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 
 //初始化数据
 - (void)initData {
-    
     backgroundColor = [UIColor blackColor];
     _showStatusBar = NO;
     isDealViewDidAppear = NO;
@@ -138,7 +137,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     _transitionDuration = 0.35;
     _cancelLongPressGesture = NO;
     _cancelDragImageViewAnimation = NO;
-    _outScaleOfDragImageViewAnimation = 0.3;
+    _outScaleOfDragImageViewAnimation = 0.15;
     _inAnimation = YBImageBrowserAnimationMove;
     _outAnimation = YBImageBrowserAnimationMove;
     window = [YBImageBrowserUtilities getNormalWindow];

@@ -18,6 +18,7 @@
     CGFloat startScaleWidthInAnimationView;
     CGFloat startScaleheightInAnimationView;
     CGRect frameOfOriginalOfImageView;
+    CGPoint startOffsetOfScrollView;
     CGFloat lastPointX;
     CGFloat lastPointY;
     CGFloat totalOffsetXOfAnimateImageView;
@@ -437,14 +438,24 @@
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     [self hideLocalImageView];
+    [self recordInfoForDargAnimationWithScrollView:scrollView];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    //防止拖动手势最终回调 state 为 2 情况（暂不清楚原因）
     [self removeAnimationImageViewWithScrollView:scrollView container:self];
 }
 
 #pragma mark drag animation
+
+- (void)recordInfoForDargAnimationWithScrollView:(UIScrollView *)scrollView {
+    if (self.cancelDragImageViewAnimation) return;
+    
+    CGPoint point = [scrollView.panGestureRecognizer locationInView:self];
+    startOffsetOfScrollView = scrollView.contentOffset;
+    frameOfOriginalOfImageView = [self.imageView convertRect:self.imageView.bounds toView:YB_NORMALWINDOW];
+    startScaleWidthInAnimationView = (point.x - frameOfOriginalOfImageView.origin.x) / frameOfOriginalOfImageView.size.width;
+    startScaleheightInAnimationView = (point.y - frameOfOriginalOfImageView.origin.y) / frameOfOriginalOfImageView.size.height;
+}
 
 - (void)respondsToScrollViewPanGesture {
     if (self.cancelDragImageViewAnimation) return;
@@ -458,13 +469,10 @@
         [self addAnimationImageViewWithPoint:point];
     }
     
-    if (pan.state == UIGestureRecognizerStateBegan) {
-        //手势开始的时候，这个地方可能不会走
-    } else if (pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStatePossible) {
-        //手势结束的时候，这个地方可能不会走
-    } else if (pan.state == UIGestureRecognizerStateChanged) {
+    if (pan.state == UIGestureRecognizerStateChanged) {
         [self performAnimationForAnimationImageViewWithPoint:point container:self];
     }
+    
     lastPointY = point.y;
     lastPointX = point.x;
 }
@@ -475,54 +483,52 @@
     if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:YBImageBrowser.statusBarIsHideBefore];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_hideBrowerView object:nil];
+    
     animateImageViewIsStart = YES;
     totalOffsetYOfAnimateImageView = 0;
     totalOffsetXOfAnimateImageView = 0;
-    frameOfOriginalOfImageView = [self.imageView convertRect:self.imageView.bounds toView:YB_NORMALWINDOW];
-    startScaleWidthInAnimationView = (point.x - frameOfOriginalOfImageView.origin.x) / frameOfOriginalOfImageView.size.width;
-    startScaleheightInAnimationView = (point.y - frameOfOriginalOfImageView.origin.y) / frameOfOriginalOfImageView.size.height;
     self.animateImageView.image = self.imageView.image;
     self.animateImageView.frame = frameOfOriginalOfImageView;
     [YB_NORMALWINDOW addSubview:self.animateImageView];
 }
 
 - (void)removeAnimationImageViewWithScrollView:(UIScrollView *)scrollView container:(UIView *)container {
-    if (!self.animateImageView.superview) {
-        return;
-    }
+    if (!self.animateImageView.superview) return;
     
     CGFloat maxHeight = container.bounds.size.height;
     if (maxHeight <= 0) return;
     if (scrollView.zoomScale <= 1) {
         scrollView.contentOffset = CGPointZero;
     }
+    
     if (totalOffsetYOfAnimateImageView > maxHeight * _outScaleOfDragImageViewAnimation) {
+        
         //移除图片浏览器
         [_delegate applyForHiddenByYBImageBrowserCell:self];
+        
     } else {
+        
         //复位
-        if (!isCancelAnimate) {
-            isCancelAnimate = YES;
-            CGFloat duration = 0.25;
-            [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_willShowBrowerViewWithTimeInterval object:nil userInfo:@{YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval:@(duration)}];
-            [UIView animateWithDuration:duration animations:^{
-                self.animateImageView.frame = frameOfOriginalOfImageView;
-            } completion:^(BOOL finished) {
-                
-                if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
-                
-                [self.animateImageView removeFromSuperview];
-                [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_showBrowerView object:nil];
-                isCancelAnimate = NO;
-            }];
-        }
+        if (isCancelAnimate) return;
+        isCancelAnimate = YES;
+        
+        CGFloat duration = 0.25;
+        [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_willShowBrowerViewWithTimeInterval object:nil userInfo:@{YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterval:@(duration)}];
+        
+        [UIView animateWithDuration:duration animations:^{
+            self.animateImageView.frame = frameOfOriginalOfImageView;
+        } completion:^(BOOL finished) {
+            if (!YBImageBrowser.isControllerPreferredForStatusBar) [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
+            self.scrollView.contentOffset = self->startOffsetOfScrollView;
+            [[NSNotificationCenter defaultCenter] postNotificationName:YBImageBrowser_notification_showBrowerView object:nil];
+            [self.animateImageView removeFromSuperview];
+            self->isCancelAnimate = NO;
+        }];
     }
 }
 
 - (void)performAnimationForAnimationImageViewWithPoint:(CGPoint)point container:(UIView *)container {
-    if (!self.animateImageView.superview) {
-        return;
-    }
+    if (!self.animateImageView.superview) return;
     
     CGFloat maxHeight = container.bounds.size.height;
     if (maxHeight <= 0) return;
@@ -572,6 +578,12 @@
     if (!model) return;
     _model = model;
     [self loadImageWithModel:model isPreview:NO];
+}
+
+- (void)setCancelDragImageViewAnimation:(BOOL)cancelDragImageViewAnimation {
+    _cancelDragImageViewAnimation = cancelDragImageViewAnimation;
+    self.scrollView.alwaysBounceVertical = !cancelDragImageViewAnimation;
+    self.scrollView.alwaysBounceHorizontal = !cancelDragImageViewAnimation;
 }
 
 #pragma mark getter

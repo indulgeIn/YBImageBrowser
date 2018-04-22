@@ -145,7 +145,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
 
 /**
- 拖拽图片动效触发出场的比例（拖动距离/屏幕高度 默认0.3）
+ 拖拽图片动效触发出场的比例（拖动距离/屏幕高度 默认0.15）
  */
 @property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
 

@@ -47,6 +47,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     YBImageBrowser *browser = [YBImageBrowser new];
     browser.dataArray = tempArr;
     browser.currentIndex = indexPath.row;
+    browser.outScaleOfDragImageViewAnimation = 0.4;
     
     //展示
     [browser show];

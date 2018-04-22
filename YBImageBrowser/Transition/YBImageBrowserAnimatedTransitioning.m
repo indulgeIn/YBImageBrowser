@@ -86,8 +86,6 @@
 }
 
 - (void)outAnimation_noWithContext:(id <UIViewControllerContextTransitioning>)transitionContext {
-    UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
-    if (fromImageView) fromImageView.hidden = YES;
     [self completeTransition:transitionContext isIn:NO];
 }
 
@@ -188,7 +186,7 @@
     self.animateImageView.image = fromImageView.image;
     self.animateImageView.frame = [self getFrameInWindowWithView:fromImageView];
     [containerView addSubview:self.animateImageView];
-    
+
     fromImageView.hidden = YES;
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromView.alpha = 0;
