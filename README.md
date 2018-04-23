@@ -1,4 +1,4 @@
-# YBImageBrowser
+# YBImageBrowser (The latest version: 1.0.5)
 
 README 主要讲解用户可以配置的 API，设计思路及更多技术原理可以看笔者的简书文章：https://www.jianshu.com/p/bff0c6d89814
 
