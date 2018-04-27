@@ -72,6 +72,7 @@
         [self.progressBar removeFromSuperview];
     }
     [self hideLocalImageView];
+    [super prepareForReuse];
 }
 
 #pragma mark notification

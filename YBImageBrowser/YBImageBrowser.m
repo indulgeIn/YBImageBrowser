@@ -155,7 +155,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     self.browserView.horizontalScreenImageViewFillType = self.horizontalScreenImageViewFillType;
     self.browserView.cancelDragImageViewAnimation = self.cancelDragImageViewAnimation;
     self.browserView.outScaleOfDragImageViewAnimation = self.outScaleOfDragImageViewAnimation;
-    ((UICollectionViewFlowLayout *)self.browserView.collectionViewLayout).minimumLineSpacing = self.distanceBetweenPages;
+    ((YBImageBrowserViewLayout *)self.browserView.collectionViewLayout).distanceBetweenPages = self.distanceBetweenPages;
     [self setTooBarNumberCountWithCurrentIndex:1];
 }
 

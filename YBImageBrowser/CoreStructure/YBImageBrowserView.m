@@ -38,7 +38,6 @@ static NSString * const YBImageBrowserViewCellIdentifier = @"YBImageBrowserViewC
         if (@available(iOS 11.0, *)) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
-        [self visibleCells];
     }
     return self;
 }
@@ -138,7 +137,6 @@ static NSString * const YBImageBrowserViewCellIdentifier = @"YBImageBrowserViewC
         }
     }
 }
-
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     NSArray<YBImageBrowserCell *>* array = (NSArray<YBImageBrowserCell *>*)[self visibleCells];
     for (YBImageBrowserCell *cell in array) {

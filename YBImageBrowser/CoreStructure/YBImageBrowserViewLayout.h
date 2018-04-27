@@ -10,4 +10,6 @@
 
 @interface YBImageBrowserViewLayout : UICollectionViewFlowLayout
 
+@property (nonatomic, assign) CGFloat distanceBetweenPages;
+
 @end
