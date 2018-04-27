@@ -212,7 +212,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 }
 - (NSArray *)dataArray0 {
     if (!_dataArray0) {
-        _dataArray0 = @[@"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localImage5", @"localImage6", @"localImage8", @"localBigImage0", @"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localImage5", @"localImage6", @"localImage8", @"localBigImage0", @"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localImage5", @"localImage6", @"localImage8", @"localBigImage0", @"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localImage5", @"localImage6", @"localImage8", @"localBigImage0"];
+        _dataArray0 = @[@"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localImage5", @"localImage6", @"localImage8", @"localBigImage0"];
     }
     return _dataArray0;
 }
