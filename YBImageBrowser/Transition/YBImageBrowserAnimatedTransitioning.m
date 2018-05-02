@@ -71,11 +71,8 @@
 #pragma mark private
 
 - (void)completeTransition:(id <UIViewControllerContextTransitioning>)transitionContext isIn:(BOOL)isIn {
-    
     if (_animateImageView && _animateImageView.superview) [_animateImageView removeFromSuperview];
-
     if (isIn && !YBImageBrowser.isControllerPreferredForStatusBar)  [[UIApplication sharedApplication] setStatusBarHidden:!YBImageBrowser.showStatusBar];
-    
     [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
 }
 
@@ -87,7 +84,7 @@
 
 - (void)outAnimation_noWithContext:(id <UIViewControllerContextTransitioning>)transitionContext {
     UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
-    if (fromImageView) [fromImageView removeFromSuperview];
+    if (fromImageView) fromImageView.hidden = YES;
     [self completeTransition:transitionContext isIn:NO];
 }
 
