@@ -86,6 +86,8 @@
 }
 
 - (void)outAnimation_noWithContext:(id <UIViewControllerContextTransitioning>)transitionContext {
+    UIImageView *fromImageView = [self getCurrentImageViewFromBrowser:browser];
+    if (fromImageView) [fromImageView removeFromSuperview];
     [self completeTransition:transitionContext isIn:NO];
 }
 
@@ -130,6 +132,7 @@
     self.animateImageView.image = fromImageView.image;
     self.animateImageView.frame = [self getFrameInWindowWithView:fromImageView];
     [containerView addSubview:self.animateImageView];
+    
     fromView.alpha = 1;
     self.animateImageView.alpha = 1;
     //因为可能是拖拽动画的视图，索性隐藏掉
@@ -166,6 +169,7 @@
     self.animateImageView.image = image;
     self.animateImageView.frame = fromFrame;
     [containerView addSubview:self.animateImageView];
+    
     toView.alpha = 0;
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         toView.alpha = 1;
@@ -186,6 +190,7 @@
     self.animateImageView.image = fromImageView.image;
     self.animateImageView.frame = [self getFrameInWindowWithView:fromImageView];
     [containerView addSubview:self.animateImageView];
+    
     fromImageView.hidden = YES;
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromView.alpha = 0;
