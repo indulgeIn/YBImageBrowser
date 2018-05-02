@@ -102,7 +102,9 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     [super viewDidAppear:animated];
     
 }
-
+- (BOOL)prefersStatusBarHidden {
+    return NO;
+}
 // UICollectionViewDataSource
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 2;
@@ -237,10 +239,6 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 - (IBAction)clickClearButton:(id)sender {
     [[SDImageCache sharedImageCache] clearMemory];
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return YES;
 }
 
 // device orientation

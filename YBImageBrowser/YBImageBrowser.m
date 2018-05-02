@@ -53,9 +53,9 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.automaticallyAdjustsScrollViewInsets = NO;
         self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
+        self.automaticallyAdjustsScrollViewInsets = NO;
         [self initData];
         [self getStatusBarConfigByInfoPlist];
     }
@@ -89,7 +89,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 }
 
 - (BOOL)prefersStatusBarHidden {
-    return YBImageBrowser.showStatusBar;
+    return !YBImageBrowser.showStatusBar;
 }
 
 #pragma mark notification
@@ -156,7 +156,6 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     self.browserView.cancelDragImageViewAnimation = self.cancelDragImageViewAnimation;
     self.browserView.outScaleOfDragImageViewAnimation = self.outScaleOfDragImageViewAnimation;
     ((YBImageBrowserViewLayout *)self.browserView.collectionViewLayout).distanceBetweenPages = self.distanceBetweenPages;
-    [self setTooBarNumberCountWithCurrentIndex:1];
 }
 
 //获取屏幕展示的方向

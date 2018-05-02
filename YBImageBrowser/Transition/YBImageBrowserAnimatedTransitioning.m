@@ -186,7 +186,6 @@
     self.animateImageView.image = fromImageView.image;
     self.animateImageView.frame = [self getFrameInWindowWithView:fromImageView];
     [containerView addSubview:self.animateImageView];
-
     fromImageView.hidden = YES;
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromView.alpha = 0;
