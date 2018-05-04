@@ -245,10 +245,10 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 #pragma mark public
 
 - (void)show {
-    [self showToController:[YBImageBrowserUtilities getTopController]];
+    [self showFromController:[YBImageBrowserUtilities getTopController]];
 }
 
-- (void)showToController:(UIViewController *)controller {
+- (void)showFromController:(UIViewController *)controller {
     if (self.dataArray) {
         if (!self.dataArray.count) {
             YBLOG_ERROR(@"dataArray is invalid");
