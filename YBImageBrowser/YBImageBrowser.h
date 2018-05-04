@@ -93,6 +93,7 @@ NS_ASSUME_NONNULL_BEGIN
  展示
  */
 - (void)show;
+- (void)showToController:(UIViewController *)controller;
 
 /**
  当前下标

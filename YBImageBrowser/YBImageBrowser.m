@@ -53,8 +53,8 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.modalPresentationStyle = UIModalPresentationCustom;
         self.transitioningDelegate = self;
+        self.modalPresentationStyle = UIModalPresentationCustom;
         self.automaticallyAdjustsScrollViewInsets = NO;
         [self initData];
         [self getStatusBarConfigByInfoPlist];
@@ -66,6 +66,9 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     [super viewDidLoad];
     self.view.backgroundColor = backgroundColor;
     [self addNotification];
+    if (_isControllerPreferredForStatusBar && !_showStatusBar && !_statusBarIsHideBefore) {
+        [self configStatusBarHide:YES];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -88,8 +91,20 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     }
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (_isControllerPreferredForStatusBar && !_showStatusBar && !_statusBarIsHideBefore) {
+        [self configStatusBarHide:NO];
+    }
+}
+
 - (BOOL)prefersStatusBarHidden {
     return !YBImageBrowser.showStatusBar;
+}
+
+- (void)configStatusBarHide:(BOOL)hide {
+    UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
+    statusBar.alpha = !hide;
 }
 
 #pragma mark notification
@@ -230,6 +245,10 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 #pragma mark public
 
 - (void)show {
+    [self showToController:[YBImageBrowserUtilities getTopController]];
+}
+
+- (void)showToController:(UIViewController *)controller {
     if (self.dataArray) {
         if (!self.dataArray.count) {
             YBLOG_ERROR(@"dataArray is invalid");
@@ -244,8 +263,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
         YBLOG_ERROR(@"the data source is invalid");
         return;
     }
-    UIViewController *fromVC = [YBImageBrowserUtilities getTopController];
-    [fromVC presentViewController:self animated:YES completion:nil];
+    [controller presentViewController:self animated:YES completion:nil];
 }
 
 - (void)hide {
