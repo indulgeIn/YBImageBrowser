@@ -84,7 +84,8 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
         [self so_updateFrameWithScreenOrientation:[self getScreenOrientationByStatusBar]];
         [self.view addSubview:self.browserView];
         [self.view addSubview:self.toolBar];
-        [self.browserView scrollToPageWithIndex:self.currentIndex];
+        [self.browserView scrollToPageWithIndex:_currentIndex];
+        [self setTooBarNumberCountWithCurrentIndex:1];
         [self addDeviceOrientationNotification];
         isDealViewDidAppear = YES;
         [self configSupportAutorotateTypes];
@@ -405,7 +406,6 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
         return;
     }
     _dataArray = dataArray;
-    [self setTooBarNumberCountWithCurrentIndex:1];
 }
 
 - (void)setYb_supportedInterfaceOrientations:(UIInterfaceOrientationMask)yb_supportedInterfaceOrientations {
