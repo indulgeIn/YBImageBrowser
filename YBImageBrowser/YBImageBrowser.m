@@ -85,7 +85,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
         [self.view addSubview:self.browserView];
         [self.view addSubview:self.toolBar];
         [self.browserView scrollToPageWithIndex:_currentIndex];
-        [self setTooBarNumberCountWithCurrentIndex:1];
+        [self setTooBarNumberCountWithCurrentIndex:_currentIndex+1];
         [self addDeviceOrientationNotification];
         isDealViewDidAppear = YES;
         [self configSupportAutorotateTypes];
