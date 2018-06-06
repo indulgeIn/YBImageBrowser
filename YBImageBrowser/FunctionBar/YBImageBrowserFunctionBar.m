@@ -14,6 +14,7 @@
 }
 
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) UIView *footer;
 @property (nonatomic, assign) BOOL isShow;
 
 @end
@@ -79,8 +80,11 @@
 
 - (void)resetTableViewFrameWithSuperView:(UIView *)superView {
     CGRect bounds = superView.bounds;
+    
+    self.footer.frame = CGRectMake(0, 0, bounds.size.width, YB_HEIGHT_EXTRABOTTOM);
+    
     CGFloat maxHeight = self.maxScaleOfOperationBar * bounds.size.height;
-    CGFloat cellsHeight = self.heightOfCell * self.dataArray.count + self.heightOfCell+5;
+    CGFloat cellsHeight = self.heightOfCell * self.dataArray.count + self.heightOfCell+5 + YB_HEIGHT_EXTRABOTTOM;
     CGFloat resultHeight = maxHeight >= cellsHeight ? cellsHeight : maxHeight;
     showFrameOfTableView = CGRectMake(0, bounds.size.height - resultHeight, bounds.size.width, resultHeight);
     hideFrameOfTableView = CGRectMake(0, bounds.size.height, bounds.size.width, resultHeight);
@@ -160,14 +164,25 @@
         line.backgroundColor = [UIColor groupTableViewBackgroundColor];
         line.tag = 1001;
         [cell.contentView addSubview:line];
+        
+        //有个奇怪的问题，iPhoneX横屏时contentView的宽度并不是全屏，所以这里使用了约束。
+        label.translatesAutoresizingMaskIntoConstraints = NO;
+        NSLayoutConstraint *labelC0 = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *labelC1 = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        NSLayoutConstraint *labelC2 = [NSLayoutConstraint constraintWithItem:label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
+        line.translatesAutoresizingMaskIntoConstraints = NO;
+        NSLayoutConstraint *lineC0 = [NSLayoutConstraint constraintWithItem:line attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:0.5];
+        NSLayoutConstraint *lineC1 = [NSLayoutConstraint constraintWithItem:line attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeLeft multiplier:1 constant:0];
+        NSLayoutConstraint *lineC2 = [NSLayoutConstraint constraintWithItem:line attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeRight multiplier:1 constant:0];
+        NSLayoutConstraint *lineC3 = [NSLayoutConstraint constraintWithItem:line attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:cell.contentView attribute:NSLayoutAttributeBottom multiplier:1 constant:0];
+        [cell.contentView addConstraints:@[labelC0, labelC1, labelC2, lineC0, lineC1, lineC2, lineC3]];
     }
-    CGFloat width = [UIScreen mainScreen].bounds.size.width;
-    label.frame = CGRectMake(0, 0, width, self.heightOfCell);
-    line.frame = CGRectMake(0, self.heightOfCell - 0.5, width, 0.5);
     if (indexPath.section == 0) {
         label.text = self.dataArray[indexPath.row].name;
+        line.hidden = NO;
     } else {
         label.text = _cancelText;
+        line.hidden = YES;
     }
     return cell;
 }
@@ -203,6 +218,7 @@
         _tableView.estimatedSectionFooterHeight = 0;
         _tableView.estimatedSectionHeaderHeight = 0;
         _tableView.backgroundColor = [UIColor clearColor];
+        _tableView.tableFooterView = self.footer;
         if (@available(iOS 11.0, *)) {
             _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
@@ -211,6 +227,13 @@
         [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:@"YBImageBrowserFunctionBar"];
     }
     return _tableView;
+}
+- (UIView *)footer {
+    if (!_footer) {
+        _footer = [UIView new];
+        _footer.backgroundColor = [UIColor whiteColor];
+    }
+    return _footer;
 }
 
 @end

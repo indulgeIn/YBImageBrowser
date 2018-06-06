@@ -316,7 +316,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     if (self.fuctionDataArray.count > 1) {
         //弹出功能栏
         if (_functionBar) {
-            [_functionBar show];
+            [_functionBar showToView:self.view];
         }
     }
 }
@@ -353,13 +353,22 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 
 - (void)yBImageBrowserToolBar:(YBImageBrowserToolBar *)imageBrowserToolBar didClickRightButton:(UIButton *)button {
     if (!self.fuctionDataArray.count) return;
-    if (self.fuctionDataArray.count == 1 && [self.fuctionDataArray[0].ID isEqualToString:YBImageBrowserFunctionModel_ID_savePictureToAlbum]) {
-        //直接保存图片
-        [self savePhotoToAlbumWithCurrentIndex];
+    if (self.fuctionDataArray.count == 1) {
+        if ([self.fuctionDataArray[0].ID isEqualToString:YBImageBrowserFunctionModel_ID_savePictureToAlbum]) {
+            //直接保存图片
+            [self savePhotoToAlbumWithCurrentIndex];
+        } else {
+            //回调
+            if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowser:clickFunctionBarWithModel:)]) {
+                [_delegate yBImageBrowser:self clickFunctionBarWithModel:self.fuctionDataArray[0]];
+            } else {
+                YBLOG_WARNING(@"you are not handle events of functionBar");
+            }
+        }
     } else {
         //弹出功能栏
         if (_functionBar) {
-            [_functionBar show];
+            [_functionBar showToView:self.view];
         }
     }
 }

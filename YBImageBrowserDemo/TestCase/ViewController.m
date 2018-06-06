@@ -52,6 +52,8 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     [browser show];
 }
 
+
+
 #pragma mark 方式二、使用代理配置数据源
 
 - (void)B_showWithTouchIndexPath:(NSIndexPath *)indexPath {
