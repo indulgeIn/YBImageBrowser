@@ -53,7 +53,6 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 }
 
 
-
 #pragma mark 方式二、使用代理配置数据源
 
 - (void)B_showWithTouchIndexPath:(NSIndexPath *)indexPath {

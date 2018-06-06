@@ -359,8 +359,8 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
             [self savePhotoToAlbumWithCurrentIndex];
         } else {
             //回调
-            if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowser:clickFunctionBarWithModel:)]) {
-                [_delegate yBImageBrowser:self clickFunctionBarWithModel:self.fuctionDataArray[0]];
+            if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowser:clickFunctionWithModel:imageModel:)]) {
+                [_delegate yBImageBrowser:self clickFunctionWithModel:self.fuctionDataArray[0] imageModel:[self yBImageBrowserView:self.browserView modelForCellAtIndex:self.currentIndex]];
             } else {
                 YBLOG_WARNING(@"you are not handle events of functionBar");
             }
@@ -378,10 +378,12 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 - (void)ybImageBrowserFunctionBar:(YBImageBrowserFunctionBar *)functionBar clickCellWithModel:(YBImageBrowserFunctionModel *)model {
     
     if ([model.ID isEqualToString:YBImageBrowserFunctionModel_ID_savePictureToAlbum]) {
+        //直接保存图片
         [self savePhotoToAlbumWithCurrentIndex];
     } else {
-        if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowser:clickFunctionBarWithModel:)]) {
-            [_delegate yBImageBrowser:self clickFunctionBarWithModel:model];
+        //回调
+        if (_delegate && [_delegate respondsToSelector:@selector(yBImageBrowser:clickFunctionWithModel:imageModel:)]) {
+            [_delegate yBImageBrowser:self clickFunctionWithModel:self.fuctionDataArray[0] imageModel:[self yBImageBrowserView:self.browserView modelForCellAtIndex:self.currentIndex]];
         } else {
             YBLOG_WARNING(@"you are not handle events of functionBar");
         }

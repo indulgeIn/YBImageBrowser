@@ -34,9 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
  点击功能栏的回调
 
  @param imageBrowser 当前图片浏览器
- @param model 功能的数据model
+ @param functionModel 功能的数据model
+ @param imageModel 当前页的图片模型
  */
-- (void)yBImageBrowser:(YBImageBrowser *)imageBrowser clickFunctionBarWithModel:(YBImageBrowserFunctionModel *)model;
+- (void)yBImageBrowser:(YBImageBrowser *)imageBrowser clickFunctionWithModel:(YBImageBrowserFunctionModel *)functionModel imageModel:(YBImageBrowserModel *)imageModel;
 
 @end
 
