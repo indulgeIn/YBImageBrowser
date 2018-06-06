@@ -47,7 +47,6 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     YBImageBrowser *browser = [YBImageBrowser new];
     browser.dataArray = tempArr;
     browser.currentIndex = indexPath.row;
-    
     //展示
     [browser show];
 }

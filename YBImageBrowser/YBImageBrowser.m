@@ -353,9 +353,16 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 
 - (void)yBImageBrowserToolBar:(YBImageBrowserToolBar *)imageBrowserToolBar didClickRightButton:(UIButton *)button {
     if (!self.fuctionDataArray.count) return;
-    if (self.fuctionDataArray.count == 1 && [self.fuctionDataArray[0].ID isEqualToString:YBImageBrowserFunctionModel_ID_savePictureToAlbum]) {
-        //直接保存图片
-        [self savePhotoToAlbumWithCurrentIndex];
+    if (self.fuctionDataArray.count == 1) {
+        if([self.fuctionDataArray[0].ID isEqualToString:YBImageBrowserFunctionModel_ID_savePictureToAlbum]){
+            //直接保存图片
+            [self savePhotoToAlbumWithCurrentIndex];
+        }else{
+            //用户自己实现相关功能
+            if([_delegate respondsToSelector:@selector(yBImageBrowser:clickRightFunctionModel:)]){
+                [_delegate yBImageBrowser:self clickRightFunctionModel:self.fuctionDataArray[0]];
+            }
+        }
     } else {
         //弹出功能栏
         if (_functionBar) {

@@ -38,6 +38,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)yBImageBrowser:(YBImageBrowser *)imageBrowser clickFunctionBarWithModel:(YBImageBrowserFunctionModel *)model;
 
+/**
+ 用户点击右上角按钮回调
+
+ @param imageBrowser 当前图片浏览器
+ @param model 功能的数据model
+ */
+- (void)yBImageBrowser:(YBImageBrowser *)imageBrowser clickRightFunctionModel:(YBImageBrowserFunctionModel *)model;
+
 @end
 
 

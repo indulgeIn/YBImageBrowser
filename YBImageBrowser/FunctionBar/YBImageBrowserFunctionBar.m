@@ -8,6 +8,11 @@
 
 #import "YBImageBrowserFunctionBar.h"
 
+// 判断是否是iPhone X
+#define IsIphoneX ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(1125, 2436), [[UIScreen mainScreen] currentMode].size) : NO)
+// home indicator 高度
+#define home_indicator_height (IsIphoneX ? 34.f : 0.f)
+
 @interface YBImageBrowserFunctionBar () <UITableViewDelegate, UITableViewDataSource> {
     CGRect showFrameOfTableView;
     CGRect hideFrameOfTableView;
@@ -140,6 +145,16 @@
     return 5;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) {
+        return nil;
+    }
+    UIView *header = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, 5)];
+    header.backgroundColor = [UIColor groupTableViewBackgroundColor];
+    return header;
+}
+
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     return 0.001;
 }
@@ -169,11 +184,11 @@
     } else {
         label.text = _cancelText;
     }
+    line.hidden = indexPath.section == 1;
     return cell;
 }
 
 #pragma mark UITableViewDelegate
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if (_delegate && [_delegate respondsToSelector:@selector(ybImageBrowserFunctionBar:clickCellWithModel:)]) {
@@ -202,10 +217,13 @@
         _tableView.estimatedRowHeight = 44;
         _tableView.estimatedSectionFooterHeight = 0;
         _tableView.estimatedSectionHeaderHeight = 0;
-        _tableView.backgroundColor = [UIColor clearColor];
+        _tableView.backgroundColor = [UIColor whiteColor];
         if (@available(iOS 11.0, *)) {
             _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
         }
+        UIView *footer = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 0, home_indicator_height)];
+        footer.backgroundColor = [UIColor whiteColor];
+        _tableView.tableFooterView = footer;
         _tableView.alwaysBounceVertical = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
         [_tableView registerClass:UITableViewCell.class forCellReuseIdentifier:@"YBImageBrowserFunctionBar"];
