@@ -1,4 +1,4 @@
-# YBImageBrowser (the latest version: 1.1.0)
+# YBImageBrowser (the latest version: 1.1.1)
 
 README 主要讲解用户可以配置的 API，设计思路及更多技术原理可以看笔者的简书文章：https://www.jianshu.com/p/bff0c6d89814
 
@@ -17,7 +17,7 @@ README 主要讲解用户可以配置的 API，设计思路及更多技术原理
 
 **pod 'YBImageBrowser'**    
 
-注意：请尽量使用最新版本（1.1.0）；若搜索不到库，可使用`rm ~/Library/Caches/CocoaPods/search_index.json`移除本地索引然后再执行安装，或者更新一下 cocoapods 版本。
+注意：请尽量使用最新版本（1.1.1）；若搜索不到库，可使用`rm ~/Library/Caches/CocoaPods/search_index.json`移除本地索引然后再执行安装，或者更新一下 cocoapods 版本。
 
 ### 2、手动导入
 
