@@ -122,7 +122,7 @@ browser.currentIndex = ...
 
 ### 更换图片下载库
 
-若你想更换`SDWebImage`库为其他图片库，可以更改`NSBundle+YBImageBrowser`延展，所有与`SDWebImage`有关的使用都在里面，替换并不困难。
+若你想更换`SDWebImage`库为其他图片库，可以更改`YBImageBrowserDownloader`文件，所有与`SDWebImage`有关的使用都在里面，替换并不困难。
 
 
 
