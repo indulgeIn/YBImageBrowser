@@ -1,4 +1,4 @@
-# YBImageBrowser (The latest version: 1.0.9)
+# YBImageBrowser (the latest version: 1.1.1)
 
 README 主要讲解用户可以配置的 API，设计思路及更多技术原理可以看笔者的简书文章：https://www.jianshu.com/p/bff0c6d89814
 
@@ -17,7 +17,7 @@ README 主要讲解用户可以配置的 API，设计思路及更多技术原理
 
 **pod 'YBImageBrowser'**    
 
-注意：请尽量使用 1.0.9 及其之后的版本；若搜索不到库，可使用`rm ~/Library/Caches/CocoaPods/search_index.json`移除本地索引然后再执行安装，或者更新一下 cocoapods 版本。
+注意：请尽量使用最新版本（1.1.1）；若搜索不到库，可使用`rm ~/Library/Caches/CocoaPods/search_index.json`移除本地索引然后再执行安装，或者更新一下 cocoapods 版本。
 
 ### 2、手动导入
 
@@ -67,6 +67,14 @@ browser.currentIndex = ...
 - (YBImageBrowserModel *)yBImageBrowser:(YBImageBrowser *)imageBrowser modelForCellAtIndex:(NSInteger)index;
 </code></pre>
 
+### 缩略图（占位图）
+
+`YBImageBrowserModel.h`下有一个属性：
+
+`@property (nonatomic, strong, nullable) YBImageBrowserModel *previewModel;`
+
+它同样是`YBImageBrowserModel`类型的，因为你想展现的缩略图可以只是知道一个`url`，所以这里索性用同一个类型表示它。当然，你不需担心缩略图是否下载或者是否分辨率过大，组件内部有足够的容错和优化机制。
+
 ### 内存优化配置
 
 对于本地图片，使用`[UIImage imageNamed:name]`方式设置图片系统会自动缓存图片，若你使用的本地图片过大会造成大量的内存开销，所以建议使用文件读取的方式拿到图片，可以通过`YBImageBrowserModel`实例方法`setImageWithFileName:fileType:`方便配置。若是本地的 gif，请配置`gifName`属性，但是不要带后缀，组件会自动转换成需要的类型。
@@ -78,14 +86,6 @@ browser.currentIndex = ...
 ### 下载体验优化
 
 对于网络图片，通常情况下直接给`YBImageBrowserModel`的属性`url`赋值就行了，若你要追求更好的浏览体验，可以使用`YBImageBrowserModel`的方法`setUrlWithDownloadInAdvance:`实现预下载。
-
-### 缩略图
-
-`YBImageBrowserModel.h`下有一个属性：
-
-`@property (nonatomic, strong, nullable) YBImageBrowserModel *previewModel;`
-
-它同样是`YBImageBrowserModel`类型的，因为你想展现的缩略图可以只是知道一个`url`，所以这里索性用同一个类型表示它。当然，你不需担心缩略图是否下载或者是否分辨率过大，组件内部有足够的容错和优化机制。
 
 ### 功能栏配置
 
@@ -122,7 +122,7 @@ browser.currentIndex = ...
 
 ### 更换图片下载库
 
-若你想更换`SDWebImage`库为其他图片库，可以更改`NSBundle+YBImageBrowser`延展，所有与`SDWebImage`有关的使用都在里面，替换并不困难。
+若你想更换`SDWebImage`库为其他图片库，可以更改`YBImageBrowserDownloader`文件，所有与`SDWebImage`有关的使用都在里面，替换并不困难。
 
 
 

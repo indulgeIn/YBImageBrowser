@@ -453,6 +453,7 @@
 
 - (void)dragAnimation_recordInfoWithScrollView:(UIScrollView *)scrollView {
     if (self.cancelDragImageViewAnimation) return;
+    if (self.imageView.frame.size.width <= 0 || self.imageView.frame.size.height <= 0) return;
     
     CGPoint point = [scrollView.panGestureRecognizer locationInView:self];
     startOffsetOfScrollView = scrollView.contentOffset;
