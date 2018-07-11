@@ -272,15 +272,14 @@
     
     UIScrollView *scrollView = self.scrollView;
     
-    CGFloat scale = ((UIImage *)[self.model valueForKey:YBImageBrowserModel_KVCKey_largeImage]).size.width / self.scrollView.contentSize.width;
+    UIImage *largeImage = (UIImage *)[self.model valueForKey:YBImageBrowserModel_KVCKey_largeImage];
+    CGFloat scale = largeImage.size.width / self.scrollView.contentSize.width;
     CGFloat x = scrollView.contentOffset.x * scale,
     y = scrollView.contentOffset.y * scale,
     width = scrollView.bounds.size.width * scale,
     height = scrollView.bounds.size.height * scale;
     
-    if (width > YBImageBrowser.maxDisplaySize || height > YBImageBrowser.maxDisplaySize) {
-        return;
-    }
+    if (scrollView.zoomScale < 1.15) return;
     
     YBImageBrowserModelCutImageSuccessBlock successBlock = ^(YBImageBrowserModel *backModel, UIImage *targetImage){
         if (self && self.model == backModel) {

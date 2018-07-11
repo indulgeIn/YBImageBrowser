@@ -47,6 +47,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     YBImageBrowser *browser = [YBImageBrowser new];
     browser.dataArray = tempArr;
     browser.currentIndex = indexPath.row;
+    YBImageBrowser.maxDisplaySize = 1000;
     
     //展示
     [browser show];
