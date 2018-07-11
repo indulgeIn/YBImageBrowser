@@ -58,8 +58,12 @@ NSString * const YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterv
     
     if ([nextResponder isKindOfClass:UIViewController.class])
         topController = nextResponder;
-    else
+    else {
         topController = window.rootViewController;
+        while (topController.presentedViewController) {
+            topController = topController.presentedViewController;
+        }
+    }
     return topController;
 }
 
