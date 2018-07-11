@@ -630,7 +630,7 @@
         _scrollView.maximumZoomScale = 1;
         _scrollView.minimumZoomScale = 1;
         _scrollView.contentSize = CGSizeMake(_scrollView.bounds.size.width, _scrollView.bounds.size.height);
-        _scrollView.alwaysBounceHorizontal = YES;
+        _scrollView.alwaysBounceHorizontal = NO;
         _scrollView.alwaysBounceVertical = YES;
         if (@available(iOS 11.0, *)) {
             _scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;

@@ -18,6 +18,7 @@
 		23E433FC2080D1E500C8DBFB /* YBImageBrowserToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E433FB2080D1E500C8DBFB /* YBImageBrowserToolBar.m */; };
 		23E434032080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */; };
 		701D04252085F23900E31FDA /* YBImageBrowserViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 701D04242085F23900E31FDA /* YBImageBrowserViewLayout.m */; };
+		70621F2C20F6111A00EF54A3 /* longImage.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 70621F2B20F6111900EF54A3 /* longImage.jpeg */; };
 		706BF140207CAAB30034663E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF13F207CAAB30034663E /* AppDelegate.m */; };
 		706BF143207CAAB30034663E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 706BF142207CAAB30034663E /* ViewController.m */; };
 		706BF146207CAAB30034663E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 706BF144207CAAB30034663E /* Main.storyboard */; };
@@ -65,6 +66,7 @@
 		23E434022080F3BA00C8DBFB /* YBImageBrowserFunctionBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserFunctionBar.m; sourceTree = "<group>"; };
 		701D04232085F23900E31FDA /* YBImageBrowserViewLayout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBImageBrowserViewLayout.h; sourceTree = "<group>"; };
 		701D04242085F23900E31FDA /* YBImageBrowserViewLayout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBImageBrowserViewLayout.m; sourceTree = "<group>"; };
+		70621F2B20F6111900EF54A3 /* longImage.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = longImage.jpeg; sourceTree = "<group>"; };
 		706BF13B207CAAB30034663E /* YBImageBrowserDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = YBImageBrowserDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		706BF13E207CAAB30034663E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		706BF13F207CAAB30034663E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -263,6 +265,7 @@
 		70D0FBF020882F430026D7DE /* LocalImages */ = {
 			isa = PBXGroup;
 			children = (
+				70621F2B20F6111900EF54A3 /* longImage.jpeg */,
 				70D0FC0820886DE30026D7DE /* localBigImage0.jpeg */,
 				70D0FBF52088371A0026D7DE /* localImage0.jpeg */,
 				70D0FBF42088371A0026D7DE /* localImage1.jpeg */,
@@ -350,6 +353,7 @@
 				70D0FBFE2088371B0026D7DE /* localImage7.jpeg in Resources */,
 				706BF148207CAAB30034663E /* Assets.xcassets in Resources */,
 				70D0FC04208839550026D7DE /* localImage5.jpeg in Resources */,
+				70621F2C20F6111A00EF54A3 /* longImage.jpeg in Resources */,
 				70D0FBFB2088371B0026D7DE /* localImage3.jpeg in Resources */,
 				70D0FBFF2088371B0026D7DE /* localImage4.jpeg in Resources */,
 				70D0FBFD2088371B0026D7DE /* localImage0.jpeg in Resources */,
