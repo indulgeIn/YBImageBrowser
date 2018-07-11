@@ -200,7 +200,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL downloaderShouldDecompressImages;
 
 /**
- 横向最大显示像素（超过这个数量框架会自动做压缩和裁剪，默认为3500）
+ 横向最大显示像素（超过这个数量框架会自动做压缩和裁剪，默认为4096）
  */
 @property (class, assign) CGFloat maxDisplaySize;
 
