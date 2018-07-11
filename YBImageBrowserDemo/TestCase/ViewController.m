@@ -143,7 +143,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
         NSString *filePath = [[NSBundle mainBundle] pathForResource:self.dataArray0[indexPath.row] ofType:@"jpeg"];
         NSData *data = [NSData dataWithContentsOfFile:filePath];
         UIImage *image = [UIImage imageWithData:data];
-        if (image.size.width > 3500 || image.size.height > 3500) {
+        if (image.size.width * image.scale > 3500) {
             label.hidden = NO;
             label.text = @"大图";
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -152,6 +152,10 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
                     imgView.image = result;
                 })
             });
+        } else if (image.size.height * image.scale > 3500) {
+            label.hidden = NO;
+            label.text = @"长图";
+            imgView.image = image;
         } else {
             imgView.image = image;
         }
