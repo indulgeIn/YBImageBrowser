@@ -146,7 +146,7 @@ char * const YBImageBrowserModel_SELName_cutImage = "cutImageWithTargetRect:comp
 #pragma mark setter
 
 - (void)setImage:(UIImage *)image {
-    if (image.size.width > YBImageBrowser.maxDisplaySize || image.size.height > YBImageBrowser.maxDisplaySize) {
+    if (image.size.width * image.scale > YBImageBrowser.maxDisplaySize) {
         self.needCutToShow = YES;
         largeImage = image;
     } else {
