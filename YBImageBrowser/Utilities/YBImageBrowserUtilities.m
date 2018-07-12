@@ -46,11 +46,8 @@ NSString * const YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterv
     return nil;
 }
 
-+ (UIViewController *)getTopController
-{
-    
++ (UIViewController *)getTopController {
     UIViewController *topController = nil;
-    
     UIWindow *window = [self getNormalWindow];
     
     UIView *frontView = [[window subviews] objectAtIndex:0];
@@ -60,9 +57,8 @@ NSString * const YBImageBrowser_notificationKey_willShowBrowerViewWithTimeInterv
         topController = nextResponder;
     else {
         topController = window.rootViewController;
-        while (topController.presentedViewController) {
+        while (topController.presentedViewController)
             topController = topController.presentedViewController;
-        }
     }
     return topController;
 }
