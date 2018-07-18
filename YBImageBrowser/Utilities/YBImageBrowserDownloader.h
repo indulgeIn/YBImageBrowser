@@ -9,7 +9,7 @@
 #import "YBImageBrowserUtilities.h"
 
 /*
-    该类将 SDWebImage 相关逻辑提取出来，若换成其他图片处理框架（如 YYImage）可直接改这里
+    该类将 SDWebImage 相关逻辑提取出来，若换成其他图片处理框架（如 YYWebImage）可直接改这里
  */
 
 NS_ASSUME_NONNULL_BEGIN
