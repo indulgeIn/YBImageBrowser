@@ -1,3 +1,5 @@
+> 作者有重构计划，旨在满足大部分的自定义需求，敬请期待!!!
+
 # YBImageBrowser (the latest version: 1.1.2)
 
 README 主要讲解用户可以配置的 API，设计思路及更多技术原理可以看笔者的简书文章：https://www.jianshu.com/p/bff0c6d89814
