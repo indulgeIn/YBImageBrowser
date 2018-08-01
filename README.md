@@ -1,4 +1,4 @@
-> 作者有深度重构计划，旨在满足大部分的自定义需求，敬请期待!!!
+
 
 # YBImageBrowser (the latest version: 1.1.2)
 
