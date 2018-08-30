@@ -34,6 +34,10 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 #pragma mark 方式一：使用数组配置数据源
 - (void)A_showWithTouchIndexPath:(NSIndexPath *)indexPath {
     
+    //创建图片浏览器（注意：更多功能请看 YBImageBrowser.h 文件或者 github readme）
+    YBImageBrowser *browser = [YBImageBrowser new];
+    browser.currentIndex = indexPath.row;
+    
     //配置数据源（图片浏览器每一张图片对应一个 YBImageBrowserModel 实例）
     NSMutableArray *tempArr = [NSMutableArray array];
     [self.dataArray0 enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -42,12 +46,8 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
         model.sourceImageView = [self getImageViewOfCellByIndexPath:[NSIndexPath indexPathForRow:idx inSection:0]];
         [tempArr addObject:model];
     }];
- 
-    //创建图片浏览器（注意：更多功能请看 YBImageBrowser.h 文件或者 github readme）
-    YBImageBrowser *browser = [YBImageBrowser new];
-    browser.dataArray = tempArr;
-    browser.currentIndex = indexPath.row;
     
+    browser.dataArray = tempArr;
     //展示
     [browser show];
 }
@@ -219,7 +219,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 }
 - (NSArray *)dataArray0 {
     if (!_dataArray0) {
-        _dataArray0 = @[@"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localImage5", @"localImage6", @"localImage8", @"localBigImage0", @"longImage"];
+        _dataArray0 = @[@"localImage0", @"localImage1", @"localImage3", @"localImage2", @"localImage4", @"localBigImage0", @"localLongImage0", @"localLongImage1", @"localLongImage2"];
     }
     return _dataArray0;
 }

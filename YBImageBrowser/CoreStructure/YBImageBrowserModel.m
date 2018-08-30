@@ -110,7 +110,7 @@ char * const YBImageBrowserModel_SELName_cutImage = "cutImageWithTargetRect:comp
 - (void)scaleImageWithCurrentImageFrame:(CGRect)imageFrame complete:(YBImageBrowserModelScaleImageSuccessBlock)complete {
     YBImageBrowserModel *model = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        model.image = [YBImageBrowserUtilities scaleToSizeWithImage:largeImage size:imageFrame.size];
+        model.image = [YBImageBrowserUtilities scaleToSizeWithImage:largeImage size:CGSizeMake([UIScreen mainScreen].scale*imageFrame.size.width, [UIScreen mainScreen].scale*imageFrame.size.height)];
         if (complete) {
             YB_MAINTHREAD_ASYNC(^{
                 complete(model);
