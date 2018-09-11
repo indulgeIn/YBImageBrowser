@@ -48,6 +48,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     }];
     
     browser.dataArray = tempArr;
+    browser.transitionDuration = 2;
     //展示
     [browser show];
 }

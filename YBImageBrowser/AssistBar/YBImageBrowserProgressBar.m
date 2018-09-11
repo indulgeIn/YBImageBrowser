@@ -58,7 +58,6 @@
 #pragma mark drawRect
 
 - (void)drawRect:(CGRect)rect {
-    
     if (isLoadFailed) {
         [self showText];
         return;
@@ -71,23 +70,23 @@
     CGPoint selfCenter = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
     
     [bottomPathColor setStroke];
-    UIBezierPath *bottomPath = [UIBezierPath bezierPathWithArcCenter:selfCenter radius:radius startAngle:0 endAngle:M_PI*2 clockwise:YES];
+    UIBezierPath *bottomPath = [UIBezierPath bezierPathWithArcCenter:selfCenter radius:radius startAngle:0 endAngle:M_PI * 2 clockwise:YES];
     bottomPath.lineWidth = 4.0;
     bottomPath.lineCapStyle = kCGLineCapRound;
     bottomPath.lineJoinStyle = kCGLineCapRound;
     [bottomPath stroke];
     
     [activePathColor setStroke];
-    UIBezierPath *activePath = [UIBezierPath bezierPathWithArcCenter:selfCenter radius:radius startAngle:-M_PI/2.0 endAngle:M_PI*2*_progress-M_PI/2.0 clockwise:true];
+    UIBezierPath *activePath = [UIBezierPath bezierPathWithArcCenter:selfCenter radius:radius startAngle:-M_PI / 2.0 endAngle:M_PI * 2 * _progress - M_PI / 2.0 clockwise:true];
     activePath.lineWidth = strokeWidth;
     activePath.lineCapStyle = kCGLineCapRound;
     activePath.lineJoinStyle = kCGLineCapRound;
     [activePath stroke];
     
-    NSString *string = [NSString stringWithFormat:@"%.0lf%@", _progress*100, @"%"];
+    NSString *string = [NSString stringWithFormat:@"%.0lf%@", _progress * 100, @"%"];
     NSMutableAttributedString *atts = [[NSMutableAttributedString alloc] initWithString:string attributes:textAttributes] ;
     CGSize size = atts.size;
-    [atts drawAtPoint:CGPointMake(selfCenter.x-size.width/2.0, selfCenter.y-size.height/2.0)];
+    [atts drawAtPoint:CGPointMake(selfCenter.x - size.width / 2.0, selfCenter.y - size.height / 2.0)];
 }
 
 - (void)showText {

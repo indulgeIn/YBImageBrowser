@@ -469,6 +469,7 @@
     if (pan.numberOfTouches != 1) return;
     
     CGPoint point = [pan locationInView:self];
+    NSLog(@"point : %@", NSStringFromCGPoint(point));
     BOOL shouldAddAnimationView = point.y > lastPointY && scrollView.contentOffset.y < -10 && !self.animateImageView.superview;
     if (shouldAddAnimationView) {
         [self dragAnimation_addAnimationImageViewWithPoint:point];
