@@ -48,7 +48,10 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
     }];
     
     browser.dataArray = tempArr;
-    browser.transitionDuration = 2;
+    
+    YBImageBrowserFunctionModel *fm = [YBImageBrowserFunctionModel new];
+    fm.name = @"分享";
+    browser.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum], fm];
     //展示
     [browser show];
 }
