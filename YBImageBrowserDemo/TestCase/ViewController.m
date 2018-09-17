@@ -252,7 +252,7 @@ static NSString * const kReuseIdentifierOfHeader = @"UICollectionReusableViewHea
 
 // device orientation
 - (BOOL)shouldAutorotate {
-    return YES;
+    return NO;
 }
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;

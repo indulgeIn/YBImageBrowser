@@ -160,6 +160,7 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
     _verticalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     _horizontalScreenImageViewFillType = YBImageBrowserImageViewFillTypeFullWidth;
     self.fuctionDataArray = @[[YBImageBrowserFunctionModel functionModelForSavePictureToAlbum]];
+    self.so_isUpdateUICompletely = YES;
 }
 
 //给子模块赋值配置
@@ -288,10 +289,9 @@ static BOOL _statusBarIsHideBefore = NO;    //状态栏在模态切换之前是�
 
 - (void)so_updateFrameWithScreenOrientation:(YBImageBrowserScreenOrientation)screenOrientation {
     if (screenOrientation == _so_screenOrientation) return;
+    if (!self.so_isUpdateUICompletely) return;
     
     _so_isUpdateUICompletely = NO;
-    
-    self.view.frame = screenOrientation == YBImageBrowserScreenOrientationVertical ? _so_frameOfVertical : _so_frameOfHorizontal;
     
     _so_screenOrientation = screenOrientation;
     
