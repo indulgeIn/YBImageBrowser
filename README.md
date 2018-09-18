@@ -2,7 +2,7 @@
 
 
 
-# 相关链接 / Related blog link
+# 相关链接 / Related link
 
 
 * 博客正在码字
