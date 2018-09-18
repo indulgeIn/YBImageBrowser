@@ -8,8 +8,8 @@
 ### 正在码字
 
 
-# [中文介绍](#中文介绍)
-# [English Introduction](#English Introduction)
+* [中文介绍](#中文介绍)
+* [English Introduction](#English-Introduction)
 
 
 
