@@ -9,11 +9,10 @@
 ![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.PNG)
 
 
-# 相关链接 / Related link
+# Link
 
 
-* 博客正在码字
-
+* 正在码字... Blog : [打造开源第一 iOS 图片浏览器 (支持视频)](https://www.jianshu.com/u/a89bf7b8bdd8)
 
 * [中文介绍](#中文介绍)
 * [English Introduction](#english-introduction)
@@ -234,7 +233,7 @@ If the search failure, using ` rm ~ / Library/Caches/CocoaPods/search_index json
 
 ## Usage
 
-'YBImageBrowser'is the principal class of a image browser, and there are two ways to assign data sources to it: one is to set the 'dataSourceArray' array property directly, and the other is to set the 'dataSource' proxy and implementation protocol method.
+'YBImageBrowser'is the principal class of the image browser, and there are two ways to assign data sources to it: one is to set the 'dataSourceArray' array property directly, and the other is to set the 'dataSource' proxy and implementation protocol method.
 The framework implements two classes by default: 'YBImageBrowseCellData'(image) and 'YBVideoBrowseCellData'(video), you just initialize them and assign them to the 'YBImageBrowser' instance variable in an array or proxy.
 
 
