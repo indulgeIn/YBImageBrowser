@@ -4,10 +4,9 @@
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
 </center>
 
-<figure class="fourth">
+<figure class="third">
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_image.PNG">
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_video.jpg">
-    <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sheetview.PNG">
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.PNG">
 </figure>
 
