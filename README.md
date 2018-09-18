@@ -1,6 +1,10 @@
 # YBImageBrowser ( 2.0 )
 
-![use](.../blob/master/OtherDocuments/ybib_st_use.gif)
+![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif)
+![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_image.gif)
+![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_video.gif)
+![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sheetview.gif)
+![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.gif)
 
 # 相关链接 / Related link
 
