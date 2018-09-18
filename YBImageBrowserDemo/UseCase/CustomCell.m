@@ -24,7 +24,7 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    self.contentView.backgroundColor = [UIColor whiteColor];
+    self.contentView.backgroundColor = [UIColor blackColor];
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapGesture)];
     [self.contentView addGestureRecognizer:tapGesture];
 }
