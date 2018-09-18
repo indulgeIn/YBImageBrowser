@@ -9,11 +9,10 @@
 ![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.PNG)
 
 
-# 相关链接 / Related link
+# Link
 
 
-* 博客正在码字
-
+* 正在码字 [打造开源第一 iOS 图片浏览器 (支持视频)](https://www.jianshu.com/u/a89bf7b8bdd8)
 
 * [中文介绍](#中文介绍)
 * [English Introduction](#english-introduction)
