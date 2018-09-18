@@ -2,15 +2,14 @@
 
 
 
-# 相关博客链接 / Related blog link
+# 相关链接 / Related blog link
 
 
-### 正在码字
+* 博客正在码字
 
 
 * [中文介绍](#中文介绍)
-* [English Introduction](#English-Introduction)
-
+* [English Introduction](#english introduction)
 
 
 
