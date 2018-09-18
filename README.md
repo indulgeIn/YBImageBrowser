@@ -3,19 +3,19 @@
 
 
 # 相关博客链接 / Related blog link
-==============
+
 
 ### 正在码字
 
 
 # [中文介绍](#中文介绍)
-# [English Introduction](#english-introduction)
+# [English Introduction](#English Introduction)
 
 
 
 
 # 中文介绍
-==============
+
 
 **iOS 图片浏览器（支持视频），功能强大，性能优越，轻松集成，易于拓展。**
 
