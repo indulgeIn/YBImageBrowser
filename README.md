@@ -55,8 +55,8 @@
 
 1. 下载 YBImageBrowser 文件夹所有内容并且拖入你的工程中。
 2. 链接以下 frameworks：
-            - SDWebImage
-            - YYImage
+* SDWebImage 4.3.3
+* YYImage
 3. 导入 `YBImageBrowser.h`
 4. 注意：如果你需要支持 WebP，可以在 Podfile 中添加 `pod 'YYImage/WebP'`，或者到手动下载 [YYImage 仓库](https://github.com/ibireme/YYImage) 的 webP 支持文件。
 
