@@ -61,9 +61,7 @@ static BOOL _cacheShouldDecompressImages;
 
 + (void)queryCacheOperationForKey:(NSURL *)key completed:(YBIBWebImageManagerCacheQueryCompletedBlock)completed {
     if (!key) return;
-    SDImageCacheOptions options = 0;
-    if ([SDImageCache sharedImageCache].config.shouldDecompressImages || _cacheShouldDecompressImages)
-        options |= SDImageCacheQueryDataWhenInMemory;
+    SDImageCacheOptions options = SDImageCacheQueryDataWhenInMemory;
     [[SDImageCache sharedImageCache] queryCacheOperationForKey:key.absoluteString options:options done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
         if (completed) completed(image, data);
     }];

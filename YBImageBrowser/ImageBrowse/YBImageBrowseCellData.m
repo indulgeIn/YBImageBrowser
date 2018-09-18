@@ -146,9 +146,6 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
     [YBIBWebImageManager queryCacheOperationForKey:self.url completed:^(id _Nullable image, NSData * _Nullable imagedata) {
         if (imagedata) {
             self.image = [YBImage imageWithData:imagedata];
-            [YBIBWebImageManager storeImage:self.image imageData:nil forKey:self.url toDisk:NO];
-        } else if (image) {
-            self.image = [image isKindOfClass:YBImage.class] ? image : [[YBImage alloc] initWithCGImage:((UIImage *)image).CGImage];
         }
         
         self.dataState = YBImageBrowseCellDataStateQueryCacheComplete;
