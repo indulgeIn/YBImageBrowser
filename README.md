@@ -1,6 +1,6 @@
 # YBImageBrowser ( 2.0 )
 
-
+![use](/blob/master/OtherDocuments/ybib_st_use.gif)
 
 # 相关链接 / Related link
 
