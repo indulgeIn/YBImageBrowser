@@ -1,231 +1,110 @@
 //
-//  YBImageBrowserTestVC.h
-//  YBImageBrowserDemo
+//  YBImageBrowser.h
 //
-//  Created by 杨波 on 2018/4/12.
+//  GitHub : https://github.com/indulgeIn/YBImageBrowser
+//  Blog : https://www.jianshu.com/u/a89bf7b8bdd8
+//
+//  Created by 杨波 on 2018/8/24.
 //  Copyright © 2018年 杨波. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "YBImageBrowserUtilities.h"
-#import "YBImageBrowserModel.h"
-#import "YBImageBrowserFunctionBar.h"
+#import "YBImageBrowserDataSource.h"
+#import "YBImageBrowserDelegate.h"
+#import "YBImageBrowseCellData.h"
+#import "YBVideoBrowseCellData.h"
+#import "YBIBGestureInteractionProfile.h"
+#import "YBImageBrowserToolBarProtocol.h"
+#import "YBImageBrowserSheetViewProtocol.h"
 #import "YBImageBrowserToolBar.h"
-#import "YBImageBrowserCopywriter.h"
-#import "YBImageBrowserScreenOrientationProtocol.h"
+#import "YBImageBrowserSheetView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class YBImageBrowser;
+typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
+    YBImageBrowserTransitionTypeNone,
+    YBImageBrowserTransitionTypeFade,
+    YBImageBrowserTransitionTypeCoherent
+};
 
-#pragma mark 事件回调代理 (callback agency)
-@protocol YBImageBrowserDelegate <NSObject>
-@optional
+@interface YBImageBrowser : UIViewController
 
-/**
- 图片浏览器翻页
+/** Usually, use this array to configure data sources. Array elements can be 'YBImageBrowseCellData', 'YBVideoBrowseCellData'. */
+@property (nonatomic, copy) NSArray<id<YBImageBrowserCellDataProtocol>> *dataSourceArray;
 
- @param imageBrowser 当前图片浏览器
- @param index 目前的下标
- */
-- (void)yBImageBrowser:(YBImageBrowser *)imageBrowser didScrollToIndex:(NSInteger)index;
+/** When you need to reduce memory footprint, use this agent to configure data sources. */
+@property (nonatomic, weak) id<YBImageBrowserDataSource> dataSource;
 
-/**
- 点击功能栏的回调
+/** Set this agent to get some useful callbacks. */
+@property (nonatomic, weak) id<YBImageBrowserDelegate> delegate;
 
- @param imageBrowser 当前图片浏览器
- @param functionModel 功能的数据model
- @param imageModel 当前页的图片模型
- */
-- (void)yBImageBrowser:(YBImageBrowser *)imageBrowser clickFunctionWithModel:(YBImageBrowserFunctionModel *)functionModel imageModel:(YBImageBrowserModel *)imageModel;
-
-@end
-
-
-#pragma mark 数据源代理 (dataSource agency)
-@protocol YBImageBrowserDataSource <NSObject>
-@required
-
-/**
- 返回点击的那个 UIImageView（用于做 YBImageBrowserAnimationMove 类型动效）
-
- @param imageBrowser 当前图片浏览器
- @return 点击的图片视图
- */
-- (UIImageView * _Nullable)imageViewOfTouchForImageBrowser:(YBImageBrowser *)imageBrowser;
-
-/**
- 配置图片的数量
-
- @param imageBrowser 当前图片浏览器
- @return 图片数量
- */
-- (NSInteger)numberInYBImageBrowser:(YBImageBrowser *)imageBrowser;
-
-/**
- 返回当前 index 图片对应的数据模型
-
- @param imageBrowser 当前图片浏览器
- @param index 当前下标
- @return 数据模型
- */
-- (YBImageBrowserModel *)yBImageBrowser:(YBImageBrowser *)imageBrowser modelForCellAtIndex:(NSInteger)index;
-
-@end
-
-
-@interface YBImageBrowser : UIViewController <YBImageBrowserScreenOrientationProtocol>
-
-#pragma mark 基本功能 (basic function)
-
-/**
- 数据源
- （请不要尝试数据重载，更改数据源请另开辟内存）
- */
-@property (nonatomic, copy) NSArray<YBImageBrowserModel *> *dataArray;
-
-/**
- 数据源代理
- （请在设置 dataArray 和实现 dataSource 代理中选其一，注意 dataArray 优先级高于代理）
- */
-@property (nonatomic, weak) id <YBImageBrowserDataSource> dataSource;
-
-/**
- 展示
- */
-- (void)show;
-- (void)showFromController:(UIViewController *)controller;
-
-/**
- 当前下标
- */
+/** Set or get the index of the current page. */
 @property (nonatomic, assign) NSUInteger currentIndex;
 
 /**
- 隐藏
+ Show image browser.
+ */
+- (void)show;
+
+/**
+ Show image browser from target 'UIViewController'.
+ Used 'presentViewController:animated:completion:'.
+ */
+- (void)showFromController:(UIViewController *)fromController;
+
+/**
+ Hide image browser.
+ Normally, you do not need to call this method explicitly.
  */
 - (void)hide;
 
 /**
- 代理回调
+ Refresh display, you need to ensure that the data source is changed correctly.
  */
-@property (nonatomic, weak) id <YBImageBrowserDelegate> delegate;
-
-#pragma mark 功能栏操作 (function bar operation)
+- (void)reloadData;
 
 /**
- 弹出功能栏的数据源
- （默认有图片保存功能）
+ Get current data of image browser.
+ 
+ @return the current data.
  */
-@property (nonatomic, copy, nullable) NSArray<YBImageBrowserFunctionModel *> *fuctionDataArray;
+- (id<YBImageBrowserCellDataProtocol>)currentData;
 
-/**
- 弹出功能栏
- */
-@property (nonatomic, strong, readonly) YBImageBrowserFunctionBar *functionBar;
+/** The default is 'UIInterfaceOrientationMaskAllButUpsideDown'. */
+@property (nonatomic, assign) UIInterfaceOrientationMask supportedOrientations;
 
-/**
- 工具栏
- */
-@property (nonatomic, strong, readonly) YBImageBrowserToolBar *toolBar;
-
-/**
- 取消长按手势的响应
- */
-@property (nonatomic, assign) BOOL cancelLongPressGesture;
-
-#pragma mark 动画相关 (animation)
-
-/**
- 转场动画持续时间
- */
-@property (nonatomic, assign) NSTimeInterval transitionDuration;
-
-/**
- 取消拖拽图片的动画效果
- */
-@property (nonatomic, assign) BOOL cancelDragImageViewAnimation;
-
-/**
- 拖拽图片动效触发出场的比例（拖动距离/屏幕高度 默认0.15）
- */
-@property (nonatomic, assign) CGFloat outScaleOfDragImageViewAnimation;
-
-/**
- 入场动画类型
- */
-@property (nonatomic, assign) YBImageBrowserAnimation inAnimation;
-
-/**
- 出场动画类型
- */
-@property (nonatomic, assign) YBImageBrowserAnimation outAnimation;
-
-/**
- 页与页之间的间距
- */
+/** The default is 20. */
 @property (nonatomic, assign) CGFloat distanceBetweenPages;
 
-#pragma mark 屏幕方向相关 (screen direction)
+/** The default is black. */
+@property (nonatomic, strong) UIColor *backgroundColor;
 
-/**
- 支持旋转的方向
- （请保证在 general -> deployment info -> Device Orientation 有对应的配置，目前不支持强制旋转）
- */
-@property (nonatomic, assign) UIInterfaceOrientationMask yb_supportedInterfaceOrientations;
+/** Automatically hide source objects. What is the source object, see 'YBImageBrowseCellData' or 'YBVideoBrowseCellData' */
+@property (nonatomic, assign) BOOL autoHideSourceObject;
 
-#pragma mark 缩放相关 (scale)
+/** The default is 'YBImageBrowserTransitionTypeCoherent'. */
+@property (nonatomic, assign) YBImageBrowserTransitionType enterTransitionType;
 
-/**
- 是否需要自动计算缩放
- （默认是自动的，若改为NO，可用 YBImageBrowserModel 的 maximumZoomScale 设置希望当前图片的最大缩放比例）
- */
-@property (nonatomic, assign) BOOL autoCountMaximumZoomScale;
+/** The default is 'YBImageBrowserTransitionTypeCoherent'. */
+@property (nonatomic, assign) YBImageBrowserTransitionType outTransitionType;
 
-/**
- 纵屏时候图片填充类型
- */
-@property (nonatomic, assign) YBImageBrowserImageViewFillType verticalScreenImageViewFillType;
+/** The default is 0.25. */
+@property (nonatomic, assign) NSTimeInterval transitionDuration;
 
-/**
- 横屏时候图片填充类型
- */
-@property (nonatomic, assign) YBImageBrowserImageViewFillType horizontalScreenImageViewFillType;
+/** Parameter configuration object for gesture interaction animation. */
+@property (nonatomic, strong) YBIBGestureInteractionProfile *giProfile;
 
-#pragma mark 性能和内存相关 (performance and memory)
+/** Default 'toolBar', you can configure some parameters */
+@property (nonatomic, weak, readonly) YBImageBrowserToolBar *defaultToolBar;
 
-/**
- 网络图片下载和持久化时，是否做内存缓存，为YES能提高图片第二次显示的性能，为NO能减少图片的内存占用（高清大图请置NO）
- */
-@property (nonatomic, assign) BOOL downloaderShouldDecompressImages;
+/** The array contains 'defaultToolBar', and you can customize several 'toolBar'. You don't need to care about the view hierarchy of the 'toolBars', and just need to update the UI according to the protocol method.*/
+@property (nonatomic, copy) NSArray<__kindof UIView<YBImageBrowserToolBarProtocol> *> *toolBars;
 
-/**
- 横向最大显示像素（超过这个数量框架会自动做压缩和裁剪，默认为4096）
- */
-@property (class, assign) CGFloat maxDisplaySize;
+/** Default 'sheetView', you can configure some parameters */
+@property (nonatomic, weak, readonly) YBImageBrowserSheetView *defaultSheetView;
 
-#pragma mark 其他 (other)
-
-/**
- 文案撰写者
- （可依靠该属性配置自定义的文案）
- */
-@property (nonatomic, strong) YBImageBrowserCopywriter *copywriter;
-
-/**
- 显示状态栏
- */
-@property (class, assign) BOOL showStatusBar;
-
-/**
- 进入图片浏览器之前状态栏是否隐藏（进入框架内部会判断，若在图片浏览器生命周期之间外部的状态栏显示与否发生改变，你需要改变该属性的值）
- */
-@property (class, assign) BOOL statusBarIsHideBefore;
-
-/**
- 状态栏是否是控制器优先
- */
-@property (class, assign, readonly) BOOL isControllerPreferredForStatusBar;
+/** The default is 'defaultSheetView', and you can customize 'sheetView'. You don't need to care about the view hierarchy of 'sheetView', and just need to update the UI according to the protocol method. */
+@property (nonatomic, strong) __kindof UIView<YBImageBrowserSheetViewProtocol> *sheetView;
 
 @end
 
