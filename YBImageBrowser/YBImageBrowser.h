@@ -32,10 +32,10 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
 /** Usually, use this array to configure data sources. Array elements can be 'YBImageBrowseCellData', 'YBVideoBrowseCellData'. */
 @property (nonatomic, copy) NSArray<id<YBImageBrowserCellDataProtocol>> *dataSourceArray;
 
-/** When you need to reduce memory footprint, use this agent to configure data sources. */
+/** When you need to reduce memory footprint, use this proxy to configure data sources. */
 @property (nonatomic, weak) id<YBImageBrowserDataSource> dataSource;
 
-/** Set this agent to get some useful callbacks. */
+/** Set this proxy to get some useful callbacks. */
 @property (nonatomic, weak) id<YBImageBrowserDelegate> delegate;
 
 /** Set or get the index of the current page. */
