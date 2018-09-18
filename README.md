@@ -3,14 +3,14 @@
 <center>
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
 </center>
-<img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_image.PNG">
-<img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_video.jpg">
-<img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sheetview.PNG">
-<img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.PNG">
-![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_image.PNG)
-![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_video.jpg)
-![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sheetview.PNG)
-![use](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.PNG)
+
+<figure class="fourth">
+    <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_image.PNG">
+    <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_video.jpg">
+    <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sheetview.PNG">
+    <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.PNG">
+</figure>
+
 
 # 相关链接 / Related link
 
