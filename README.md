@@ -227,7 +227,7 @@ If the search failure, using ` rm ~ / Library/Caches/CocoaPods/search_index json
 * SDWebImage 4.3.3
 * YYImage
 3. Import `YBImageBrowser.h`
-4. Notice: If you want to support WebP format, you may add `pod 'YYImage/WebP'` to your Podfile, or download webP support file manually from [YYImage 仓库](https://github.com/ibireme/YYImage).
+4. Notice: If you want to support WebP format, you may add `pod 'YYImage/WebP'` to your Podfile, or download webP support file manually from [YYImage](https://github.com/ibireme/YYImage).
 
 
 

@@ -1,7 +1,7 @@
 //
 //  YBImageBrowser.h
 //
-//  GitHub : https://github.com/indulgeIn/YBImageBrowser
+//  Github : https://github.com/indulgeIn/YBImageBrowser
 //  Blog : https://www.jianshu.com/u/a89bf7b8bdd8
 //
 //  Created by 杨波 on 2018/8/24.
