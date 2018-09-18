@@ -9,7 +9,7 @@
 
 
 * [中文介绍](#中文介绍)
-* [English Introduction](#english introduction)
+* [English Introduction](#english - introduction)
 
 
 
@@ -55,8 +55,8 @@
 
 1. 下载 YBImageBrowser 文件夹所有内容并且拖入你的工程中。
 2. 链接以下 frameworks：
-            * SDWebImage
-            * YYImage
+            *SDWebImage
+            *YYImage
 3. 导入 `YBImageBrowser.h`
 4. 注意：如果你需要支持 WebP，可以在 Podfile 中添加 `pod 'YYImage/WebP'`，或者到手动下载 [YYImage 仓库](https://github.com/ibireme/YYImage) 的 webP 支持文件。
 
@@ -181,9 +181,8 @@ browser.currentIndex = index;
 
 
 # English Introduction
-==============
 
-**The iOS image browser  (support video), powerful, superior performance, easy integration, easy to expand.**
+**The iOS image browser (support video), powerful, superior performance, easy integration, easy to expand.**
 
 
 
@@ -219,8 +218,8 @@ If the search failure, using ` rm ~ / Library/Caches/CocoaPods/search_index json
 
 1. Download all the files in the YBImageBrowser subdirectory.
 2. Link with required frameworks:
-            * SDWebImage
-            * YYImage
+            *SDWebImage
+            *YYImage
 3. Import `YBImageBrowser.h`
 4. Notice: If you want to support WebP format, you may add `pod 'YYImage/WebP'` to your Podfile, or download webP support file manually from [YYImage 仓库](https://github.com/ibireme/YYImage).
 
