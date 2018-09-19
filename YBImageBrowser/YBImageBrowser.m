@@ -16,7 +16,6 @@
 #import "YBIBLayoutDirectionManager.h"
 #import "YBIBCopywriter.h"
 
-// It is necessary to set this variable to the global level.
 static BOOL _statusBarIsHiddenBefore;
 
 @interface YBImageBrowser () <UIViewControllerTransitioningDelegate, YBImageBrowserViewDelegate, YBImageBrowserDataSource> {
