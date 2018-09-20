@@ -16,7 +16,6 @@
 #import "YBIBLayoutDirectionManager.h"
 #import "YBIBCopywriter.h"
 
-static BOOL _statusBarIsHiddenBefore;
 
 @interface YBImageBrowser () <UIViewControllerTransitioningDelegate, YBImageBrowserViewDelegate, YBImageBrowserDataSource> {
     BOOL _isFirstViewDidAppear;
@@ -24,6 +23,7 @@ static BOOL _statusBarIsHiddenBefore;
     CGSize _containerSize;
     BOOL _isRestoringDeviceOrientation;
     UIInterfaceOrientation _statusBarOrientationBefore;
+    UIWindowLevel _windowLevelByDefault;
 }
 @property (nonatomic, strong) YBIBLayoutDirectionManager *layoutDirectionManager;
 @property (nonatomic, strong) YBIBTransitionManager *transitionManager;
@@ -37,6 +37,7 @@ static BOOL _statusBarIsHiddenBefore;
     // If the current instance is released (possibly uncontrollable release), we need to restore the changes to external business.
     [YBIBWebImageManager restoreOutsideConfiguration];
     self.hiddenSourceObject = nil;
+    [self setStatusBarHide:NO];
 }
 
 - (instancetype)init {
@@ -88,8 +89,9 @@ static BOOL _statusBarIsHiddenBefore;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    _statusBarIsHiddenBefore = [UIApplication sharedApplication].statusBarHidden;
-    if (!_statusBarIsHiddenBefore) [self setStatusBarHide:YES];
+    
+    self->_windowLevelByDefault = self.view.window.windowLevel;
+    [self setStatusBarHide:YES];
     
     if (!self->_isFirstViewDidAppear) {
         
@@ -105,7 +107,7 @@ static BOOL _statusBarIsHiddenBefore;
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if (!_statusBarIsHiddenBefore) [self setStatusBarHide:NO];
+    [self setStatusBarHide:NO];
 }
 
 - (BOOL)shouldAutorotate {
@@ -116,17 +118,8 @@ static BOOL _statusBarIsHiddenBefore;
     return self.supportedOrientations;
 }
 
-- (BOOL)prefersStatusBarHidden {
-    return YES;
-}
-
 - (void)setStatusBarHide:(BOOL)hide {
-    if (self.isControllerPreferredForStatusBar) {
-        UIView *statusBar = [[[UIApplication sharedApplication] valueForKey:@"statusBarWindow"] valueForKey:@"statusBar"];
-        statusBar.alpha = hide ? 0 : 1;
-    } else {
-        [[UIApplication sharedApplication] setStatusBarHidden:hide withAnimation:NO];
-    }
+    self.view.window.windowLevel = hide ? UIWindowLevelStatusBar + 1 : _windowLevelByDefault;
 }
 
 #pragma mark - gesture
