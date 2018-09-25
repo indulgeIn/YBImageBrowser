@@ -340,20 +340,12 @@
         }
             break;
         case AVPlayerItemStatusUnknown: {
-            __weak typeof(self) wSelf = self;
-            [self.baseView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].videoError click:^{
-                __strong typeof(wSelf) sSelf = wSelf;
-                [sSelf startPlay];
-            }];
+            [self.baseView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].videoError click:nil];
             [self cancelPlay];
         }
             break;
         case AVPlayerItemStatusFailed: {
-            __weak typeof(self) wSelf = self;
-            [self.baseView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].videoError  click:^{
-                __strong typeof(wSelf) sSelf = wSelf;
-                [sSelf startPlay];
-            }];   
+            [self.baseView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].videoError click:nil];
             [self cancelPlay];
         }
             break;
