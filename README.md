@@ -341,7 +341,7 @@ If the'Cell' for images and videos doesn't meet your needs, you can customize yo
 
 Before you do this, you need to implement a data class that follows the `<YBImageBrowserCellDataProtocol>` protocol, and a UICollectionViewCell subclass that follows the `<YBImageBrowserCellProtocol>`. Referring to `YBImageBrowseCell/YBImageBrowseCellData` , or `YBVideoBrowseCell/YBVideoBrowseCellData`, you can also download Demo, which implements a custom 'Cell' in the demo case.
 
-For these two protocols, only implement the `@required` protocol method can be successfully constructed, and other methods can be freely chosen to implement.
+For these two protocols, only implement the `@required` protocol method can be successfully constructed, and other methods can be chosen to implement freely.
 
 
 
