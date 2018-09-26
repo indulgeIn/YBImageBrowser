@@ -50,9 +50,8 @@ UIViewController *YBIBGetTopController(void) {
         uname(&systemInfo);
         NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
         if ([platform isEqualToString:@"x86_64"] || [platform isEqualToString:@"i386"])
-            isIphoneX = YBIMAGEBROWSER_HEIGHT == 812;
-        else
-            isIphoneX = [platformSet containsObject:platform];
+            platform = NSProcessInfo.processInfo.environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+        isIphoneX = [platformSet containsObject:platform];
     });
     return isIphoneX;
 }
