@@ -153,7 +153,7 @@
 - (BOOL)enter_configAnimateImageView {
     self.imageBrowser.hiddenSourceObject = nil;
     
-    id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.dataSource yb_imageBrowserView:self.imageBrowser.browserView dataForCellAtIndex:self.imageBrowser.currentIndex];
+    id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.browserView dataAtIndex:self.imageBrowser.currentIndex];
     if (!data) return NO;
     if (![data respondsToSelector:@selector(yb_browserCellSourceObject)]) return NO;
     id sourceObj = data.yb_browserCellSourceObject;
@@ -189,7 +189,7 @@
 }
 
 - (CGRect)enter_toFrame {
-    id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.dataSource yb_imageBrowserView:self.imageBrowser.browserView dataForCellAtIndex:self.imageBrowser.currentIndex];
+    id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.browserView dataAtIndex:self.imageBrowser.currentIndex];
     if (!data) return CGRectZero;
     CGSize size = self.animateImageView.image ? self.animateImageView.image.size : self.animateImageView.layer.bounds.size;
     if ([data respondsToSelector:@selector(yb_browserCurrentImageFrameWithImageSize:)]) {
@@ -211,7 +211,7 @@
     CGFloat width = [UIScreen mainScreen].bounds.size.width,
     height = [UIScreen mainScreen].bounds.size.height;
     CGRect frame = CGRectMake(width / 2, height / 2, 0, 0);
-    id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.dataSource yb_imageBrowserView:self.imageBrowser.browserView dataForCellAtIndex:self.imageBrowser.currentIndex];
+    id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.browserView dataAtIndex:self.imageBrowser.currentIndex];
     if (!data) return frame;
     id sourceObj = data.yb_browserCellSourceObject;
     if (!sourceObj || ![sourceObj respondsToSelector:@selector(bounds)]) return frame;

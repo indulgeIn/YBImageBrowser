@@ -36,9 +36,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readonly) NSUInteger currentIndex;
 
+- (id<YBImageBrowserCellDataProtocol>)currentData;
+
+- (id<YBImageBrowserCellDataProtocol>)dataAtIndex:(NSUInteger)index;
+
 - (void)updateLayoutWithDirection:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize;
 
 - (void)scrollToPageWithIndex:(NSInteger)index;
+
+- (void)yb_reloadData;
 
 @property (nonatomic, strong) YBIBGestureInteractionProfile *giProfile;
 

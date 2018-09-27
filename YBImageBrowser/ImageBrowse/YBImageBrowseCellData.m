@@ -73,12 +73,22 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 
 - (void)yb_browserSaveToPhotoAlbum {
     [YBIBPhotoAlbumManager getPhotoAlbumAuthorizationSuccess:^{
-        if (self.image.animatedImageData)
+        if (self.image.animatedImageData) {
             [YBIBPhotoAlbumManager saveDataToAlbum:self.image.animatedImageData];
-        else if (self.image)
+        } else if (self.image) {
             [YBIBPhotoAlbumManager saveImageToAlbum:self.image];
-        else
+        } else if (self.url) {
+            [YBIBWebImageManager queryCacheOperationForKey:self.url completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
+                if (data) {
+                    self.image = [YBImage imageWithData:data];
+                    [YBIBPhotoAlbumManager saveImageToAlbum:self.image];
+                } else {
+                    [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
+                }
+            }];
+        } else {
             [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
+        }
     } failed:nil];
 }
 
@@ -144,17 +154,15 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
     
     self.dataState = YBImageBrowseCellDataStateIsQueryingCache;
     [YBIBWebImageManager queryCacheOperationForKey:self.url completed:^(id _Nullable image, NSData * _Nullable imagedata) {
-        if (imagedata) {
+        if (imagedata)
             self.image = [YBImage imageWithData:imagedata];
-        }
         
         self.dataState = YBImageBrowseCellDataStateQueryCacheComplete;
         
-        if (self.image) {
+        if (self.image)
             [self loadLocalImageWithPre:pre];
-        } else {
+        else
             [self downloadImageWithPre:pre];
-        }
     }];
 }
 

@@ -20,6 +20,7 @@
     BOOL _isDealingScreenRotation;
     BOOL _bodyIsInCenter;
     BOOL _isDealedSELInitializeFirst;
+    NSCache *_dataCache;
 }
 @property (nonatomic, assign) NSUInteger currentIndex;
 @end
@@ -27,6 +28,10 @@
 @implementation YBImageBrowserView
 
 #pragma mark - life cycle
+
+- (void)dealloc {
+    self->_dataCache = nil;
+}
 
 - (instancetype)initWithFrame:(CGRect)frame {
     return [self initWithFrame:frame collectionViewLayout:[YBImageBrowserViewLayout new]];
@@ -86,9 +91,9 @@
 }
 
 - (void)scrollToPageWithIndex:(NSInteger)index {
-    if (index >= [self collectionView:self numberOfItemsInSection:0]) {
+    if (index >= [self.yb_dataSource yb_numberOfCellForImageBrowserView:self]) {
         // If index overstep the boundary, maximum processing.
-        self.currentIndex = [self collectionView:self numberOfItemsInSection:0] - 1;
+        self.currentIndex = [self.yb_dataSource yb_numberOfCellForImageBrowserView:self] - 1;
         self.contentOffset = CGPointMake(self.bounds.size.width * self.currentIndex, 0);
     } else {
         CGPoint targetPoint = CGPointMake(self.bounds.size.width * index, 0);
@@ -96,6 +101,29 @@
             [self scrollViewDidScroll:self];
         else
             self.contentOffset = targetPoint;
+    }
+}
+
+- (void)yb_reloadData {
+    self->_dataCache = nil;
+    [self reloadData];
+}
+
+- (id<YBImageBrowserCellDataProtocol>)currentData {
+    return [self dataAtIndex:self.currentIndex];
+}
+
+- (id<YBImageBrowserCellDataProtocol>)dataAtIndex:(NSUInteger)index {
+    if (!self->_dataCache) {
+        self->_dataCache = [NSCache new];
+        self->_dataCache.countLimit = 6;
+    }
+    if (self->_dataCache && [self->_dataCache objectForKey:@(index)]) {
+        return [self->_dataCache objectForKey:@(index)];
+    } else {
+        id<YBImageBrowserCellDataProtocol> data = [self.yb_dataSource yb_imageBrowserView:self dataForCellAtIndex:index];
+        [self->_dataCache setObject:data forKey:@(index)];
+        return data;
     }
 }
 
@@ -109,7 +137,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     if (!self.yb_dataSource || ![self.yb_dataSource respondsToSelector:@selector(yb_imageBrowserView:dataForCellAtIndex:)]) return [UICollectionViewCell new];
     
-    id<YBImageBrowserCellDataProtocol> data = [self.yb_dataSource yb_imageBrowserView:self dataForCellAtIndex:indexPath.row];
+    id<YBImageBrowserCellDataProtocol> data = [self dataAtIndex:indexPath.row];
     NSAssert(data && [data respondsToSelector:@selector(yb_classOfBrowserCell)], @"your custom data must conforms '<YBImageBrowserCellDataProtocol>' and implement '-yb_classOfBrowserCell'");
     Class cellClass = data.yb_classOfBrowserCell;
     NSAssert(cellClass, @"the class get from '-yb_classOfBrowserCell' is invalid");
@@ -194,7 +222,7 @@
         }];
     }
     
-    if (index >= [self collectionView:self numberOfItemsInSection:0]) return;
+    if (index >= [self.yb_dataSource yb_numberOfCellForImageBrowserView:self]) return;
     if (self.currentIndex != index && !self->_isDealingScreenRotation) {
         self.currentIndex = index;
         

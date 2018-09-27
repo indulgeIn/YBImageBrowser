@@ -95,11 +95,11 @@
     
     if (!self->_isFirstViewDidAppear) {
         
-        [self addSubViews];
-        
         [self updateLayoutOfSubViewsWithLayoutDirection:[YBIBLayoutDirectionManager getLayoutDirectionByStatusBar]];
         
         [self.browserView scrollToPageWithIndex:self->_currentIndex];
+        
+        [self addSubViews];
  
         self->_isFirstViewDidAppear = YES;
     }
@@ -203,17 +203,18 @@
         YBIBLOG_ERROR(@"The index out of range.");
     } else {
         _currentIndex = currentIndex;
-        if (self.browserView.superview) [self.browserView scrollToPageWithIndex:currentIndex];
+        if (self.browserView.superview)
+            [self.browserView scrollToPageWithIndex:currentIndex];
     }
 }
 
 - (void)reloadData {
-    [self.browserView reloadData];
+    [self.browserView yb_reloadData];
     [self.browserView scrollToPageWithIndex:self->_currentIndex];
 }
 
 - (id<YBImageBrowserCellDataProtocol>)currentData {
-    return [self.dataSource yb_imageBrowserView:self.browserView dataForCellAtIndex:self.browserView.currentIndex];
+    return [self.browserView currentData];
 }
 
 - (void)show {
@@ -307,7 +308,7 @@
 - (void)yb_imageBrowserView:(YBImageBrowserView *)browserView pageIndexChanged:(NSUInteger)index {
     self->_currentIndex = index;
     
-    id<YBImageBrowserCellDataProtocol> data = [self.dataSource yb_imageBrowserView:self.browserView dataForCellAtIndex:index];
+    id<YBImageBrowserCellDataProtocol> data = [self currentData];
     
     id sourceObj = nil;
     if ([data respondsToSelector:@selector(yb_browserCellSourceObject)]) sourceObj = data.yb_browserCellSourceObject;
