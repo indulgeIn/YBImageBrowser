@@ -383,7 +383,6 @@
 				706BF138207CAAB30034663E /* Frameworks */,
 				706BF139207CAAB30034663E /* Resources */,
 				D4E3D03BE78EB1DAAE1E621E /* [CP] Embed Pods Frameworks */,
-				ADCE1F38DCEAED4CE6E5A6AE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -457,21 +456,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		ADCE1F38DCEAED4CE6E5A6AE /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		BC70BC1292F4D50DE683DE8C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
