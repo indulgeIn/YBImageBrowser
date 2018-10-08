@@ -81,6 +81,9 @@ When the image exceeds this texture size, it will be compressed asynchronously a
 /** The default is YES. */
 @property (nonatomic, assign) BOOL allowSaveToPhotoAlbum;
 
+/** The default is YES. */
+@property (nonatomic, assign) BOOL allowShowSheetView;
+
 /** You can set any data. */
 @property (nonatomic, strong, nullable) id extraData;
 

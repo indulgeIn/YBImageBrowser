@@ -139,8 +139,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
         YBVideoBrowseCellData *data = [YBVideoBrowseCellData new];
         data.phAsset = asset;
         data.sourceObject = [self sourceObjAtIdx:index];
-//        data.allowSaveToPhotoAlbum = NO;
-        
+
         return data;
     } else if (asset.mediaType == PHAssetMediaTypeImage) {
         
@@ -148,7 +147,6 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
         YBImageBrowseCellData *data = [YBImageBrowseCellData new];
         data.phAsset = asset;
         data.sourceObject = [self sourceObjAtIdx:index];
-//        data.allowSaveToPhotoAlbum = NO;
 
         return data;
     }

@@ -49,6 +49,7 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
     self->_verticalfillType = YBImageBrowseFillTypeUnknown;
     self->_horizontalfillType = YBImageBrowseFillTypeUnknown;
     self->_allowSaveToPhotoAlbum = YES;
+    self->_allowShowSheetView = YES;
     
     self->_isCutting = NO;
 }
@@ -65,6 +66,10 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 
 - (CGRect)yb_browserCurrentImageFrameWithImageSize:(CGSize)size {
     return [self.class getImageViewFrameWithContainerSize:[self.class getSizeOfCurrentLayoutDirection] imageSize:size fillType:[self getFillTypeWithLayoutDirection:[YBIBLayoutDirectionManager getLayoutDirectionByStatusBar]]];
+}
+
+- (BOOL)yb_browserAllowShowSheetView {
+    return self.allowShowSheetView;
 }
 
 - (BOOL)yb_browserAllowSaveToPhotoAlbum {

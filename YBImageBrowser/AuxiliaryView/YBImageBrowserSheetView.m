@@ -9,6 +9,7 @@
 #import "YBImageBrowserSheetView.h"
 #import "YBIBCopywriter.h"
 #import "YBIBUtilities.h"
+#import "YBImageBrowserTipView.h"
 
 NSString * const kYBImageBrowserSheetActionIdentitySaveToPhotoAlbum = @"kYBImageBrowserSheetActionIdentitySaveToPhotoAlbum";
 
@@ -174,8 +175,10 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if ([self.actions[indexPath.row].identity isEqualToString:kYBImageBrowserSheetActionIdentitySaveToPhotoAlbum]) {
-            if ([self->_data respondsToSelector:@selector(yb_browserAllowSaveToPhotoAlbum)] && [self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)]) {
+            if ([self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)] && [self->_data respondsToSelector:@selector(yb_browserAllowSaveToPhotoAlbum)] && [self->_data yb_browserAllowSaveToPhotoAlbum]) {
                 [self->_data yb_browserSaveToPhotoAlbum];
+            } else {
+                [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
             }
         } else {
             self.actions[indexPath.row].action(self->_data);

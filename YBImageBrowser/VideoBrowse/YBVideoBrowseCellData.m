@@ -37,6 +37,7 @@
 - (void)initVars {
     self->_autoPlayCount = 0;
     self->_allowSaveToPhotoAlbum = YES;
+    self->_allowShowSheetView = YES;
     self->_dataState = YBVideoBrowseCellDataStateInvalid;
     self->_dataDownloadState = YBVideoBrowseCellDataDownloadStateNone;
 }
@@ -66,6 +67,10 @@
         y = 0;
     }
     return CGRectMake(x, y, width, height);
+}
+
+- (BOOL)yb_browserAllowShowSheetView {
+    return self.allowShowSheetView;
 }
 
 - (BOOL)yb_browserAllowSaveToPhotoAlbum {

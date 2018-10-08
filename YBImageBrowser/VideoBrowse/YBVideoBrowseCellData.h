@@ -43,6 +43,9 @@ NS_ASSUME_NONNULL_BEGIN
 /** The default is YES. */
 @property (nonatomic, assign) BOOL allowSaveToPhotoAlbum;
 
+/** The default is YES. */
+@property (nonatomic, assign) BOOL allowShowSheetView;
+
 /** You can set any data. */
 @property (nonatomic, strong, nullable) id extraData;
 

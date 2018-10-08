@@ -102,6 +102,8 @@
         [self addSubViews];
  
         self->_isFirstViewDidAppear = YES;
+
+        [self addNotification];
     }
 }
 
@@ -143,6 +145,18 @@
     }
 }
 
+#pragma mark - notification
+
+- (void)addNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustStatusBar) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+}
+
+- (void)adjustStatusBar {
+    if ([UIApplication sharedApplication].statusBarFrame.size.height > YBIB_HEIGHT_STATUSBAR) {
+        self.view.frame = CGRectMake(0, 0, self->_containerSize.width, self->_containerSize.height);
+    }
+}
+
 #pragma mark - private
 
 - (void)addSubViews {
@@ -174,18 +188,6 @@
     [self.toolBars enumerateObjectsUsingBlock:^(__kindof UIView<YBImageBrowserToolBarProtocol> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         [obj yb_browserUpdateLayoutWithDirection:layoutDirection containerSize:containerSize];
     }];
-}
-
-- (BOOL)isControllerPreferredForStatusBar {
-    static BOOL isControllerPreferred = NO;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSString *bundlePath = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
-        NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithContentsOfFile:bundlePath];
-        id value = dict[@"UIViewControllerBasedStatusBarAppearance"];
-        isControllerPreferred = value ? [value boolValue] : YES;
-    });
-    return isControllerPreferred;
 }
 
 #pragma mark - public
