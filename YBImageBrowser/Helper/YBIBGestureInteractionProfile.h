@@ -16,6 +16,9 @@
 /** The result of this scale multiplied by the screen height, is the triggering distance to make 'image browser' disappear. */
 @property (nonatomic, assign) CGFloat dismissScale;
 
+/** The velocity to make 'image browser' disappear. */
+@property (nonatomic, assign) CGFloat dismissVelocityY;
+
 /** The duration of restore UI */
 @property (nonatomic, assign) CGFloat restoreDuration;
 

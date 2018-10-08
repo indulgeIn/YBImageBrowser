@@ -436,7 +436,12 @@
         
         // END
         if (self->_isGestureInteraction) {
-            BOOL shouldDismiss = ABS(point.y - self->_gestureInteractionStartPoint.y) > self->_containerSize.height * self->_giProfile.dismissScale;
+            CGPoint velocity = [pan velocityInView:self.baseView];
+            
+            BOOL velocityArrive = ABS(velocity.y) > self->_giProfile.dismissVelocityY;
+            BOOL distanceArrive = ABS(point.y - self->_gestureInteractionStartPoint.y) > self->_containerSize.height * self->_giProfile.dismissScale;
+            
+            BOOL shouldDismiss = distanceArrive || velocityArrive;
             if (shouldDismiss) {
                 self.yb_browserDismissBlock();
             } else {
@@ -447,9 +452,11 @@
     } else if (pan.state == UIGestureRecognizerStateChanged) {
         
         CGPoint velocityPoint = [pan velocityInView:self.baseView];
-        
         CGFloat triggerDistance = self->_giProfile.triggerDistance;
-        BOOL shouldStart = !self->_isGestureInteraction && ABS(point.y - self->_gestureInteractionStartPoint.y) > triggerDistance && (ABS(point.x - self->_gestureInteractionStartPoint.x) < triggerDistance && ABS(velocityPoint.x) < 500) && self->_currentIndexIsSelf && self->_bodyIsInCenter;
+        
+        BOOL distanceArrive = ABS(point.y - self->_gestureInteractionStartPoint.y) > triggerDistance && (ABS(point.x - self->_gestureInteractionStartPoint.x) < triggerDistance && ABS(velocityPoint.x) < 500);
+        
+        BOOL shouldStart = !self->_isGestureInteraction && distanceArrive && self->_currentIndexIsSelf && self->_bodyIsInCenter;
         // START
         if (shouldStart) {
             

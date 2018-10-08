@@ -233,7 +233,12 @@
         
         // END
         if (self->_isGestureInteraction) {
-            BOOL shouldDismiss = ABS(point.y - self->_gestureInteractionStartPoint.y) > self->_containerSize.height * self->_giProfile.dismissScale;
+            CGPoint velocity = [pan velocityInView:self.mainContentView];
+            
+            BOOL velocityArrive = ABS(velocity.y) > self->_giProfile.dismissVelocityY;
+            BOOL distanceArrive = ABS(point.y - self->_gestureInteractionStartPoint.y) > self->_containerSize.height * self->_giProfile.dismissScale;
+            
+            BOOL shouldDismiss = distanceArrive || velocityArrive;
             if (shouldDismiss) {
                 self.yb_browserDismissBlock();
             } else {
@@ -243,15 +248,17 @@
         
     } else if (pan.state == UIGestureRecognizerStateChanged) {
         
-        CGPoint velocityPoint = [pan velocityInView:self.mainContentView];
-        
+        CGPoint velocity = [pan velocityInView:self.mainContentView];
         CGFloat triggerDistance = self->_giProfile.triggerDistance;
-        BOOL isUp = point.y - self->_gestureInteractionStartPoint.y > triggerDistance && self.mainContentView.contentOffset.y <= 1,
-        isDown = point.y - self->_gestureInteractionStartPoint.y < -triggerDistance && self.mainContentView.contentOffset.y + self.mainContentView.bounds.size.height >= MAX(self.mainContentView.contentSize.height, self.mainContentView.bounds.size.height) - 1;
-        BOOL shouldStart = !CGPointEqualToPoint(self->_gestureInteractionStartPoint, CGPointZero) && !self->_isGestureInteraction && (isUp || isDown) && (ABS(point.x - self->_gestureInteractionStartPoint.x) < triggerDistance && ABS(velocityPoint.x) < 500) && self->_bodyIsInCenter && !self->_isZooming;
+        
+        BOOL startPointValid = !CGPointEqualToPoint(self->_gestureInteractionStartPoint, CGPointZero);
+        BOOL distanceArrive = ABS(point.x - self->_gestureInteractionStartPoint.x) < triggerDistance && ABS(velocity.x) < 500;
+        BOOL upArrive = point.y - self->_gestureInteractionStartPoint.y > triggerDistance && self.mainContentView.contentOffset.y <= 1,
+        downArrive = point.y - self->_gestureInteractionStartPoint.y < -triggerDistance && self.mainContentView.contentOffset.y + self.mainContentView.bounds.size.height >= MAX(self.mainContentView.contentSize.height, self.mainContentView.bounds.size.height) - 1;
+        
+        BOOL shouldStart = startPointValid && !self->_isGestureInteraction && (upArrive || downArrive) && distanceArrive && self->_bodyIsInCenter && !self->_isZooming;
         // START
         if (shouldStart) {
-            
             if ([UIApplication sharedApplication].statusBarOrientation != self->_statusBarOrientationBefore) {
                 self.yb_browserDismissBlock();
             } else {
