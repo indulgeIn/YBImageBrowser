@@ -65,7 +65,8 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 }
 
 - (CGRect)yb_browserCurrentImageFrameWithImageSize:(CGSize)size {
-    return [self.class getImageViewFrameWithContainerSize:[self.class getSizeOfCurrentLayoutDirection] imageSize:size fillType:[self getFillTypeWithLayoutDirection:[YBIBLayoutDirectionManager getLayoutDirectionByStatusBar]]];
+    YBImageBrowseFillType fillType = [self getFillTypeWithLayoutDirection:[YBIBLayoutDirectionManager getLayoutDirectionByStatusBar]];
+    return [self.class getImageViewFrameWithContainerSize:[self.class getSizeOfCurrentLayoutDirection] imageSize:size fillType:fillType];
 }
 
 - (BOOL)yb_browserAllowShowSheetView {
@@ -334,9 +335,8 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 }
 
 - (CGSize)getSizeOfCompressing {
-    CGSize containerSize = [self.class getSizeOfCurrentLayoutDirection];
     YBImageBrowseFillType fillType = [self getFillTypeWithLayoutDirection:[YBIBLayoutDirectionManager getLayoutDirectionByStatusBar]];
-    CGSize imageViewsize = [self.class getImageViewFrameWithContainerSize:containerSize imageSize:self.image.size fillType:fillType].size;
+    CGSize imageViewsize = [self.class getImageViewFrameWithContainerSize:[self.class getSizeOfCurrentLayoutDirection] imageSize:self.image.size fillType:fillType].size;
     CGFloat scale = [UIScreen mainScreen].scale;
     CGSize size = CGSizeMake(floor(imageViewsize.width * scale), floor(imageViewsize.height * scale));
     return size;

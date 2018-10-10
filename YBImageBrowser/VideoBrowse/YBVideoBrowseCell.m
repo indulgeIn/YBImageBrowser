@@ -144,6 +144,11 @@
 }
 
 - (UIView *)yb_browserCurrentForegroundView {
+    if (self.cellData.firstFrame) {
+        [self restorePlay];
+        self.playButton.hidden = YES;
+        return self.firstFrameImageView;
+    }
     return self.baseView;
 }
 
@@ -198,9 +203,10 @@
 
 - (void)updateLayoutWithContainerSize:(CGSize)containerSize {
     self.baseView.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
-    self.firstFrameImageView.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
-    self.playButton.center = self.firstFrameImageView.center;
-    if (self->_playerLayer) self->_playerLayer.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
+    self.firstFrameImageView.frame = [self.cellData.class getImageViewFrameWithImageSize:self.cellData.firstFrame.size];
+    self.playButton.center = self.baseView.center;
+    if (self->_playerLayer)
+        self->_playerLayer.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
     self.actionBar.frame = [self.actionBar getFrameWithContainerSize:containerSize];
     self.topBar.frame = [self.topBar getFrameWithContainerSize:containerSize];
 }
@@ -226,9 +232,14 @@
 }
 
 - (void)cancelPlay {
+    [self restoreTooBar];
+    [self restorePlay];
+    [self restoreAsset];
+}
+
+- (void)restorePlay {
     if (self->_actionBar) self.actionBar.hidden = YES;
     if (self->_topBar) self.topBar.hidden = YES;
-    if (self.yb_browserToolBarHiddenBlock) self.yb_browserToolBarHiddenBlock(NO);
     
     [self removeObserverForPlayer];
     
@@ -243,11 +254,17 @@
     self->_playerItem = nil;
     
     self->_isPlaying = NO;
-    
+}
+
+- (void)restoreAsset {
     AVAsset *asset = self.cellData.avAsset;
     if ([asset isKindOfClass:AVURLAsset.class]) {
         self.cellData.avAsset = [AVURLAsset assetWithURL:((AVURLAsset *)asset).URL];
     }
+}
+
+- (void)restoreTooBar {
+    if (self.yb_browserToolBarHiddenBlock) self.yb_browserToolBarHiddenBlock(NO);
 }
 
 - (void)autoPlay {
@@ -285,6 +302,7 @@
             break;
         case YBVideoBrowseCellDataStateFirstFrameReady: {
             self.firstFrameImageView.image = data.firstFrame;
+            self.firstFrameImageView.frame = [self.cellData.class getImageViewFrameWithImageSize:self.cellData.firstFrame.size];
             self.playButton.hidden = NO;
         }
             break;

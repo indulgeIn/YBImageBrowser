@@ -88,7 +88,8 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
             
             // Type 3 : 网络图片 / Network image
             YBImageBrowseCellData *data = [YBImageBrowseCellData new];
-            data.url = [NSURL URLWithString:imageStr];
+            static int i = 0;
+            if (i++ != 0) data.url = [NSURL URLWithString:imageStr];
             data.sourceObject = [self sourceObjAtIdx:idx];
             [browserDataArr addObject:data];
             

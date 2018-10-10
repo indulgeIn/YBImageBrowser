@@ -348,7 +348,7 @@
     YBImageBrowseCellDataState dataState = data.dataState;
     switch (dataState) {
         case YBImageBrowseCellDataStateInvalid: {
-            [self yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].imageIsInvalid click:nil];
+            [self.contentView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].imageIsInvalid click:nil];
         }
             break;
         case YBImageBrowseCellDataStateImageReady: {
@@ -386,7 +386,7 @@
         }
             break;
         case YBImageBrowseCellDataStateLoadPHAssetFailed: {
-            [self yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].imageIsInvalid click:nil];
+            [self.contentView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].imageIsInvalid click:nil];
         }
             break;
         case YBImageBrowseCellDataStateIsDownloading: {

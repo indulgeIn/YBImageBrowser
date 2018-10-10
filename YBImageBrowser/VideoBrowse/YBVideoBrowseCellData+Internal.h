@@ -37,4 +37,6 @@ typedef NS_ENUM(NSInteger, YBVideoBrowseCellDataDownloadState) {
 
 - (void)loadData;
 
++ (CGRect)getImageViewFrameWithImageSize:(CGSize)size;
+
 @end

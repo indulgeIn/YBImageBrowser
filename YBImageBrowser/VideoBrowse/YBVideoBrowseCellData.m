@@ -53,20 +53,7 @@
 }
 
 - (CGRect)yb_browserCurrentImageFrameWithImageSize:(CGSize)size {
-    CGSize cSize = [self.class getSizeOfCurrentLayoutDirection];
-    CGFloat x = 0, y = 0, width = 0, height = 0;
-    if (size.width / size.height >= cSize.width / cSize.height) {
-        width = cSize.width;
-        height = cSize.width * (size.height / size.width);
-        x = 0;
-        y = (cSize.height - height) / 2.0;
-    } else {
-        height = cSize.height;
-        width = cSize.height * (size.width / size.height);
-        x = (cSize.width - width) / 2.0;
-        y = 0;
-    }
-    return CGRectMake(x, y, width, height);
+    return [self.class getImageViewFrameWithImageSize:size];
 }
 
 - (BOOL)yb_browserAllowShowSheetView {
@@ -171,6 +158,24 @@
             }
         })
     })
+}
+
++ (CGRect)getImageViewFrameWithImageSize:(CGSize)size {
+    CGSize cSize = [self.class getSizeOfCurrentLayoutDirection];
+    if (cSize.width <= 0 || cSize.height <= 0 || size.width <= 0 || size.height <= 0) return CGRectZero;
+    CGFloat x = 0, y = 0, width = 0, height = 0;
+    if (size.width / size.height >= cSize.width / cSize.height) {
+        width = cSize.width;
+        height = cSize.width * (size.height / size.width);
+        x = 0;
+        y = (cSize.height - height) / 2.0;
+    } else {
+        height = cSize.height;
+        width = cSize.height * (size.width / size.height);
+        x = (cSize.width - width) / 2.0;
+        y = 0;
+    }
+    return CGRectMake(x, y, width, height);
 }
 
 #pragma mark - private
