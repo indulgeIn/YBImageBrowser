@@ -80,7 +80,6 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
                 NSURL *url = [NSURL fileURLWithPath:path];
                 YBVideoBrowseCellData *data = [YBVideoBrowseCellData new];
                 data.url = url;
-                data.autoPlayCount = 10;
                 data.sourceObject = [self sourceObjAtIdx:idx];
                 [browserDataArr addObject:data];
                 
@@ -97,7 +96,6 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
             
             // Type 4 : 本地图片 / Local image
             YBImageBrowseCellData *data = [YBImageBrowseCellData new];
-//            data.image = [YBImage imageNamed:imageStr];
             data.imageBlock = ^YBImage *{ return [YBImage imageNamed:imageStr]; };
             data.sourceObject = [self sourceObjAtIdx:idx];
             [browserDataArr addObject:data];
