@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 /** Video from the system album */
 @property (nonatomic, strong, nullable) PHAsset *phAsset;
 
-/** Usually, use'AVURLAsset'. */
+/** Usually, use 'AVURLAsset'. */
 @property (nonatomic, strong, nullable) AVAsset *avAsset;
 
 /** The source rendering object corresponding to the current data model, it's used for animation.

@@ -19,14 +19,18 @@ typedef NS_ENUM(NSUInteger, YBImageBrowseFillType) {
     YBImageBrowseFillTypeCompletely
 };
 
+typedef YBImage* (^YBIBLocalImageBlock)(void);
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface YBImageBrowseCellData : NSObject <YBImageBrowserCellDataProtocol>
 
-/** Usage is the same as 'UIImage', support GIF, WebP and APNG. */
-@property (nonatomic, strong, nullable) YBImage *image;
+/** For local image.
+ The usage of 'YBImage' is the same as 'UIImage', support GIF, WebP and APNG. */
+@property (nonatomic, copy, nullable) YBIBLocalImageBlock imageBlock;
 
-/** The network address of image. */
+/** For network image.
+ The network address of image. */
 @property (nonatomic, strong, nullable) NSURL *url;
 
 /** Image from the system album */
@@ -43,9 +47,12 @@ NS_ASSUME_NONNULL_BEGIN
 /** As a preview image. It's invalid if it is not found in the cache. */
 @property (nonatomic, strong, nullable) NSURL *thumbUrl;
 
+/** The final image. */
+@property (nonatomic, strong, readonly, nullable) YBImage *image;
+
 /**
  Preloading data right now, but it may bring some CPU pressure.
- Before calling this method, make sure that one of 'image' 'url' 'phAsset' is valid.
+ Before calling this method, make sure that one of 'imageBlock' 'url' 'phAsset' is valid.
  */
 - (void)preload;
 

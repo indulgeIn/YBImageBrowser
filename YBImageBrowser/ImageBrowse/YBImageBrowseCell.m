@@ -356,6 +356,14 @@
             [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
         }
             break;
+        case YBImageBrowseCellDataStateIsDecoding: {
+            [self.contentView yb_showProgressViewLoading];
+        }
+            break;
+        case YBImageBrowseCellDataStateDecodeComplete: {
+            [self.contentView yb_hideProgressView];
+        }
+            break;
         case YBImageBrowseCellDataStateCompressImageReady: {
             self.mainImageView.image = data.compressImage;
             [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];

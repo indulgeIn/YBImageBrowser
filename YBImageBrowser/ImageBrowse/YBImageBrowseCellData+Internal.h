@@ -15,6 +15,9 @@ typedef NS_ENUM(NSInteger, YBImageBrowseCellDataState) {
     YBImageBrowseCellDataStateCompressImageReady,
     YBImageBrowseCellDataStateThumbImageReady,
     
+    YBImageBrowseCellDataStateIsDecoding,
+    YBImageBrowseCellDataStateDecodeComplete,
+    
     YBImageBrowseCellDataStateIsCompressingImage,
     YBImageBrowseCellDataStateCompressImageComplete,
     

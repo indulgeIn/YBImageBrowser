@@ -80,6 +80,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
                 NSURL *url = [NSURL fileURLWithPath:path];
                 YBVideoBrowseCellData *data = [YBVideoBrowseCellData new];
                 data.url = url;
+                data.autoPlayCount = 10;
                 data.sourceObject = [self sourceObjAtIdx:idx];
                 [browserDataArr addObject:data];
                 
@@ -88,8 +89,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
             
             // Type 3 : 网络图片 / Network image
             YBImageBrowseCellData *data = [YBImageBrowseCellData new];
-            static int i = 0;
-            if (i++ != 0) data.url = [NSURL URLWithString:imageStr];
+            data.url = [NSURL URLWithString:imageStr];
             data.sourceObject = [self sourceObjAtIdx:idx];
             [browserDataArr addObject:data];
             
@@ -97,7 +97,8 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
             
             // Type 4 : 本地图片 / Local image
             YBImageBrowseCellData *data = [YBImageBrowseCellData new];
-            data.image = [YBImage imageNamed:imageStr];
+//            data.image = [YBImage imageNamed:imageStr];
+            data.imageBlock = ^YBImage *{ return [YBImage imageNamed:imageStr]; };
             data.sourceObject = [self sourceObjAtIdx:idx];
             [browserDataArr addObject:data];
             
@@ -207,9 +208,39 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
                                @"video0.MP4",
                                @"https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200ff00000bdkpfpdd2r6fb5kf6m50&line=0.MP4",
                                @"localGifImage0.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
+                               @"localGifImage1.gif",
                                @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524118772581&di=29b994a8fcaaf72498454e6d207bc29a&imgtype=0&src=http%3A%2F%2Fimglf2.ph.126.net%2F_s_WfySuHWpGNA10-LrKEQ%3D%3D%2F1616792266326335483.gif",
                                @"localBigImage0.jpeg",
-                               @"localLongImage0.jpeg",];
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg",
+                               @"localLongImage0.jpeg"];
         }
             break;
         case 2: {

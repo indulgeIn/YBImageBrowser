@@ -26,6 +26,7 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 @interface YBImageBrowseCellData () {
     __weak id _downloadToken;
 }
+@property (nonatomic, strong) YBImage *image;
 @end
 
 @implementation YBImageBrowseCellData
@@ -86,8 +87,12 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
         } else if (self.url) {
             [YBIBWebImageManager queryCacheOperationForKey:self.url completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
                 if (data) {
-                    self.image = [YBImage imageWithData:data];
-                    [YBIBPhotoAlbumManager saveImageToAlbum:self.image];
+                    YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                        self.image = [YBImage imageWithData:data];
+                        YBIB_GET_QUEUE_MAIN_ASYNC(^{
+                            [YBIBPhotoAlbumManager saveImageToAlbum:self.image];
+                        });
+                    });
                 } else {
                     [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
                 }
@@ -109,6 +114,9 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 - (void)loadWithPre:(BOOL)pre {
     if (self.image) {
         [self loadLocalImageWithPre:pre];
+    } else if (self.imageBlock) {
+        if (!pre) [self loadThumbImage];
+        [self decodeLocalImageWithPre:pre];
     } else if (self.url) {
         if (!pre) [self loadThumbImage];
         [self queryImageCacheWithPre:pre];
@@ -133,6 +141,23 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
     }
 }
 
+- (void)decodeLocalImageWithPre:(BOOL)pre {
+    if (!self.imageBlock) return;
+    if (self.dataState == YBImageBrowseCellDataStateIsDecoding) {
+        self.dataState = YBImageBrowseCellDataStateIsDecoding;
+        return;
+    }
+    
+    self.dataState = YBImageBrowseCellDataStateIsDecoding;
+    YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        self.image = self.imageBlock();
+        YBIB_GET_QUEUE_MAIN_ASYNC(^{
+            self.dataState = YBImageBrowseCellDataStateDecodeComplete;
+            if (self.image) [self loadLocalImageWithPre:pre];
+        });
+    });
+}
+
 - (void)loadImageFromPHAssetWithPre:(BOOL)pre {
     if (!self.phAsset) return;
     if (self.dataState == YBImageBrowseCellDataStateIsLoadingPHAsset) {
@@ -142,10 +167,16 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
     
     self.dataState = YBImageBrowseCellDataStateIsLoadingPHAsset;
     [YBIBPhotoAlbumManager getImageDataWithPHAsset:self.phAsset success:^(NSData *imgData) {
-        self.image = [YBImage imageWithData:imgData];
         
-        self.dataState = YBImageBrowseCellDataStateLoadPHAssetSuccess;
-        [self loadLocalImageWithPre:pre];
+        YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.image = [YBImage imageWithData:imgData];
+            
+            YBIB_GET_QUEUE_MAIN_ASYNC(^{
+                self.dataState = YBImageBrowseCellDataStateLoadPHAssetSuccess;
+                if (self.image) [self loadLocalImageWithPre:pre];
+            });
+        });
+        
     } failed:^{
         self.dataState = YBImageBrowseCellDataStateLoadPHAssetFailed;
     }];
@@ -160,15 +191,19 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
     
     self.dataState = YBImageBrowseCellDataStateIsQueryingCache;
     [YBIBWebImageManager queryCacheOperationForKey:self.url completed:^(id _Nullable image, NSData * _Nullable imagedata) {
-        if (imagedata)
-            self.image = [YBImage imageWithData:imagedata];
         
-        self.dataState = YBImageBrowseCellDataStateQueryCacheComplete;
-        
-        if (self.image)
-            [self loadLocalImageWithPre:pre];
-        else
-            [self downloadImageWithPre:pre];
+        YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if (imagedata) self.image = [YBImage imageWithData:imagedata];
+            
+            YBIB_GET_QUEUE_MAIN_ASYNC(^{
+                self.dataState = YBImageBrowseCellDataStateQueryCacheComplete;
+                
+                if (self.image)
+                    [self loadLocalImageWithPre:pre];
+                else
+                    [self downloadImageWithPre:pre];
+            });
+        });
     }];
 }
 
@@ -189,11 +224,18 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
         })
     } success:^(UIImage * _Nullable image, NSData * _Nullable nsData, BOOL finished) {
         if (!finished) return;
-        self.image = [YBImage imageWithData:nsData];
-        [YBIBWebImageManager storeImage:self.image imageData:nsData forKey:self.url toDisk:YES];
         
-        self.dataState = YBImageBrowseCellDataStateDownloadSuccess;
-        [self loadLocalImageWithPre:pre];
+        YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            self.image = [YBImage imageWithData:nsData];
+            
+            YBIB_GET_QUEUE_MAIN_ASYNC(^{
+                [YBIBWebImageManager storeImage:self.image imageData:nsData forKey:self.url toDisk:YES];
+                
+                self.dataState = YBImageBrowseCellDataStateDownloadSuccess;
+                if (self.image) [self loadLocalImageWithPre:pre];
+            });
+        });
+        
     } failed:^(NSError * _Nullable error, BOOL finished) {
         if (!finished) return;
         self.dataState = YBImageBrowseCellDataStateDownloadFailed;
@@ -347,8 +389,10 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 - (void)setImage:(YBImage *)image {
     _image = image;
     
-    if ([self needCompress] && !self.compressImage && YBImageBrowseCellData.precutLargeImage)
-        [self compressingImageWithPre:YES];
+    YBIB_GET_QUEUE_MAIN_ASYNC(^{
+        if ([self needCompress] && !self.compressImage && YBImageBrowseCellData.precutLargeImage)
+            [self compressingImageWithPre:YES];
+    })
 }
 
 - (void)setUrl:(NSURL *)url {

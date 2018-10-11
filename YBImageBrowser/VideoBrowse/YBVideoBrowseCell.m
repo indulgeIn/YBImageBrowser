@@ -144,8 +144,8 @@
 }
 
 - (UIView *)yb_browserCurrentForegroundView {
+    [self restorePlay];
     if (self.cellData.firstFrame) {
-        [self restorePlay];
         self.playButton.hidden = YES;
         return self.firstFrameImageView;
     }
@@ -477,6 +477,8 @@
         BOOL shouldStart = !self->_isGestureInteraction && distanceArrive && self->_currentIndexIsSelf && self->_bodyIsInCenter;
         // START
         if (shouldStart) {
+            if (self->_actionBar) self.actionBar.hidden = YES;
+            if (self->_topBar) self.topBar.hidden = YES;
             
             if ([UIApplication sharedApplication].statusBarOrientation != self->_statusBarOrientationBefore) {
                 self.yb_browserDismissBlock();
@@ -513,6 +515,9 @@
 }
 
 - (void)restoreGestureInteractionWithDuration:(NSTimeInterval)duration {
+    if (self->_actionBar) self.actionBar.hidden = NO;
+    if (self->_topBar) self.topBar.hidden = NO;
+    
     self.yb_browserChangeAlphaBlock(1, duration);
     
     void (^animations)(void) = ^{
@@ -557,6 +562,7 @@
     if (!_firstFrameImageView) {
         _firstFrameImageView = [UIImageView new];
         _firstFrameImageView.contentMode = UIViewContentModeScaleAspectFit;
+        _firstFrameImageView.layer.masksToBounds = YES;
     }
     return _firstFrameImageView;
 }

@@ -70,7 +70,7 @@ static CGFloat kMaxPixel = 4096.0;
     } else if ([data isKindOfClass:NSString.class]) {
         
         NSString *imageStr = (NSString *)data;
-        BOOL isBigImage = NO, isLongImage = NO;
+        __block BOOL isBigImage = NO, isLongImage = NO;
         
         if ([imageStr hasSuffix:@".MP4"]) {
             
@@ -101,17 +101,17 @@ static CGFloat kMaxPixel = 4096.0;
 
         } else {
             
-            NSString *type = imageStr.pathExtension;
-            NSString *resource = imageStr.stringByDeletingPathExtension;
-            NSString *filePath = [[NSBundle mainBundle] pathForResource:resource ofType:type];
-            NSData *nsData = [NSData dataWithContentsOfFile:filePath];
-            UIImage *image = [UIImage imageWithData:nsData];
-            
-            if (image.size.width * image.scale * image.size.height * image.scale > kMaxPixel * kMaxPixel) isBigImage = YES;
-            if (image.size.width * image.scale > kMaxPixel || image.size.height * image.scale > kMaxPixel) isLongImage = YES;
-            
-            if (isBigImage) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSString *type = imageStr.pathExtension;
+                NSString *resource = imageStr.stringByDeletingPathExtension;
+                NSString *filePath = [[NSBundle mainBundle] pathForResource:resource ofType:type];
+                NSData *nsData = [NSData dataWithContentsOfFile:filePath];
+                UIImage *image = [UIImage imageWithData:nsData];
+                
+                if (image.size.width * image.scale * image.size.height * image.scale > kMaxPixel * kMaxPixel) isBigImage = YES;
+                if (image.size.width * image.scale > kMaxPixel || image.size.height * image.scale > kMaxPixel) isLongImage = YES;
+                
+                if (isBigImage) {
                     CGSize size = CGSizeMake(imageViewSize.width, image.size.height / image.size.width * imageViewSize.width);
                     UIGraphicsBeginImageContext(size);
                     [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
@@ -120,10 +120,12 @@ static CGFloat kMaxPixel = 4096.0;
                     dispatch_async(dispatch_get_main_queue(), ^{
                         if (self.data == data) self.mainImageView.image = scaledImage;
                     });
-                });
-            } else {
-                self.mainImageView.image = image;
-            }
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        if (self.data == data) self.mainImageView.image = image;
+                    });
+                }
+            });
         }
         
         if ([imageStr hasSuffix:@".MP4"]) {

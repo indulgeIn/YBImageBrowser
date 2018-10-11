@@ -8,6 +8,7 @@
 
 #import "YBImage.h"
 #import "YBImageBrowseCellData.h"
+#import "YBIBUtilities.h"
 
 /**
  An array of NSNumber objects, shows the best order for path scale search.
@@ -148,7 +149,7 @@ static CGFloat _NSStringPathScale(NSString *string) {
         
         // Determine whether need to decode.
         BOOL decodeForDisplay = NO;
-//        if (YBImageBrowseCellData.globalMaxGrainSize.width * YBImageBrowseCellData.globalMaxGrainSize.height > decoder.width * decoder.height) {
+//        if (YBImageBrowseCellData.globalMaxTextureSize.width * YBImageBrowseCellData.globalMaxTextureSize.height > decoder.width * decoder.height) {
 //            decodeForDisplay = NO;
 //        }
         
