@@ -99,7 +99,7 @@ browser.currentIndex = ...;
 
 ![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sourceObject.jpeg)
 
-### 使用代理设置数据源
+### 使用代理设置数据源（可解决内存峰值过高问题）
 
 ```objc
 // 设置数据源代理并展示
