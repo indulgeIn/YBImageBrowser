@@ -90,7 +90,7 @@ static CGFloat _NSStringPathScale(NSString *string) {
     NSUInteger _bytesPerFrame;
 }
 
-+ (YBImage *)imageNamed:(NSString *)name {
++ (__kindof UIImage *)imageNamed:(NSString *)name {
     if (name.length == 0) return nil;
     if ([name hasSuffix:@"/"]) return nil;
     
@@ -111,7 +111,10 @@ static CGFloat _NSStringPathScale(NSString *string) {
         }
         if (path) break;
     }
-    if (path.length == 0) return nil;
+    if (path.length == 0) {
+        // Support Assets.xcassets.
+        return [super imageNamed:name];
+    }
     
     NSData *data = [NSData dataWithContentsOfFile:path];
     if (data.length == 0) return nil;

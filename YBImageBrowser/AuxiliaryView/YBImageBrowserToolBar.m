@@ -102,10 +102,11 @@ static CGFloat kToolBarDefaultsHeight = 50.0;
 - (void)clickOperationButton:(UIButton *)button {
     switch (self->_operationType) {
         case YBImageBrowserToolBarOperationTypeSave: {
-            if ([self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)])
+            if ([self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)]) {
                 [self->_data yb_browserSaveToPhotoAlbum];
-            else
+            } else {
                 [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
+            }
         }
             break;
         case YBImageBrowserToolBarOperationTypeMore: {
@@ -113,7 +114,9 @@ static CGFloat kToolBarDefaultsHeight = 50.0;
         }
             break;
         case YBImageBrowserToolBarOperationTypeCustom: {
-            if (self->_operation) self->_operation(self->_data);
+            if (self->_operation) {
+                self->_operation(self->_data);
+            }
         }
             break;
     }

@@ -75,6 +75,8 @@
     sheetView.actions = @[saveAction];
     self->_defaultSheetView = sheetView;
     self->_sheetView = sheetView;
+    
+    self->_shouldHideStatusBar = YES;
 }
 
 - (void)viewDidLoad {
@@ -121,7 +123,9 @@
 }
 
 - (void)setStatusBarHide:(BOOL)hide {
-    self.view.window.windowLevel = hide ? UIWindowLevelStatusBar + 1 : _windowLevelByDefault;
+    if (self.shouldHideStatusBar) {
+        self.view.window.windowLevel = hide ? UIWindowLevelStatusBar + 1 : _windowLevelByDefault;
+    }
 }
 
 #pragma mark - gesture
@@ -181,8 +185,9 @@
     CGSize containerSize = layoutDirection == YBImageBrowserLayoutDirectionHorizontal ? CGSizeMake(YBIMAGEBROWSER_HEIGHT, YBIMAGEBROWSER_WIDTH) : CGSizeMake(YBIMAGEBROWSER_WIDTH, YBIMAGEBROWSER_HEIGHT);
     self->_containerSize = containerSize;
     
-    if (self.sheetView && self.sheetView.superview)
+    if (self.sheetView && self.sheetView.superview) {
         [self.sheetView yb_browserHideSheetViewWithAnimation:NO];
+    }
     
     [self.browserView updateLayoutWithDirection:layoutDirection containerSize:containerSize];
     [self.toolBars enumerateObjectsUsingBlock:^(__kindof UIView<YBImageBrowserToolBarProtocol> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -205,8 +210,9 @@
         YBIBLOG_ERROR(@"The index out of range.");
     } else {
         _currentIndex = currentIndex;
-        if (self.browserView.superview)
+        if (self.browserView.superview) {
             [self.browserView scrollToPageWithIndex:currentIndex];
+        }
     }
 }
 
@@ -253,10 +259,12 @@
 
 - (void)setHiddenSourceObject:(id)hiddenSourceObject {
     if (!self->_autoHideSourceObject) return;
-    if (_hiddenSourceObject && [_hiddenSourceObject respondsToSelector:@selector(setHidden:)])
+    if (_hiddenSourceObject && [_hiddenSourceObject respondsToSelector:@selector(setHidden:)]) {
         [_hiddenSourceObject setValue:@(NO) forKey:@"hidden"];
-    if (hiddenSourceObject && [hiddenSourceObject respondsToSelector:@selector(setHidden:)])
+    }
+    if (hiddenSourceObject && [hiddenSourceObject respondsToSelector:@selector(setHidden:)]) {
         [hiddenSourceObject setValue:@(YES) forKey:@"hidden"];
+    }
     _hiddenSourceObject = hiddenSourceObject;
 }
 
@@ -313,19 +321,24 @@
     id<YBImageBrowserCellDataProtocol> data = [self currentData];
     
     id sourceObj = nil;
-    if ([data respondsToSelector:@selector(yb_browserCellSourceObject)]) sourceObj = data.yb_browserCellSourceObject;
+    if ([data respondsToSelector:@selector(yb_browserCellSourceObject)]) {
+        sourceObj = data.yb_browserCellSourceObject;
+    }
     self.hiddenSourceObject = sourceObj;
     
-    if (self.delegate && [self.delegate respondsToSelector:@selector(yb_imageBrowser:pageIndexChanged:data:)])
+    if (self.delegate && [self.delegate respondsToSelector:@selector(yb_imageBrowser:pageIndexChanged:data:)]) {
         [self.delegate yb_imageBrowser:self pageIndexChanged:index data:data];
+    }
     
     [self.toolBars enumerateObjectsUsingBlock:^(__kindof UIView<YBImageBrowserToolBarProtocol> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
-        if (self.defaultToolBar && self.sheetView && [self.sheetView yb_browserActionsCount] >= 2)
+        if (self.defaultToolBar && self.sheetView && [self.sheetView yb_browserActionsCount] >= 2) {
             self.defaultToolBar.operationType = YBImageBrowserToolBarOperationTypeMore;
+        }
         
-        if ([obj respondsToSelector:@selector(yb_browserPageIndexChanged:totalPage:data:)])
+        if ([obj respondsToSelector:@selector(yb_browserPageIndexChanged:totalPage:data:)]) {
             [obj yb_browserPageIndexChanged:index totalPage:[self.dataSource yb_numberOfCellForImageBrowserView:self.browserView] data:data];
+        }
     }];
 }
 
@@ -333,8 +346,9 @@
     [self.toolBars enumerateObjectsUsingBlock:^(__kindof UIView<YBImageBrowserToolBarProtocol> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         obj.hidden = hidden;
     }];
-    if (self.sheetView && self.sheetView.superview && hidden)
+    if (self.sheetView && self.sheetView.superview && hidden) {
         [self.sheetView yb_browserHideSheetViewWithAnimation:YES];
+    }
 }
 
 #pragma mark - <YBImageBrowserDataSource>

@@ -113,8 +113,9 @@
     self->_containerSize = containerSize;
     self->_layoutDirection = layoutDirection;
     
-    if (self->_isGestureInteraction)
+    if (self->_isGestureInteraction) {
         [self restoreGestureInteractionWithDuration:0];
+    }
     
     [self updateLayoutWithContainerSize:containerSize];
 }
@@ -135,12 +136,16 @@
 }
 
 - (void)yb_browserInitializeFirst:(BOOL)isFirst {
-    if (isFirst) [self autoPlay];
+    if (isFirst) {
+        [self autoPlay];
+    }
 }
 
 - (void)yb_browserBodyIsInTheCenter:(BOOL)isIn {
     self->_bodyIsInCenter = isIn;
-    if (!isIn) self->_gestureInteractionStartPoint = CGPointZero;
+    if (!isIn) {
+        self->_gestureInteractionStartPoint = CGPointZero;
+    }
 }
 
 - (UIView *)yb_browserCurrentForegroundView {
@@ -205,8 +210,9 @@
     self.baseView.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
     self.firstFrameImageView.frame = [self.cellData.class getImageViewFrameWithImageSize:self.cellData.firstFrame.size];
     self.playButton.center = self.baseView.center;
-    if (self->_playerLayer)
+    if (self->_playerLayer) {
         self->_playerLayer.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
+    }
     self.actionBar.frame = [self.actionBar getFrameWithContainerSize:containerSize];
     self.topBar.frame = [self.topBar getFrameWithContainerSize:containerSize];
 }
@@ -264,7 +270,9 @@
 }
 
 - (void)restoreTooBar {
-    if (self.yb_browserToolBarHiddenBlock) self.yb_browserToolBarHiddenBlock(NO);
+    if (self.yb_browserToolBarHiddenBlock) {
+        self.yb_browserToolBarHiddenBlock(NO);
+    }
 }
 
 - (void)autoPlay {

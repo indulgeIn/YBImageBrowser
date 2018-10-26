@@ -40,19 +40,25 @@ static BOOL _cacheShouldDecompressImages;
 + (id)downloadImageWithURL:(NSURL *)url progress:(YBIBWebImageManagerProgressBlock)progress success:(YBIBWebImageManagerSuccessBlock)success failed:(YBIBWebImageManagerFailedBlock)failed {
     if (!url) return nil;
     SDWebImageDownloadToken *token = [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:url options:SDWebImageDownloaderLowPriority progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
-        if (progress) progress(receivedSize, expectedSize, targetURL);
+        if (progress) {
+            progress(receivedSize, expectedSize, targetURL);
+        }
     } completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
         if (error) {
             if (failed) failed(error, finished);
             return;
         }
-        if (success) success(image, data, finished);
+        if (success) {
+            success(image, data, finished);
+        }
     }];
     return token;
 }
 
 + (void)cancelTaskWithDownloadToken:(id)token {
-    if (token) [[SDWebImageDownloader sharedDownloader] cancel:token];
+    if (token) {
+        [[SDWebImageDownloader sharedDownloader] cancel:token];
+    }
 }
 
 + (void)storeImage:(UIImage *)image imageData:(NSData *)data forKey:(NSURL *)key toDisk:(BOOL)toDisk {
@@ -63,7 +69,9 @@ static BOOL _cacheShouldDecompressImages;
     if (!key) return;
     SDImageCacheOptions options = SDImageCacheQueryDataWhenInMemory;
     [[SDImageCache sharedImageCache] queryCacheOperationForKey:key.absoluteString options:options done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
-        if (completed) completed(image, data);
+        if (completed) {
+            completed(image, data);
+        }
     }];
 }
 

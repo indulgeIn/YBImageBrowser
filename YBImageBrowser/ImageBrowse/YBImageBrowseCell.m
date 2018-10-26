@@ -106,7 +106,9 @@
     
     [self hideTailoringImageView];
     
-    if (self->_isGestureInteraction) [self restoreGestureInteractionWithDuration:0];
+    if (self->_isGestureInteraction) {
+        [self restoreGestureInteractionWithDuration:0];
+    }
     
     [self updateLayoutWithContainerSize:containerSize];
     [self updateMainContentViewLayoutWithContainerSize:containerSize fillType:[self.cellData getFillTypeWithLayoutDirection:layoutDirection]];
@@ -137,14 +139,16 @@
     height = imageViewFrame.size.height,
     sHeight = scrollView.bounds.size.height,
     sWidth = scrollView.bounds.size.width;
-    if (height > sHeight)
+    if (height > sHeight) {
         imageViewFrame.origin.y = 0;
-    else
+    } else {
         imageViewFrame.origin.y = (sHeight - height) / 2.0;
-    if (width > sWidth)
+    }
+    if (width > sWidth) {
         imageViewFrame.origin.x = 0;
-    else
+    } else {
         imageViewFrame.origin.x = (sWidth - width) / 2.0;
+    }
     self.mainImageView.frame = imageViewFrame;
 }
 
@@ -207,10 +211,11 @@
     UIView *zoomView = [self viewForZoomingInScrollView:scrollView];
     CGPoint point = [tap locationInView:zoomView];
     if (!CGRectContainsPoint(zoomView.bounds, point)) return;
-    if (scrollView.zoomScale == scrollView.maximumZoomScale)
+    if (scrollView.zoomScale == scrollView.maximumZoomScale) {
         [scrollView setZoomScale:1 animated:YES];
-    else
+    } else {
         [scrollView zoomToRect:CGRectMake(point.x, point.y, 1, 1) animated:YES];
+    }
 }
 
 - (BOOL)currentIsLargeImageBrowsing {
@@ -424,11 +429,13 @@
 
 - (void)updateMainContentViewLayoutWithContainerSize:(CGSize)containerSize fillType:(YBImageBrowseFillType)fillType {
     CGSize imageSize;
-    if (self.cellData.image)
+    if (self.cellData.image) {
         imageSize = self.cellData.image.size;
-    else if (self.cellData.thumbImage)
+    } else if (self.cellData.thumbImage) {
         imageSize = self.cellData.thumbImage.size;
-    else return;
+    } else {
+        return;
+    }
     
     CGRect imageViewFrame = [self.cellData.class getImageViewFrameWithContainerSize:containerSize imageSize:imageSize fillType:fillType];
     
@@ -436,15 +443,18 @@
     self.mainContentView.contentSize = [self.cellData.class getContentSizeWithContainerSize:containerSize imageViewFrame:imageViewFrame];
     self.mainContentView.minimumZoomScale = 1;
     self.mainContentView.maximumZoomScale = 1;
-    if (self.cellData.image)
+    if (self.cellData.image) {
         self.mainContentView.maximumZoomScale = self.cellData.maxZoomScale >= 1 ? self.cellData.maxZoomScale : [self.cellData.class getMaximumZoomScaleWithContainerSize:containerSize imageSize:imageSize fillType:fillType];
+    }
     
     self.mainImageView.frame = imageViewFrame;
 }
 
 - (void)showTailoringImageView:(UIImage *)image {
     if (self->_isGestureInteraction) return;
-    if (!self.tailoringImageView.superview) [self.contentView addSubview:self.tailoringImageView];
+    if (!self.tailoringImageView.superview) {
+        [self.contentView addSubview:self.tailoringImageView];
+    }
     self.tailoringImageView.frame = CGRectMake(0, 0, self->_containerSize.width, self->_containerSize.height);
     self.tailoringImageView.hidden = NO;
     self.tailoringImageView.image = image;
@@ -473,8 +483,9 @@
     
     YBImageBrowseCellData *tmp = self.cellData;
     [self.cellData cuttingImageToRect:CGRectMake(x, y, width, height) complete:^(UIImage *image) {
-        if (tmp == self.cellData && !self->_isDragging)
+        if (tmp == self.cellData && !self->_isDragging) {
             [self showTailoringImageView:image];
+        }
     }];
 }
 
@@ -492,7 +503,9 @@
         _mainContentView.alwaysBounceHorizontal = NO;
         _mainContentView.alwaysBounceVertical = NO;
         _mainContentView.layer.masksToBounds = NO;
-        if (@available(iOS 11.0, *)) _mainContentView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        if (@available(iOS 11.0, *)) {
+            _mainContentView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
     }
     return _mainContentView;
 }

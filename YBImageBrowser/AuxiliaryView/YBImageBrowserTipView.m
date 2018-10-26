@@ -45,7 +45,9 @@
 
 - (void)yb_hideTipView {
     YBImageBrowserTipView *tipView = self.yb_tipView;
-    if (tipView && tipView.superview) [tipView removeFromSuperview];
+    if (tipView && tipView.superview) {
+        [tipView removeFromSuperview];
+    }
 }
 
 - (void)setYb_tipView:(YBImageBrowserTipView * _Nonnull)yb_tipView {

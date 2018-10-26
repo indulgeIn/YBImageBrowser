@@ -37,7 +37,9 @@
 #pragma mark - notification
 
 - (void)applicationDidChangeStatusBarOrientationNotification:(NSNotification *)note {
-    if (self.layoutDirectionChangedBlock) self.layoutDirectionChangedBlock([self.class getLayoutDirectionByStatusBar]);
+    if (self.layoutDirectionChangedBlock) {
+        self.layoutDirectionChangedBlock([self.class getLayoutDirectionByStatusBar]);
+    }
 }
 
 @end

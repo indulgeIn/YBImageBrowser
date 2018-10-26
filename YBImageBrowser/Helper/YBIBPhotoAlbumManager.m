@@ -72,10 +72,11 @@
 + (void)saveDataToAlbum:(NSData *)data {
     ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
     [library writeImageDataToSavedPhotosAlbum:data metadata:nil completionBlock:^(NSURL *assetURL, NSError *error) {
-        if (error)
+        if (error) {
             [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
-        else
+        } else {
             [YBIBGetNormalWindow() yb_showHookTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumSuccess];
+        }
     }];
 }
 
@@ -84,10 +85,11 @@
 }
 
 + (void)completedWithImage:(UIImage *)image error:(NSError *)error context:(void *)context {
-    if (error)
+    if (error) {
         [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
-    else
+    } else {
         [YBIBGetNormalWindow() yb_showHookTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumSuccess];
+    }
 }
 
 + (void)saveVideoToAlbumWithPath:(NSString *)path {
@@ -99,10 +101,11 @@
 }
 
 + (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo{
-    if (error)
+    if (error) {
         [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
-    else
+    } else {
         [YBIBGetNormalWindow() yb_showHookTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumSuccess];
+    }
 }
 
 

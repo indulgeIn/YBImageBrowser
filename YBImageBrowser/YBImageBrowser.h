@@ -70,6 +70,7 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
  */
 - (id<YBImageBrowserCellDataProtocol>)currentData;
 
+
 /** The default is 'UIInterfaceOrientationMaskAllButUpsideDown'. */
 @property (nonatomic, assign) UIInterfaceOrientationMask supportedOrientations;
 
@@ -82,6 +83,7 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
 /** Automatically hide source objects. What is the source object, see 'YBImageBrowseCellData' or 'YBVideoBrowseCellData' */
 @property (nonatomic, assign) BOOL autoHideSourceObject;
 
+
 /** The default is 'YBImageBrowserTransitionTypeCoherent'. */
 @property (nonatomic, assign) YBImageBrowserTransitionType enterTransitionType;
 
@@ -91,8 +93,10 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
 /** The default is 0.25. */
 @property (nonatomic, assign) NSTimeInterval transitionDuration;
 
+
 /** Parameter configuration object for gesture interaction animation. */
 @property (nonatomic, strong) YBIBGestureInteractionProfile *giProfile;
+
 
 /** Default 'toolBar', you can configure some parameters */
 @property (nonatomic, weak, readonly) YBImageBrowserToolBar *defaultToolBar;
@@ -105,6 +109,10 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
 
 /** The default is 'defaultSheetView', and you can customize 'sheetView'. You don't need to care about the view hierarchy of 'sheetView', and just need to update the UI according to the protocol method. */
 @property (nonatomic, strong) __kindof UIView<YBImageBrowserSheetViewProtocol> *sheetView;
+
+
+/** The default is YES. */
+@property (nonatomic, assign) BOOL shouldHideStatusBar;
 
 @end
 

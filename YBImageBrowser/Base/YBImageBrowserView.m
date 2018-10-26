@@ -51,8 +51,9 @@
         self.delegate = self;
         self.dataSource = self;
         self.decelerationRate = UIScrollViewDecelerationRateFast;
-        if (@available(iOS 11.0, *))
+        if (@available(iOS 11.0, *)) {
             self.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
     }
     return self;
 }
@@ -80,8 +81,9 @@
         // Notice 'visibleCells' layout direction changed, can't use '-reloadData' because it will triggering '-prepareForReuse' of cell.
         NSArray<UICollectionViewCell<YBImageBrowserCellProtocol> *> *cells = [self visibleCells];
         [cells enumerateObjectsUsingBlock:^(UICollectionViewCell<YBImageBrowserCellProtocol> * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([cell respondsToSelector:@selector(yb_browserLayoutDirectionChanged:containerSize:)])
+            if ([cell respondsToSelector:@selector(yb_browserLayoutDirectionChanged:containerSize:)]) {
                 [cell yb_browserLayoutDirectionChanged:self->_layoutDirection containerSize:self->_containerSize];
+            }
         }];
         [self scrollToPageWithIndex:self.currentIndex];
     }
@@ -97,10 +99,11 @@
         self.contentOffset = CGPointMake(self.bounds.size.width * self.currentIndex, 0);
     } else {
         CGPoint targetPoint = CGPointMake(self.bounds.size.width * index, 0);
-        if (CGPointEqualToPoint(self.contentOffset, targetPoint))
+        if (CGPointEqualToPoint(self.contentOffset, targetPoint)) {
             [self scrollViewDidScroll:self];
-        else
+        } else {
             self.contentOffset = targetPoint;
+        }
     }
 }
 
@@ -135,7 +138,9 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    if (!self.yb_dataSource || ![self.yb_dataSource respondsToSelector:@selector(yb_imageBrowserView:dataForCellAtIndex:)]) return [UICollectionViewCell new];
+    if (!self.yb_dataSource || ![self.yb_dataSource respondsToSelector:@selector(yb_imageBrowserView:dataForCellAtIndex:)]) {
+        return [UICollectionViewCell new];
+    }
     
     id<YBImageBrowserCellDataProtocol> data = [self dataAtIndex:indexPath.row];
     NSAssert(data && [data respondsToSelector:@selector(yb_classOfBrowserCell)], @"your custom data must conforms '<YBImageBrowserCellDataProtocol>' and implement '-yb_classOfBrowserCell'");
@@ -145,10 +150,11 @@
     NSString *identifier = NSStringFromClass(cellClass);
     if (![self->_reuseIdentifierSet containsObject:cellClass]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:identifier ofType:@"nib"];
-        if (path)
+        if (path) {
             [collectionView registerNib:[UINib nibWithNibName:identifier bundle:nil] forCellWithReuseIdentifier:identifier];
-        else
+        } else {
             [collectionView registerClass:cellClass forCellWithReuseIdentifier:identifier];
+        }
         [self->_reuseIdentifierSet addObject:cellClass];
     }
     UICollectionViewCell<YBImageBrowserCellProtocol> *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
@@ -217,8 +223,9 @@
         
         NSArray<UICollectionViewCell<YBImageBrowserCellProtocol> *> *cells = [self visibleCells];
         [cells enumerateObjectsUsingBlock:^(UICollectionViewCell<YBImageBrowserCellProtocol> * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([cell respondsToSelector:@selector(yb_browserBodyIsInTheCenter:)])
+            if ([cell respondsToSelector:@selector(yb_browserBodyIsInTheCenter:)]) {
                 [cell yb_browserBodyIsInTheCenter:self->_bodyIsInCenter];
+            }
         }];
     }
     
@@ -231,8 +238,9 @@
         // Notice 'visibleCells' page index changed.
         NSArray<UICollectionViewCell<YBImageBrowserCellProtocol> *> *cells = [self visibleCells];
         [cells enumerateObjectsUsingBlock:^(UICollectionViewCell<YBImageBrowserCellProtocol> * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
-            if ([cell respondsToSelector:@selector(yb_browserPageIndexChanged:ownIndex:)])
+            if ([cell respondsToSelector:@selector(yb_browserPageIndexChanged:ownIndex:)]) {
                 [cell yb_browserPageIndexChanged:self.currentIndex ownIndex:[self indexPathForCell:cell].row];
+            }
         }];
     }
 }

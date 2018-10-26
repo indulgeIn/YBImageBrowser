@@ -100,7 +100,9 @@ static CGFloat kActionBarDefaultsHeight = 50.0;
 }
 
 - (void)setCurrentValue:(float)value {
-    if (!self->_isDragging) [self.slider setValue:value animated:YES];
+    if (!self->_isDragging) {
+        [self.slider setValue:value animated:YES];
+    }
     self.preTimeLabel.text = [self.class timeformatFromSeconds:value];
 }
 

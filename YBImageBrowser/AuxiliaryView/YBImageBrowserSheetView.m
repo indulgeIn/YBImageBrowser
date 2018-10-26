@@ -191,8 +191,9 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     CGPoint point = [touches.anyObject locationInView:self];
-    if (!CGRectContainsPoint(self.tableView.frame, point))
+    if (!CGRectContainsPoint(self.tableView.frame, point)) {
         [self yb_browserHideSheetViewWithAnimation:YES];
+    }
 }
 
 #pragma mark - getter
@@ -206,8 +207,9 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
         _tableView.estimatedSectionFooterHeight = 0;
         _tableView.estimatedSectionHeaderHeight = 0;
         _tableView.backgroundColor = [UIColor clearColor];
-        if (@available(iOS 11.0, *))
+        if (@available(iOS 11.0, *)) {
             _tableView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+        }
         _tableView.alwaysBounceVertical = NO;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 

@@ -47,7 +47,9 @@
 
 - (void)yb_hideProgressView {
     YBImageBrowserProgressView *progressView = self.yb_progressView;
-    if (progressView && progressView.superview) [progressView removeFromSuperview];
+    if (progressView && progressView.superview) {
+        [progressView removeFromSuperview];
+    }
 }
 
 - (void)setYb_progressView:(YBImageBrowserProgressView * _Nonnull)yb_progressView {
@@ -202,7 +204,9 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserProgressType) {
 #pragma mark - touch event
 
 - (void)respondsToTapTextlabel {
-    if (self.clickTextLabelBlock) self.clickTextLabelBlock();
+    if (self.clickTextLabelBlock) {
+        self.clickTextLabelBlock();
+    }
 }
 
 #pragma mark - getter

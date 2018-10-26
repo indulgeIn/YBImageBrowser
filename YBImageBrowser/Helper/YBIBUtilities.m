@@ -28,12 +28,13 @@ UIViewController *YBIBGetTopController(void) {
     UIWindow *window = YBIBGetNormalWindow();
     UIView *frontView = [[window subviews] objectAtIndex:0];
     id nextResponder = [frontView nextResponder];
-    if ([nextResponder isKindOfClass:UIViewController.class])
+    if ([nextResponder isKindOfClass:UIViewController.class]) {
         topController = nextResponder;
-    else {
+    } else {
         topController = window.rootViewController;
-        while (topController.presentedViewController)
+        while (topController.presentedViewController) {
             topController = topController.presentedViewController;
+        }
     }
     return topController;
 }
@@ -49,8 +50,9 @@ UIViewController *YBIBGetTopController(void) {
         struct utsname systemInfo;
         uname(&systemInfo);
         NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-        if ([platform isEqualToString:@"x86_64"] || [platform isEqualToString:@"i386"])
+        if ([platform isEqualToString:@"x86_64"] || [platform isEqualToString:@"i386"]) {
             platform = NSProcessInfo.processInfo.environment[@"SIMULATOR_MODEL_IDENTIFIER"];
+        }
         isIphoneX = [platformSet containsObject:platform];
     });
     return isIphoneX;

@@ -150,7 +150,9 @@
 - (void)completeTransition:(nullable id <UIViewControllerContextTransitioning>)transitionContext isEnter:(BOOL)isEnter {
     [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
     self.isTransitioning = NO;
-    if (!isEnter) self.imageBrowser.hiddenSourceObject = nil;
+    if (!isEnter) {
+        self.imageBrowser.hiddenSourceObject = nil;
+    }
 }
 
 #pragma mark - private
@@ -197,16 +199,18 @@
     id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.browserView dataAtIndex:self.imageBrowser.currentIndex];
     if (!data) return CGRectZero;
     CGSize size = self.animateImageView.image ? self.animateImageView.image.size : self.animateImageView.layer.bounds.size;
-    if ([data respondsToSelector:@selector(yb_browserCurrentImageFrameWithImageSize:)])
+    if ([data respondsToSelector:@selector(yb_browserCurrentImageFrameWithImageSize:)]) {
         return [data yb_browserCurrentImageFrameWithImageSize:size];
+    }
     return CGRectZero;
 }
 
 - (UIView *)out_fromAnimateView {
     UICollectionViewCell<YBImageBrowserCellProtocol> *cell = (UICollectionViewCell<YBImageBrowserCellProtocol> *)[self.imageBrowser.browserView cellForItemAtIndexPath:[NSIndexPath indexPathForRow:self.imageBrowser.currentIndex inSection:0]];
     if (!cell) return nil;
-    if ([cell respondsToSelector:@selector(yb_browserCurrentForegroundView)])
+    if ([cell respondsToSelector:@selector(yb_browserCurrentForegroundView)]) {
         return [cell yb_browserCurrentForegroundView];
+    }
     return nil;
 }
 
@@ -215,8 +219,9 @@
     height = [UIScreen mainScreen].bounds.size.height;
     CGRect frame = CGRectMake(width / 2, height / 2, 1, 1);
     id sourceObj = [self out_toSourceObj];
-    if (!sourceObj || ![sourceObj respondsToSelector:@selector(bounds)])
+    if (!sourceObj || ![sourceObj respondsToSelector:@selector(bounds)]) {
         return frame;
+    }
     CGRect bounds = ((NSValue *)[sourceObj valueForKey:@"bounds"]).CGRectValue;
     CGRect result = [sourceObj convertRect:bounds toView:view];
     return result;
@@ -224,7 +229,9 @@
 
 - (id)out_toSourceObj {
     id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.browserView dataAtIndex:self.imageBrowser.currentIndex];
-    if (!data || ![data respondsToSelector:@selector(yb_browserCellSourceObject)]) return nil;
+    if (!data || ![data respondsToSelector:@selector(yb_browserCellSourceObject)]) {
+        return nil;
+    }
     id sourceObj = data.yb_browserCellSourceObject;
     return sourceObj;
 }
