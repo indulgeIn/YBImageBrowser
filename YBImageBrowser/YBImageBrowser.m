@@ -38,6 +38,7 @@
     [YBIBWebImageManager restoreOutsideConfiguration];
     self.hiddenSourceObject = nil;
     [self setStatusBarHide:NO];
+    [self removeObserverForSystem];
 }
 
 - (instancetype)init {
@@ -105,7 +106,7 @@
  
         self->_isFirstViewDidAppear = YES;
 
-        [self addNotification];
+        [self addObserverForSystem];
     }
 }
 
@@ -149,13 +150,17 @@
     }
 }
 
-#pragma mark - notification
+#pragma mark - observe
 
-- (void)addNotification {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(adjustStatusBar) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+- (void)removeObserverForSystem {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
 }
 
-- (void)adjustStatusBar {
+- (void)addObserverForSystem {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarFrame) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+}
+
+- (void)didChangeStatusBarFrame {
     if ([UIApplication sharedApplication].statusBarFrame.size.height > YBIB_HEIGHT_STATUSBAR) {
         self.view.frame = CGRectMake(0, 0, self->_containerSize.width, self->_containerSize.height);
     }
@@ -253,6 +258,11 @@
 
 - (YBIBGestureInteractionProfile *)giProfile {
     return self.browserView.giProfile;
+}
+
+- (void)setDataCacheCountLimit:(NSUInteger)dataCacheCountLimit {
+    _dataCacheCountLimit = dataCacheCountLimit;
+    self.browserView.cacheCountLimit = dataCacheCountLimit;
 }
 
 #pragma mark - internal

@@ -36,9 +36,12 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)preload;
 
-/** The number of play video automatically. The default is 0.
+/** The number of play video automatically. Default is 0.
  User interaction may be caton when playing automatically, so don't use automatic play unless really necessary. */
 @property (nonatomic, assign) NSUInteger autoPlayCount;
+
+/** The number of repeat play video. Default is 0. */
+@property (nonatomic, assign) NSUInteger repeatPlayCount;
 
 /** The default is YES. */
 @property (nonatomic, assign) BOOL allowSaveToPhotoAlbum;

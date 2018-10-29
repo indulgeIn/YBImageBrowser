@@ -93,7 +93,6 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
 /** The default is 0.25. */
 @property (nonatomic, assign) NSTimeInterval transitionDuration;
 
-
 /** Parameter configuration object for gesture interaction animation. */
 @property (nonatomic, strong) YBIBGestureInteractionProfile *giProfile;
 
@@ -113,6 +112,9 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
 
 /** The default is YES. */
 @property (nonatomic, assign) BOOL shouldHideStatusBar;
+
+/** The number of data cache limits, the default is 6. It is effective when using the proxy to configure data sources. If the data cache is overmuch, may lead to excessive memory consumption. */
+@property (nonatomic, assign) NSUInteger dataCacheCountLimit;
 
 @end
 

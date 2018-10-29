@@ -50,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) UIInterfaceOrientation statusBarOrientationBefore;
 
+@property (nonatomic, assign) NSUInteger cacheCountLimit;
+
 @end
 
 NS_ASSUME_NONNULL_END

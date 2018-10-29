@@ -30,6 +30,7 @@
     BOOL _isPlaying;
     BOOL _currentIndexIsSelf;
     BOOL _bodyIsInCenter;
+    BOOL _isActive;
     
     CGPoint _gestureInteractionStartPoint;
     // Gestural interaction is in progress.
@@ -57,6 +58,7 @@
 
 - (void)dealloc {
     [self removeObserverForDataState];
+    [self removeObserverForSystem];
     [self cancelPlay];
 }
 
@@ -65,6 +67,7 @@
     if (self) {
         [self initVars];
         [self addGesture];
+        [self addObserverForSystem];
         
         [self.contentView addSubview:self.baseView];
         [self.baseView addSubview:self.firstFrameImageView];
@@ -92,6 +95,7 @@
     self->_bodyIsInCenter = YES;
     self->_gestureInteractionStartPoint = CGPointZero;
     self->_isGestureInteraction = NO;
+    self->_isActive = YES;
 }
 
 #pragma mark - <YBImageBrowserCellProtocol>
@@ -188,14 +192,7 @@
 }
 
 - (void)yb_videoBrowseActionBar:(YBVideoBrowseActionBar *)actionBar changeValue:(float)value {
-    CMTime startTime = CMTimeMakeWithSeconds(value, self->_player.currentTime.timescale);
-    AVPlayer *tmpPlayer = self->_player;
-    [self->_player seekToTime:startTime toleranceBefore:CMTimeMake(1, 1000) toleranceAfter:CMTimeMake(1, 1000) completionHandler:^(BOOL finished) {
-        if (finished && tmpPlayer == self->_player) {
-            [self->_player play];
-            [self.actionBar play];
-        }
-    }];
+    [self videoJumpWithScale:value];
 }
 
 #pragma mark - <YBVideoBrowseTopBarDelegate>
@@ -283,6 +280,17 @@
     }
 }
 
+- (void)videoJumpWithScale:(float)scale {
+    CMTime startTime = CMTimeMakeWithSeconds(scale, self->_player.currentTime.timescale);
+    AVPlayer *tmpPlayer = self->_player;
+    [self->_player seekToTime:startTime toleranceBefore:CMTimeMake(1, 1000) toleranceAfter:CMTimeMake(1, 1000) completionHandler:^(BOOL finished) {
+        if (finished && tmpPlayer == self->_player) {
+            [self->_player play];
+            [self.actionBar play];
+        }
+    }];
+}
+
 - (void)cellDataDownloadStateChanged {
     YBVideoBrowseCellData *data = self.cellData;
     YBVideoBrowseCellDataDownloadState dataDownloadState = data.dataDownloadState;
@@ -346,6 +354,8 @@
 }
 
 - (void)avPlayerItemStatusChanged {
+    if (!self->_isActive) return;
+    
     self.playButton.hidden = YES;
     switch (self->_playerItem.status) {
         case AVPlayerItemStatusReadyToPlay: {
@@ -410,8 +420,15 @@
 
 - (void)videoPlayFinish:(NSNotification *)noti {
     if (noti.object == self->_playerItem) {
-        [self cancelPlay];
-        [self.cellData loadData];
+        YBVideoBrowseCellData *data = self.cellData;
+        if (data.repeatPlayCount > 0) {
+            --data.repeatPlayCount;
+            [self videoJumpWithScale:0];
+            [self->_player play];
+        } else {
+            [self cancelPlay];
+            [self.cellData loadData];
+        }
     }
 }
 
@@ -426,6 +443,59 @@
         } else if ([keyPath isEqualToString:@"dataDownloadState"]) {
             [self cellDataDownloadStateChanged];
         }
+    }
+}
+
+- (void)removeObserverForSystem {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVAudioSessionRouteChangeNotification object:nil];
+}
+
+- (void)addObserverForSystem {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didChangeStatusBarFrame) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioRouteChangeListenerCallback:)   name:AVAudioSessionRouteChangeNotification object:nil];
+}
+
+- (void)applicationWillResignActive:(NSNotification *)notification {
+    self->_isActive = NO;
+    if (self->_player && self->_isPlaying) {
+        [self->_player pause];
+        [self.actionBar pause];
+    }
+}
+
+- (void)applicationDidBecomeActive:(NSNotification *)notification {
+    self->_isActive = YES;
+}
+
+- (void)didChangeStatusBarFrame {
+    if ([UIApplication sharedApplication].statusBarFrame.size.height > YBIB_HEIGHT_STATUSBAR) {
+        if (self->_player && self->_isPlaying) {
+            [self->_player pause];
+            [self.actionBar pause];
+        }
+    }
+}
+
+- (void)audioRouteChangeListenerCallback:(NSNotification*)notification {
+    NSDictionary *interuptionDict = notification.userInfo;
+    NSInteger routeChangeReason = [[interuptionDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
+    switch (routeChangeReason) {
+        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
+            break;
+        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+            if (self->_player && self->_isPlaying) {
+//                [self->_player pause];
+                [self.actionBar pause];
+            }
+            break;
+        case AVAudioSessionRouteChangeReasonCategoryChange:
+            break;
     }
 }
 

@@ -65,6 +65,7 @@
     self->_bodyIsInCenter = YES;
     self->_currentIndex = NSUIntegerMax;
     self->_isDealedSELInitializeFirst = NO;
+    self->_cacheCountLimit = 6;
 }
 
 #pragma mark - public
@@ -119,7 +120,7 @@
 - (id<YBImageBrowserCellDataProtocol>)dataAtIndex:(NSUInteger)index {
     if (!self->_dataCache) {
         self->_dataCache = [NSCache new];
-        self->_dataCache.countLimit = 6;
+        self->_dataCache.countLimit = self.cacheCountLimit;
     }
     if (self->_dataCache && [self->_dataCache objectForKey:@(index)]) {
         return [self->_dataCache objectForKey:@(index)];
