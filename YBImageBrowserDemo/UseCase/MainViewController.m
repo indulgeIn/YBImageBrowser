@@ -209,8 +209,6 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
                                @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524118772581&di=29b994a8fcaaf72498454e6d207bc29a&imgtype=0&src=http%3A%2F%2Fimglf2.ph.126.net%2F_s_WfySuHWpGNA10-LrKEQ%3D%3D%2F1616792266326335483.gif",
                                @"localBigImage0.jpeg",
                                @"localLongImage0.jpeg"];
-//            self.dataArray = @[@"localBigImage0.png", @"localImage0.png", @"localImage1.png", @"localImage2.png", @"localImage3.png", @"localImage4.png", @"localImage5.png", @"localImage6.png", @"localImage7.png", @"localImage8.png", @"localLongImage0.png", @"localLongImage1.png"];
-//            self.dataArray = @[@"localBigImage0.jpeg", @"localImage0.jpeg", @"localImage1.jpeg", @"localImage2.jpeg", @"localImage3.jpeg", @"localImage4.jpeg", @"localImage5.jpeg", @"localImage6.jpeg", @"localImage7.jpeg", @"localImage8.jpeg", @"localLongImage0.jpeg", @"localLongImage1.jpeg"];
         }
             break;
         case 2: {
