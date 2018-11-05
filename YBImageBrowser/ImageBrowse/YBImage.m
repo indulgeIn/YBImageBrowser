@@ -151,10 +151,10 @@ static CGFloat _NSStringPathScale(NSString *string) {
         YYImageDecoder *decoder = [YYImageDecoder decoderWithData:data scale:scale];
         
         // Determine whether need to decode.
-        BOOL decodeForDisplay = NO;
-//        if (YBImageBrowseCellData.globalMaxTextureSize.width * YBImageBrowseCellData.globalMaxTextureSize.height > decoder.width * decoder.height) {
-//            decodeForDisplay = NO;
-//        }
+        BOOL decodeForDisplay = YBImageBrowseCellData.shouldDecodeAsynchronously;
+        if (YBImageBrowseCellData.globalMaxTextureSize.width * YBImageBrowseCellData.globalMaxTextureSize.height < decoder.width * decoder.height) {
+            decodeForDisplay = NO;
+        }
         
         YYImageFrame *frame = [decoder frameAtIndex:0 decodeForDisplay:decodeForDisplay];
         UIImage *image = frame.image;

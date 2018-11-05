@@ -22,6 +22,7 @@ static YBImageBrowseFillType _globalHorizontalfillType = YBImageBrowseFillTypeFu
 static BOOL _precutLargeImage = YES;
 static CGSize _globalMaxTextureSize = (CGSize){4096, 4096};
 static CGFloat _globalZoomScaleSurplus = 1.5;
+static BOOL _shouldDecodeAsynchronously = NO;
 
 @interface YBImageBrowseCellData () {
     __weak id _downloadToken;
@@ -433,6 +434,10 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
     _globalZoomScaleSurplus = globalZoomScaleSurplus;
 }
 
++ (void)setShouldDecodeAsynchronously:(BOOL)shouldDecodeAsynchronously {
+    _shouldDecodeAsynchronously = shouldDecodeAsynchronously;
+}
+
 #pragma mark - getter
 
 + (YBImageBrowseFillType)globalVerticalfillType {
@@ -453,6 +458,10 @@ static CGFloat _globalZoomScaleSurplus = 1.5;
 
 + (CGFloat)globalZoomScaleSurplus {
     return _globalZoomScaleSurplus;
+}
+
++ (BOOL)shouldDecodeAsynchronously {
+    return _shouldDecodeAsynchronously;
 }
 
 @end

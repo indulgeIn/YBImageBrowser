@@ -94,6 +94,10 @@ When the image exceeds this texture size, it will be compressed asynchronously a
 /** You can set any data. */
 @property (nonatomic, strong, nullable) id extraData;
 
+/** The default is NO.
+ If the image decoding lead to interactive caton, you can set it to YES. When decoding asynchronously, there will be more time consumption. */
+@property (nonatomic, class) BOOL shouldDecodeAsynchronously;
+
 @end
 
 NS_ASSUME_NONNULL_END

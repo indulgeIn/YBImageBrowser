@@ -200,6 +200,33 @@
     }];
 }
 
+- (void)pageIndexChanged:(NSUInteger)index {
+    self->_currentIndex = index;
+    
+    id<YBImageBrowserCellDataProtocol> data = [self currentData];
+    
+    id sourceObj = nil;
+    if ([data respondsToSelector:@selector(yb_browserCellSourceObject)]) {
+        sourceObj = data.yb_browserCellSourceObject;
+    }
+    self.hiddenSourceObject = sourceObj;
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(yb_imageBrowser:pageIndexChanged:data:)]) {
+        [self.delegate yb_imageBrowser:self pageIndexChanged:index data:data];
+    }
+    
+    [self.toolBars enumerateObjectsUsingBlock:^(__kindof UIView<YBImageBrowserToolBarProtocol> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        if (self.defaultToolBar && self.sheetView && [self.sheetView yb_browserActionsCount] >= 2) {
+            self.defaultToolBar.operationType = YBImageBrowserToolBarOperationTypeMore;
+        }
+        
+        if ([obj respondsToSelector:@selector(yb_browserPageIndexChanged:totalPage:data:)]) {
+            [obj yb_browserPageIndexChanged:index totalPage:[self.dataSource yb_numberOfCellForImageBrowserView:self.browserView] data:data];
+        }
+    }];
+}
+
 #pragma mark - public
 
 - (void)setDataSource:(id<YBImageBrowserDataSource>)dataSource {
@@ -224,6 +251,7 @@
 - (void)reloadData {
     [self.browserView yb_reloadData];
     [self.browserView scrollToPageWithIndex:self->_currentIndex];
+    [self pageIndexChanged:self.browserView.currentIndex];
 }
 
 - (id<YBImageBrowserCellDataProtocol>)currentData {
@@ -326,30 +354,7 @@
 }
 
 - (void)yb_imageBrowserView:(YBImageBrowserView *)browserView pageIndexChanged:(NSUInteger)index {
-    self->_currentIndex = index;
-    
-    id<YBImageBrowserCellDataProtocol> data = [self currentData];
-    
-    id sourceObj = nil;
-    if ([data respondsToSelector:@selector(yb_browserCellSourceObject)]) {
-        sourceObj = data.yb_browserCellSourceObject;
-    }
-    self.hiddenSourceObject = sourceObj;
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(yb_imageBrowser:pageIndexChanged:data:)]) {
-        [self.delegate yb_imageBrowser:self pageIndexChanged:index data:data];
-    }
-    
-    [self.toolBars enumerateObjectsUsingBlock:^(__kindof UIView<YBImageBrowserToolBarProtocol> * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        
-        if (self.defaultToolBar && self.sheetView && [self.sheetView yb_browserActionsCount] >= 2) {
-            self.defaultToolBar.operationType = YBImageBrowserToolBarOperationTypeMore;
-        }
-        
-        if ([obj respondsToSelector:@selector(yb_browserPageIndexChanged:totalPage:data:)]) {
-            [obj yb_browserPageIndexChanged:index totalPage:[self.dataSource yb_numberOfCellForImageBrowserView:self.browserView] data:data];
-        }
-    }];
+    [self pageIndexChanged:index];
 }
 
 - (void)yb_imageBrowserView:(YBImageBrowserView *)browserView hideTooBar:(BOOL)hidden {
