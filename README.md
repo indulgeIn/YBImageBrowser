@@ -1,4 +1,4 @@
-# YBImageBrowser ( Latest version : 2.0.7 )
+# YBImageBrowser ( Latest version : 2.0.8 )
 
 <center>
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
