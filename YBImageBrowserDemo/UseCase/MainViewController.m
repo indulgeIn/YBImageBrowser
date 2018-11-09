@@ -110,7 +110,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
     
     
     YBImageBrowser *browser = [YBImageBrowser new];
-    browser.dataSourceArray = browserDataArr;
+//    browser.dataSourceArray = browserDataArr;
     browser.currentIndex = index;
     [browser show];
 }

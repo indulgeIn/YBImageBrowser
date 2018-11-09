@@ -259,6 +259,10 @@
 }
 
 - (void)show {
+    if ([self.browserView.yb_dataSource yb_numberOfCellForImageBrowserView:self.browserView] <= 0) {
+        YBIBLOG_ERROR(@"The data sources is invalid.");
+        return;
+    }
     [self showFromController:YBIBGetTopController()];
 }
 
