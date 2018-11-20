@@ -83,7 +83,7 @@ static BOOL _shouldDecodeAsynchronously = NO;
 
 - (void)yb_browserSaveToPhotoAlbum {
     [YBIBPhotoAlbumManager getPhotoAlbumAuthorizationSuccess:^{
-        if (self.image.animatedImageData) {
+        if ([self.image respondsToSelector:@selector(animatedImageData)] && self.image.animatedImageData) {
             [YBIBPhotoAlbumManager saveDataToAlbum:self.image.animatedImageData];
         } else if (self.image) {
             [YBIBPhotoAlbumManager saveImageToAlbum:self.image];

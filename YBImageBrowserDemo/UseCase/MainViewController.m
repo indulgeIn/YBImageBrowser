@@ -94,9 +94,11 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
             
         } else {
             
-            // Type 4 : 本地图片 / Local image
+            // Type 4 : 本地图片 / Local image (配置本地图片推荐使用 YBImage)
             YBImageBrowseCellData *data = [YBImageBrowseCellData new];
-            data.imageBlock = ^YBImage *{ return [YBImage imageNamed:imageStr]; };
+            data.imageBlock = ^__kindof UIImage * _Nullable{
+                return [YBImage imageNamed:imageStr];
+            };
             data.sourceObject = [self sourceObjAtIdx:idx];
             [browserDataArr addObject:data];
             
@@ -110,7 +112,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
     
     
     YBImageBrowser *browser = [YBImageBrowser new];
-//    browser.dataSourceArray = browserDataArr;
+    browser.dataSourceArray = browserDataArr;
     browser.currentIndex = index;
     [browser show];
 }

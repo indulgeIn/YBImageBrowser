@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <Photos/Photos.h>
-#import "YBImage.h"
 #import "YBImageBrowserCellDataProtocol.h"
+#import "YBImage.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, YBImageBrowseFillType) {
     YBImageBrowseFillTypeUnknown,
@@ -19,14 +21,14 @@ typedef NS_ENUM(NSUInteger, YBImageBrowseFillType) {
     YBImageBrowseFillTypeCompletely
 };
 
-typedef YBImage* (^YBIBLocalImageBlock)(void);
+/** It's recommended to use 'YBImage'. */
+typedef __kindof UIImage * _Nullable (^YBIBLocalImageBlock)(void);
 
-NS_ASSUME_NONNULL_BEGIN
 
 @interface YBImageBrowseCellData : NSObject <YBImageBrowserCellDataProtocol>
 
 /** For local image.
- The usage of 'YBImage' is the same as 'UIImage', support GIF, WebP and APNG. */
+ It's recommended to use 'YBImage', the usage of 'YBImage' is the same as 'UIImage', support GIF, WebP and APNG. */
 @property (nonatomic, copy, nullable) YBIBLocalImageBlock imageBlock;
 
 /** For network image.
