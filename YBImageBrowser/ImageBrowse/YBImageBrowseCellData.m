@@ -19,15 +19,15 @@
 
 static YBImageBrowseFillType _globalVerticalfillType = YBImageBrowseFillTypeFullWidth;
 static YBImageBrowseFillType _globalHorizontalfillType = YBImageBrowseFillTypeFullWidth;
-static BOOL _precutLargeImage = YES;
 static CGSize _globalMaxTextureSize = (CGSize){4096, 4096};
 static CGFloat _globalZoomScaleSurplus = 1.5;
-static BOOL _shouldDecodeAsynchronously = NO;
+static BOOL _shouldDecodeAsynchronously = YES;
 
 @interface YBImageBrowseCellData () {
     __weak id _downloadToken;
 }
 @property (nonatomic, strong) YBImage *image;
+@property (nonatomic, assign) BOOL    isLoading;
 @end
 
 @implementation YBImageBrowseCellData
@@ -56,6 +56,8 @@ static BOOL _shouldDecodeAsynchronously = NO;
     self->_allowShowSheetView = YES;
     
     self->_isCutting = NO;
+    
+    self->_isLoading = NO;
 }
 
 #pragma mark - <YBImageBrowserCellDataProtocol>
@@ -106,50 +108,58 @@ static BOOL _shouldDecodeAsynchronously = NO;
     } failed:nil];
 }
 
-#pragma mark - public
-
-- (void)preload {
-    [self loadWithPre:YES];
+- (void)yb_preload {
+    [self loadData];
 }
 
 #pragma mark - internal
 
-- (void)loadWithPre:(BOOL)pre {
+- (void)loadData {
+    if (self.isLoading) {
+        YBImageBrowseCellDataState tmpState = self.dataState;
+        if (self.thumbImage) {
+            self.dataState = YBImageBrowseCellDataStateThumbImageReady;
+        }
+        self.dataState = tmpState;
+        return;
+    } else {
+        self.isLoading = YES;
+    }
+    
     if (self.image) {
-        [self loadLocalImageWithPre:pre];
+        [self loadLocalImage];
     } else if (self.imageBlock) {
-        if (!pre) [self loadThumbImage];
-        [self decodeLocalImageWithPre:pre];
+        [self loadThumbImage];
+        [self decodeLocalImage];
     } else if (self.url) {
-        if (!pre) [self loadThumbImage];
-        [self queryImageCacheWithPre:pre];
+        [self loadThumbImage];
+        [self queryImageCache];
     } else if (self.phAsset) {
-        if (!pre) [self loadThumbImage];
-        [self loadImageFromPHAssetWithPre:pre];
+        [self loadThumbImage];
+        [self loadImageFromPHAsset];
     } else {
         self.dataState = YBImageBrowseCellDataStateInvalid;
+        self.isLoading = NO;
     }
 }
 
-- (void)loadLocalImageWithPre:(BOOL)pre {
+- (void)loadLocalImage {
     if (!self.image) return;
     if ([self needCompress]) {
         if (self.compressImage) {
             self.dataState = YBImageBrowseCellDataStateCompressImageReady;
-        } else if (pre ? YBImageBrowseCellData.precutLargeImage : YES) {
-            [self compressingImageWithPre:pre];
+            self.isLoading = NO;
+        } else {
+            [self compressingImage];
         }
     } else {
         self.dataState = YBImageBrowseCellDataStateImageReady;
+        self.isLoading = NO;
     }
 }
 
-- (void)decodeLocalImageWithPre:(BOOL)pre {
+- (void)decodeLocalImage {
     if (!self.imageBlock) return;
-    if (self.dataState == YBImageBrowseCellDataStateIsDecoding) {
-        self.dataState = YBImageBrowseCellDataStateIsDecoding;
-        return;
-    }
     
     self.dataState = YBImageBrowseCellDataStateIsDecoding;
     YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -157,45 +167,48 @@ static BOOL _shouldDecodeAsynchronously = NO;
         YBIB_GET_QUEUE_MAIN_ASYNC(^{
             self.dataState = YBImageBrowseCellDataStateDecodeComplete;
             if (self.image) {
-                [self loadLocalImageWithPre:pre];
+                [self loadLocalImage];
             }
         });
     });
 }
 
-- (void)loadImageFromPHAssetWithPre:(BOOL)pre {
+- (void)loadImageFromPHAsset {
     if (!self.phAsset) return;
-    if (self.dataState == YBImageBrowseCellDataStateIsLoadingPHAsset) {
-        self.dataState = YBImageBrowseCellDataStateIsLoadingPHAsset;
-        return;
-    }
     
     self.dataState = YBImageBrowseCellDataStateIsLoadingPHAsset;
-    [YBIBPhotoAlbumManager getImageDataWithPHAsset:self.phAsset success:^(NSData *imgData) {
-        
-        YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    static dispatch_queue_t assetQueue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        assetQueue = dispatch_queue_create("com.yangbo.ybimagebrowser.asset", DISPATCH_QUEUE_CONCURRENT);
+    });
+    
+    dispatch_block_t block = ^{
+        [YBIBPhotoAlbumManager getImageDataWithPHAsset:self.phAsset success:^(NSData *imgData) {
             self.image = [YBImage imageWithData:imgData];
-            
             YBIB_GET_QUEUE_MAIN_ASYNC(^{
                 self.dataState = YBImageBrowseCellDataStateLoadPHAssetSuccess;
                 if (self.image) {
-                    [self loadLocalImageWithPre:pre];
+                    [self loadLocalImage];
                 }
             });
-        });
-        
-    } failed:^{
-        self.dataState = YBImageBrowseCellDataStateLoadPHAssetFailed;
-    }];
+        } failed:^{
+            YBIB_GET_QUEUE_MAIN_ASYNC(^{
+                self.dataState = YBImageBrowseCellDataStateLoadPHAssetFailed;
+                self.isLoading = NO;
+            });
+        }];
+    };
+    
+    YBIB_GET_QUEUE_ASYNC(assetQueue, ^{
+        block();
+    });
 }
 
-- (void)queryImageCacheWithPre:(BOOL)pre {
+- (void)queryImageCache {
     if (!self.url) return;
-    if (self.dataState == YBImageBrowseCellDataStateIsQueryingCache) {
-        self.dataState = YBImageBrowseCellDataStateIsQueryingCache;
-        return;
-    }
-    
+   
     self.dataState = YBImageBrowseCellDataStateIsQueryingCache;
     [YBIBWebImageManager queryCacheOperationForKey:self.url completed:^(id _Nullable image, NSData * _Nullable imagedata) {
         
@@ -208,21 +221,17 @@ static BOOL _shouldDecodeAsynchronously = NO;
                 self.dataState = YBImageBrowseCellDataStateQueryCacheComplete;
                 
                 if (self.image) {
-                    [self loadLocalImageWithPre:pre];
+                    [self loadLocalImage];
                 } else {
-                    [self downloadImageWithPre:pre];
+                    [self downloadImage];
                 }
             });
         });
     }];
 }
 
-- (void)downloadImageWithPre:(BOOL)pre {
+- (void)downloadImage {
     if (!self.url) return;
-    if (self.dataState == YBImageBrowseCellDataStateIsDownloading) {
-        self.dataState = YBImageBrowseCellDataStateIsDownloading;
-        return;
-    }
     
     self.dataState = YBImageBrowseCellDataStateIsDownloading;
     self->_downloadToken = [YBIBWebImageManager downloadImageWithURL:self.url progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
@@ -243,7 +252,7 @@ static BOOL _shouldDecodeAsynchronously = NO;
                 
                 self.dataState = YBImageBrowseCellDataStateDownloadSuccess;
                 if (self.image) {
-                    [self loadLocalImageWithPre:pre];
+                    [self loadLocalImage];
                 }
             });
         });
@@ -251,6 +260,7 @@ static BOOL _shouldDecodeAsynchronously = NO;
     } failed:^(NSError * _Nullable error, BOOL finished) {
         if (!finished) return;
         self.dataState = YBImageBrowseCellDataStateDownloadFailed;
+        self.isLoading = NO;
     }];
 }
 
@@ -276,15 +286,12 @@ static BOOL _shouldDecodeAsynchronously = NO;
     }
 }
 
-- (void)compressingImageWithPre:(BOOL)pre {
+- (void)compressingImage {
     if (!self.image) return;
-    if (self.dataState == YBImageBrowseCellDataStateIsCompressingImage) {
-        self.dataState = YBImageBrowseCellDataStateIsCompressingImage;
-        return;
-    }
     
     self.dataState = YBImageBrowseCellDataStateIsCompressingImage;
     CGSize size = [self getSizeOfCompressing];
+    
     YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         UIGraphicsBeginImageContext(size);
         [self.image drawInRect:CGRectMake(0, 0, size.width, size.height)];
@@ -292,7 +299,7 @@ static BOOL _shouldDecodeAsynchronously = NO;
         UIGraphicsEndImageContext();
         YBIB_GET_QUEUE_MAIN_ASYNC(^{
             self.dataState = YBImageBrowseCellDataStateCompressImageComplete;
-            [self loadLocalImageWithPre:pre];
+            [self loadLocalImage];
         })
     })
 }
@@ -400,16 +407,6 @@ static BOOL _shouldDecodeAsynchronously = NO;
 
 #pragma mark - setter
 
-- (void)setImage:(YBImage *)image {
-    _image = image;
-    
-    YBIB_GET_QUEUE_MAIN_ASYNC(^{
-        if ([self needCompress] && !self.compressImage && YBImageBrowseCellData.precutLargeImage) {
-            [self compressingImageWithPre:YES];
-        }
-    })
-}
-
 - (void)setUrl:(NSURL *)url {
     _url = [url isKindOfClass:NSString.class] ? [NSURL URLWithString:(NSString *)url] : url;
 }
@@ -424,10 +421,6 @@ static BOOL _shouldDecodeAsynchronously = NO;
 
 + (void)setGlobalMaxTextureSize:(CGSize)globalMaxTextureSize {
     _globalMaxTextureSize = globalMaxTextureSize;
-}
-
-+ (void)setPrecutLargeImage:(BOOL)precutLargeImage {
-    _precutLargeImage = precutLargeImage;
 }
 
 + (void)setGlobalZoomScaleSurplus:(CGFloat)globalZoomScaleSurplus {
@@ -450,10 +443,6 @@ static BOOL _shouldDecodeAsynchronously = NO;
 
 + (CGSize)globalMaxTextureSize {
     return _globalMaxTextureSize;
-}
-
-+ (BOOL)precutLargeImage {
-    return _precutLargeImage;
 }
 
 + (CGFloat)globalZoomScaleSurplus {

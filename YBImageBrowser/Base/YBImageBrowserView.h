@@ -40,6 +40,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (id<YBImageBrowserCellDataProtocol>)dataAtIndex:(NSUInteger)index;
 
+- (void)preloadWithCurrentIndex:(NSInteger)index;
+
 - (void)updateLayoutWithDirection:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize;
 
 - (void)scrollToPageWithIndex:(NSInteger)index;
@@ -51,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) UIInterfaceOrientation statusBarOrientationBefore;
 
 @property (nonatomic, assign) NSUInteger cacheCountLimit;
+
+@property (nonatomic, assign) BOOL shouldPreload;
 
 @end
 

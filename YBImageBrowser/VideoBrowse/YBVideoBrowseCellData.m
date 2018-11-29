@@ -20,6 +20,7 @@
 @interface YBVideoBrowseCellData () <NSURLSessionDelegate> {
     NSURLSessionDownloadTask *_downloadTask;
 }
+@property (nonatomic, assign) BOOL isLoading;
 @end
 
 @implementation YBVideoBrowseCellData
@@ -40,6 +41,7 @@
     self->_allowShowSheetView = YES;
     self->_dataState = YBVideoBrowseCellDataStateInvalid;
     self->_dataDownloadState = YBVideoBrowseCellDataDownloadStateNone;
+    self->_isLoading = NO;
 }
 
 #pragma mark - <YBImageBrowserCellDataProtocol>
@@ -80,15 +82,20 @@
     }
 }
 
-#pragma mark - public
-
-- (void)preload {
+- (void)yb_preload {
     [self loadData];
 }
 
 #pragma mark - internal
 
 - (void)loadData {
+    if (self.isLoading) {
+        self.dataState = self.dataState;
+        return;
+    } else {
+        self.isLoading = YES;
+    }
+    
     if (self.avAsset) {
         [self loadFirstFrameOfVideo];
     } else if (self.phAsset) {
@@ -96,15 +103,12 @@
         [self loadAVAssetFromPHAsset];
     } else {
         self.dataState = YBVideoBrowseCellDataStateInvalid;
+        self.isLoading = NO;
     }
 }
 
 - (void)loadAVAssetFromPHAsset {
     if (!self.phAsset) return;
-    if (self.dataState == YBVideoBrowseCellDataStateIsLoadingPHAsset) {
-        self.dataState = YBVideoBrowseCellDataStateIsLoadingPHAsset;
-        return;
-    }
     
     self.dataState = YBVideoBrowseCellDataStateIsLoadingPHAsset;
     [YBIBPhotoAlbumManager getAVAssetWithPHAsset:self.phAsset success:^(AVAsset *asset) {
@@ -114,15 +118,18 @@
         [self loadFirstFrameOfVideo];
     } failed:^{
         self.dataState = YBVideoBrowseCellDataStateLoadPHAssetFailed;
+        self.isLoading = NO;
     }];
 }
 
 - (BOOL)loadLocalFirstFrameOfVideo {
     if (self.firstFrame) {
         self.dataState = YBVideoBrowseCellDataStateFirstFrameReady;
+        self.isLoading = NO;
     } else if (self.sourceObject && [self.sourceObject isKindOfClass:UIImageView.class] && ((UIImageView *)self.sourceObject).image) {
         self.firstFrame = ((UIImageView *)self.sourceObject).image;
         self.dataState = YBVideoBrowseCellDataStateFirstFrameReady;
+        self.isLoading = NO;
     } else {
         return NO;
     }
@@ -131,13 +138,7 @@
 
 - (void)loadFirstFrameOfVideo {
     if (!self.avAsset) return;
-    
     if ([self loadLocalFirstFrameOfVideo]) return;
-    
-    if (self.dataState == YBVideoBrowseCellDataStateIsLoadingFirstFrame) {
-        self.dataState = YBVideoBrowseCellDataStateIsLoadingFirstFrame;
-        return;
-    }
     
     self.dataState = YBVideoBrowseCellDataStateIsLoadingFirstFrame;
     CGSize size = [self.class getPixelSizeOfCurrentLayoutDirection];
@@ -151,10 +152,12 @@
         YBIB_GET_QUEUE_MAIN_ASYNC(^{
             if (error || !result) {
                 self.dataState = YBVideoBrowseCellDataStateLoadFirstFrameFailed;
+                self.isLoading = NO;
             } else {
                 self.firstFrame = result;
                 self.dataState = YBVideoBrowseCellDataStateLoadFirstFrameSuccess;
                 self.dataState = YBVideoBrowseCellDataStateFirstFrameReady;
+                self.isLoading = NO;
             }
         })
     })

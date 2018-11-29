@@ -67,6 +67,8 @@
     self->_transitionDuration = 0.25;
     self->_autoHideSourceObject = YES;
     
+    self.shouldPreload = YES;
+    
     YBImageBrowserToolBar *toolBar = [YBImageBrowserToolBar new];
     self->_defaultToolBar = toolBar;
     self->_toolBars = @[toolBar];
@@ -267,6 +269,18 @@
 }
 
 - (void)showFromController:(UIViewController *)fromController {
+    //Preload current data.
+    if (self.shouldPreload) {
+        id<YBImageBrowserCellDataProtocol> needPreloadData = [self.browserView dataAtIndex:self.currentIndex];
+        if ([needPreloadData respondsToSelector:@selector(yb_preload)]) {
+            [needPreloadData yb_preload];
+        }
+        
+        if (self.currentIndex == 0) {
+            [self.browserView preloadWithCurrentIndex:self.currentIndex];
+        }
+    }
+    
     self->_statusBarOrientationBefore = [UIApplication sharedApplication].statusBarOrientation;
     self.browserView.statusBarOrientationBefore = self->_statusBarOrientationBefore;
     [fromController presentViewController:self animated:YES completion:nil];
@@ -277,25 +291,25 @@
 }
 
 - (void)setDistanceBetweenPages:(CGFloat)distanceBetweenPages {
+    _distanceBetweenPages = distanceBetweenPages;
     ((YBImageBrowserViewLayout *)self.browserView.collectionViewLayout).distanceBetweenPages = distanceBetweenPages;
 }
 
-- (CGFloat)distanceBetweenPages {
-    return ((YBImageBrowserViewLayout *)self.browserView.collectionViewLayout).distanceBetweenPages;
-}
-
 - (void)setGiProfile:(YBIBGestureInteractionProfile *)giProfile {
+    _giProfile = giProfile;
     self.browserView.giProfile = giProfile;
-}
-
-- (YBIBGestureInteractionProfile *)giProfile {
-    return self.browserView.giProfile;
 }
 
 - (void)setDataCacheCountLimit:(NSUInteger)dataCacheCountLimit {
     _dataCacheCountLimit = dataCacheCountLimit;
     self.browserView.cacheCountLimit = dataCacheCountLimit;
 }
+
+- (void)setShouldPreload:(BOOL)shouldPreload {
+    _shouldPreload = shouldPreload;
+    self.browserView.shouldPreload = shouldPreload;
+}
+
 
 #pragma mark - internal
 

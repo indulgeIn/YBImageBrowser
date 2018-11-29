@@ -29,7 +29,8 @@
 
 + (void)getImageDataWithPHAsset:(PHAsset *)phAsset success:(void(^)(NSData *))success failed:(void(^)(void))failed {
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
-    option.synchronous = NO;
+    option.resizeMode = PHImageRequestOptionsResizeModeNone;
+    option.synchronous = YES;
     [[PHImageManager defaultManager] requestImageDataForAsset:phAsset options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
         BOOL complete = ![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue];
         if (complete && imageData) {

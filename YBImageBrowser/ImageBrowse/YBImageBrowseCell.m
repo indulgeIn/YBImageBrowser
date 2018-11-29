@@ -333,7 +333,7 @@
 
 - (void)addObserverForDataState {
     [self.cellData addObserver:self forKeyPath:@"dataState" options:NSKeyValueObservingOptionNew context:nil];
-    [self.cellData loadWithPre:NO];
+    [self.cellData loadData];
 }
 
 - (void)removeObserverForDataState {
@@ -362,7 +362,9 @@
         }
             break;
         case YBImageBrowseCellDataStateIsDecoding: {
-            [self.contentView yb_showProgressViewLoading];
+            if (!self.mainImageView.image) {
+                [self.contentView yb_showProgressViewLoading];
+            }
         }
             break;
         case YBImageBrowseCellDataStateDecodeComplete: {

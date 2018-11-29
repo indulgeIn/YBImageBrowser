@@ -70,6 +70,9 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
  */
 - (id<YBImageBrowserCellDataProtocol>)currentData;
 
+/** The default is YES. */
+@property (nonatomic, assign) BOOL shouldPreload;
+
 
 /** The default is 'UIInterfaceOrientationMaskAllButUpsideDown'. */
 @property (nonatomic, assign) UIInterfaceOrientationMask supportedOrientations;

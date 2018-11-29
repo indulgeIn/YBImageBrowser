@@ -13,6 +13,7 @@ typedef NS_ENUM(NSInteger, YBImageBrowseCellDataState) {
     YBImageBrowseCellDataStateInvalid,
     YBImageBrowseCellDataStateImageReady,
     YBImageBrowseCellDataStateCompressImageReady,
+    
     YBImageBrowseCellDataStateThumbImageReady,
     
     YBImageBrowseCellDataStateIsDecoding,
@@ -42,9 +43,7 @@ typedef NS_ENUM(NSInteger, YBImageBrowseCellDataState) {
 @property (nonatomic, assign) CGFloat downloadProgress;
 @property (nonatomic, assign) BOOL    isCutting;
 
-- (void)loadWithPre:(BOOL)pre;
-
-- (void)downloadImageWithPre:(BOOL)pre;
+- (void)loadData;
 
 - (void)cuttingImageToRect:(CGRect)rect complete:(void(^)(UIImage *image))complete;
 

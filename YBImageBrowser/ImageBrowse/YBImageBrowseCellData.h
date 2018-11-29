@@ -52,16 +52,6 @@ typedef __kindof UIImage * _Nullable (^YBIBLocalImageBlock)(void);
 /** The final image. */
 @property (nonatomic, strong, readonly, nullable) YBImage *image;
 
-/**
- Preloading data right now, but it may bring some CPU pressure.
- Before calling this method, make sure that one of 'imageBlock' 'url' 'phAsset' is valid.
- */
-- (void)preload;
-
-/** When the image is big enough, cutting image at the time of preload.
- Set before call '-preload', the default is YES. */
-@property (nonatomic, class) BOOL precutLargeImage;
-
 /** The maximum zoom scale of image, must be greater than or equal to 1.
  If there is no explicit settings, it will automatically calculate through the image's pixel. */
 @property (nonatomic, assign) CGFloat maxZoomScale;
@@ -96,7 +86,7 @@ When the image exceeds this texture size, it will be compressed asynchronously a
 /** You can set any data. */
 @property (nonatomic, strong, nullable) id extraData;
 
-/** The default is NO.
+/** The default is YES.
  If the image decoding lead to interactive caton, you can set it to YES. When decoding asynchronously, there will be more time consumption. */
 @property (nonatomic, class) BOOL shouldDecodeAsynchronously;
 

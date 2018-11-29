@@ -30,12 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 /** As a preview image. Without explicit settings, the first frame will be loaded from the video source and consume some CPU resources. */
 @property (nonatomic, strong, nullable) UIImage *firstFrame;
 
-/**
- Preloading data right now, but it may bring some CPU pressure.
- Before calling this method, make sure that one of 'url' 'phAsset' 'avAsset' is valid.
- */
-- (void)preload;
-
 /** The number of play video automatically. Default is 0.
  User interaction may be caton when playing automatically, so don't use automatic play unless really necessary. */
 @property (nonatomic, assign) NSUInteger autoPlayCount;

@@ -28,6 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (CGRect)yb_browserCurrentImageFrameWithImageSize:(CGSize)size;
 
+- (void)yb_preload;
+
 @end
 
 NS_ASSUME_NONNULL_END

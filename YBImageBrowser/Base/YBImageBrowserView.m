@@ -13,6 +13,8 @@
 #import "YBImageBrowserCellDataProtocol.h"
 #import "YBImageBrowserCellProtocol.h"
 
+static NSInteger const preloadCount = 2;
+
 @interface YBImageBrowserView () <UICollectionViewDataSource, UICollectionViewDelegate> {
     NSMutableSet *_reuseIdentifierSet;
     YBImageBrowserLayoutDirection _layoutDirection;
@@ -65,7 +67,7 @@
     self->_bodyIsInCenter = YES;
     self->_currentIndex = NSUIntegerMax;
     self->_isDealedSELInitializeFirst = NO;
-    self->_cacheCountLimit = 6;
+    self->_cacheCountLimit = 8;
 }
 
 #pragma mark - public
@@ -118,16 +120,30 @@
 }
 
 - (id<YBImageBrowserCellDataProtocol>)dataAtIndex:(NSUInteger)index {
+    if (index < 0 || index >= [self.yb_dataSource yb_numberOfCellForImageBrowserView:self]) return nil;
+    
     if (!self->_dataCache) {
         self->_dataCache = [NSCache new];
         self->_dataCache.countLimit = self.cacheCountLimit;
     }
+    
+    id<YBImageBrowserCellDataProtocol> data;
     if (self->_dataCache && [self->_dataCache objectForKey:@(index)]) {
-        return [self->_dataCache objectForKey:@(index)];
+        data = [self->_dataCache objectForKey:@(index)];
     } else {
-        id<YBImageBrowserCellDataProtocol> data = [self.yb_dataSource yb_imageBrowserView:self dataForCellAtIndex:index];
+        data = [self.yb_dataSource yb_imageBrowserView:self dataForCellAtIndex:index];
         [self->_dataCache setObject:data forKey:@(index)];
-        return data;
+    }
+    return data;
+}
+
+- (void)preloadWithCurrentIndex:(NSInteger)index {
+    for (NSInteger i = -preloadCount; i <= preloadCount; ++i) {
+        if (i == 0) continue;
+        id<YBImageBrowserCellDataProtocol> needPreloadData = [self dataAtIndex:index + i];
+        if ([needPreloadData respondsToSelector:@selector(yb_preload)]) {
+            [needPreloadData yb_preload];
+        }
     }
 }
 
@@ -144,6 +160,7 @@
     }
     
     id<YBImageBrowserCellDataProtocol> data = [self dataAtIndex:indexPath.row];
+    
     NSAssert(data && [data respondsToSelector:@selector(yb_classOfBrowserCell)], @"your custom data must conforms '<YBImageBrowserCellDataProtocol>' and implement '-yb_classOfBrowserCell'");
     Class cellClass = data.yb_classOfBrowserCell;
     NSAssert(cellClass, @"the class get from '-yb_classOfBrowserCell' is invalid");
@@ -207,6 +224,10 @@
     if ([cell respondsToSelector:@selector(yb_browserInitializeFirst:)] && !self->_isDealedSELInitializeFirst) {
         self->_isDealedSELInitializeFirst = YES;
         [cell yb_browserInitializeFirst:self->_currentIndex == indexPath.row];
+    }
+    
+    if (collectionView.window && self.shouldPreload) {
+        [self preloadWithCurrentIndex:indexPath.row];
     }
     
     return cell;
