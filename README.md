@@ -1,4 +1,4 @@
-# YBImageBrowser ( Latest version : 2.0.8 )
+# YBImageBrowser ( Latest version : 2.0.9 )
 
 <center>
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
@@ -78,19 +78,26 @@
 ### 简易使用
 
 ```objc
-// 图片
+// 网络图片
 YBImageBrowseCellData *data0 = [YBImageBrowseCellData new];
 data0.url = ...;
-data.sourceObject = ...;    
+data0.sourceObject = ...;    
 
-// 视频
-YBVideoBrowseCellData *data1 = [YBVideoBrowseCellData new];
-data1.url = ...;
-data1.sourceObject = ...;  
+// 本地图片（推荐使用 YBImage）
+YBImageBrowseCellData *data1 = [YBImageBrowseCellData new];
+data1.imageBlock = ^__kindof UIImage * _Nullable{
+    return [YBImage imageNamed:...];
+};
+data1.sourceObject = ...; 
+
+// 本地或网络视频
+YBVideoBrowseCellData *data2 = [YBVideoBrowseCellData new];
+data2.url = ...;
+data2.sourceObject = ...;  
 
 // 设置数据源数组并展示
 YBImageBrowser *browser = [YBImageBrowser new];
-browser.dataSourceArray = @[data0, data1];
+browser.dataSourceArray = @[data0, data1, data2];
 browser.currentIndex = ...;
 [browser show];
 ```
@@ -182,6 +189,9 @@ browser.currentIndex = index;
 
 
 
+<br>
+<br>
+<br>
 
 
 
@@ -241,19 +251,26 @@ The framework implements two classes by default: 'YBImageBrowseCellData'(image) 
 ### Simple usage
 
 ```objc
-// Image.
+// Network image.
 YBImageBrowseCellData *data0 = [YBImageBrowseCellData new];
 data0.url = ...;
-data.sourceObject = ...;    
+data0.sourceObject = ...;    
 
-// Video.
-YBVideoBrowseCellData *data1 = [YBVideoBrowseCellData new];
-data1.url = ...;
-data1.sourceObject = ...;  
+// Local image.（It's recommended to use 'YBImage'）
+YBImageBrowseCellData *data1 = [YBImageBrowseCellData new];
+data1.imageBlock = ^__kindof UIImage * _Nullable{
+    return [YBImage imageNamed:...];
+};
+data1.sourceObject = ...;   
+
+// Local or network video.
+YBVideoBrowseCellData *data2 = [YBVideoBrowseCellData new];
+data2.url = ...;
+data2.sourceObject = ...;  
 
 // Set the data source array and display it.
 YBImageBrowser *browser = [YBImageBrowser new];
-browser.dataSourceArray = @[data0, data1];
+browser.dataSourceArray = @[data0, data1, data2];
 browser.currentIndex = ...;
 [browser show];
 ```
