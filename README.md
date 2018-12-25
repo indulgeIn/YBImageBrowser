@@ -144,11 +144,6 @@ browser.currentIndex = index;
 数据模型若设置了 `sourceObject`，并且 `sourceObject` 是 `UIImageView` 类型的，那么组件会自动将该图片作为 `thumbImage`，所以这种情况不需要另外设置缩略图了。
 
 
-### 关于预加载
-
-`YBImageBrowseCellData` 和 `YBVideoBrowseCellData` 都有一个方法 `-preload` ，顾名思义就是预加载，若你设置图片或视频过后调用了该方法，会预先处理数据并且缓存下来，否则，数据会在界面展示的时候处理。这是一个对用户体验的优化，可以让用户更流畅的浏览内容，但该方法会增加 CPU 的负担（虽然基本是异步执行的），所以若数据模型过多慎用该方法。
-
-
 ### 图片处理的一些配置
 
 当一张图片过大，组件会自动压缩显示，并且在放大的时候裁剪显示，这个纹理尺寸的临界值可以通过 `YBImageBrowseCellData` 的 `globalMaxTextureSize` 属性设置。
@@ -315,11 +310,6 @@ However, having a large amount of data in a image browser will increase the burd
 `YBVideoBrowseCellData ` has an attribute set the thumbnail image: ` firstFrame `.
 
 If the `sourceObject` is set in the data model and `sourceObject` is kind of  `UIImageView` , the component will set the image as a `thumbImage` automatically, so there is no need to set up another thumbnail image in this case.
-
-
-### About preloading
-
-Both `YBImageBrowseCellData` and `YBVideoBrowseCellData`  have a method `-preload`. If you call this method after setting up a picture or video, the data will be pre-processed and cached, otherwise, the data will be processed when the interface is displayed. This is an optimization of the user experience that allows users to browse content more smoothly, but this approach increases the CPU burden (albeit executed asynchronously) , so use this approach cautiously if the data model is too much.
 
 
 ### Some image configuration
