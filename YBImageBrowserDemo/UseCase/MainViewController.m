@@ -224,7 +224,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
 - (void)clickClearButton:(UIButton *)sender {
     [[SDImageCache sharedImageCache] clearMemory];
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:^{
-        [YBIBGetNormalWindow() yb_showHookTipView:@"Clear successful"];
+        [[UIApplication sharedApplication].keyWindow yb_showHookTipView:@"Clear successful"];
     }];
 }
 

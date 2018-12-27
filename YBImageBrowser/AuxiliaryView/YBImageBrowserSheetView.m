@@ -178,7 +178,7 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
             if ([self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)] && [self->_data respondsToSelector:@selector(yb_browserAllowSaveToPhotoAlbum)] && [self->_data yb_browserAllowSaveToPhotoAlbum]) {
                 [self->_data yb_browserSaveToPhotoAlbum];
             } else {
-                [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
+                [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
             }
         } else {
             self.actions[indexPath.row].action(self->_data);
