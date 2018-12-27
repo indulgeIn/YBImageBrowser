@@ -105,7 +105,7 @@ static CGFloat kToolBarDefaultsHeight = 50.0;
             if ([self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)]) {
                 [self->_data yb_browserSaveToPhotoAlbum];
             } else {
-                [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
+                [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
             }
         }
             break;

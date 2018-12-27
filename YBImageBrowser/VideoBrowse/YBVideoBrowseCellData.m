@@ -75,10 +75,10 @@
         } else if ([url.scheme containsString:@"http"]) {
             [self downloadWithUrl:url];
         } else {
-            [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].videoIsInvalid];
+            [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].videoIsInvalid];
         }
     } else {
-        [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
+        [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
     }
 }
 
@@ -225,7 +225,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
 didCompleteWithError:(nullable NSError *)error {
     self.dataDownloadState = YBVideoBrowseCellDataDownloadStateComplete;
     if (error) {
-        [YBIBGetNormalWindow() yb_showForkTipView:@"下载失败"];
+        [[UIApplication sharedApplication].keyWindow yb_showForkTipView:@"下载失败"];
     }
 }
 
@@ -238,16 +238,16 @@ didFinishDownloadingToURL:(NSURL *)location {
         UISaveVideoAtPathToSavedPhotosAlbum(file, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     } else {
         self.dataDownloadState = YBVideoBrowseCellDataDownloadStateComplete;
-        [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
+        [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
     }
 }
 
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
     self.dataDownloadState = YBVideoBrowseCellDataDownloadStateComplete;
     if (error) {
-        [YBIBGetNormalWindow() yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
+        [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
     } else {
-        [YBIBGetNormalWindow() yb_showHookTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumSuccess];
+        [[UIApplication sharedApplication].keyWindow yb_showHookTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumSuccess];
     }
 }
 
