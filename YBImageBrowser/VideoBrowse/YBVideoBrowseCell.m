@@ -317,9 +317,11 @@
         }
             break;
         case YBVideoBrowseCellDataStateFirstFrameReady: {
-            self.firstFrameImageView.image = data.firstFrame;
-            self.firstFrameImageView.frame = [self.cellData.class getImageViewFrameWithImageSize:self.cellData.firstFrame.size];
-            self.playButton.hidden = NO;
+            if (self.firstFrameImageView.image != data.firstFrame) {
+                self.firstFrameImageView.image = data.firstFrame;
+                self.firstFrameImageView.frame = [self.cellData.class getImageViewFrameWithImageSize:self.cellData.firstFrame.size];
+                self.playButton.hidden = NO;
+            }
         }
             break;
         case YBVideoBrowseCellDataStateIsLoadingPHAsset: {
