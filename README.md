@@ -12,7 +12,7 @@
 # Link
 
 
-* Blog : [打造开源第一 iOS 图片浏览器 (支持视频)](https://www.jianshu.com/p/bffdb9f0036c)
+* Blog : [打造 iOS 图片浏览器 (支持视频)](https://www.jianshu.com/p/bffdb9f0036c)
 
 * [中文介绍](#中文介绍)
 * [English Introduction](#english-introduction)
