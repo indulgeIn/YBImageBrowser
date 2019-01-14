@@ -357,8 +357,10 @@
         }
             break;
         case YBImageBrowseCellDataStateImageReady: {
-            self.mainImageView.image = data.image;
-            [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
+            if (self.mainImageView.image != data.image) {
+                self.mainImageView.image = data.image;
+                [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
+            }
         }
             break;
         case YBImageBrowseCellDataStateIsDecoding: {
@@ -372,8 +374,10 @@
         }
             break;
         case YBImageBrowseCellDataStateCompressImageReady: {
-            self.mainImageView.image = data.compressImage;
-            [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
+            if (self.mainImageView.image != data.compressImage) {
+                self.mainImageView.image = data.compressImage;
+                [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
+            }
         }
             break;
         case YBImageBrowseCellDataStateThumbImageReady: {

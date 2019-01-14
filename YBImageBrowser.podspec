@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "YBImageBrowser"
-  s.version      = "2.1.1"
+  s.version      = "2.1.2"
   s.summary      = "image browser for iOS (powerful, superior performance)"
   s.description  = <<-DESC
   					image browser for iOS (powerful, superior performance), 
