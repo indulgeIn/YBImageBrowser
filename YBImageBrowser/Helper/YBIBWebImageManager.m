@@ -56,8 +56,8 @@ static BOOL _cacheShouldDecompressImages;
 }
 
 + (void)cancelTaskWithDownloadToken:(id)token {
-    if (token) {
-        [[SDWebImageDownloader sharedDownloader] cancel:token];
+    if (token && [token isKindOfClass:SDWebImageDownloadToken.class]) {
+        [((SDWebImageDownloadToken *)token) cancel];
     }
 }
 
