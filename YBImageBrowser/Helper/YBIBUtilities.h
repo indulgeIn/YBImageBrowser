@@ -40,6 +40,13 @@ dispatch_async(queue, block);\
 #define YBIB_HEIGHT_STATUSBAR     (YBIB_IS_IPHONEX ? 44.0 : 20.0)
 
 
+#define YBIB_CODE_EXEC_TIME(...) \
+CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent(); \
+__VA_ARGS__ \
+CFAbsoluteTime linkTime = (CFAbsoluteTimeGetCurrent() - startTime); \
+YBIBLOG(@"countTimeWithCode: %f ms", linkTime * 1000.0);
+
+
 UIWindow *YBIBGetNormalWindow(void);
 
 UIViewController *YBIBGetTopController(void);
@@ -50,8 +57,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface YBIBUtilities : NSObject
 
 + (BOOL)isIphoneX;
-
-+ (void)countTimeConsumingOfCode:(void(^)(void))code;
 
 @end
 

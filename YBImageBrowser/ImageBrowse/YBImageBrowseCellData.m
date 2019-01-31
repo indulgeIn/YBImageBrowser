@@ -307,17 +307,33 @@ static BOOL _shouldDecodeAsynchronously = YES;
 - (void)cuttingImageToRect:(CGRect)rect complete:(void(^)(UIImage *image))complete {
     if (!self.image) return;
     if (self->_isCutting) return;
-    
     self->_isCutting = YES;
-    YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    
+    CGFloat zoomScale = self.zoomScale;
+    BOOL (^isCancelled)(void) = ^BOOL{
+        return zoomScale != self.zoomScale;
+    };
+    
+    YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), (^{
+        
         CGImageRef cgImage = CGImageCreateWithImageInRect(self.image.CGImage, rect);
-        UIImage *resultImg = [UIImage imageWithCGImage:cgImage];
+        CGSize size = [self getSizeOfCuttingWithOriginSize:CGSizeMake(CGImageGetWidth(cgImage), CGImageGetHeight(cgImage))];
+        
+        UIImage *tmpImage = [UIImage imageWithCGImage:cgImage];
+        UIGraphicsBeginImageContext(size);
+        [tmpImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
+        UIImage *resultImage = UIGraphicsGetImageFromCurrentImageContext();
+        
+        UIGraphicsEndImageContext();
         CGImageRelease(cgImage);
+        
         YBIB_GET_QUEUE_MAIN_ASYNC(^{
             self->_isCutting = NO;
-            if (complete) complete(resultImg);
+            if (complete && !isCancelled() && resultImage) {
+                complete(resultImage);
+            }
         })
-    })
+    }))
 }
 
 - (YBImageBrowseFillType)getFillTypeWithLayoutDirection:(YBImageBrowserLayoutDirection)layoutDirection {
@@ -403,6 +419,25 @@ static BOOL _shouldDecodeAsynchronously = YES;
     CGFloat scale = [UIScreen mainScreen].scale;
     CGSize size = CGSizeMake(floor(imageViewsize.width * scale), floor(imageViewsize.height * scale));
     return size;
+}
+
+- (CGSize)getSizeOfCuttingWithOriginSize:(CGSize)originSize {
+    CGFloat oWidth = originSize.width, oHeight = originSize.height;
+    CGFloat maxWidth = [UIScreen mainScreen].bounds.size.width, maxHeight = [UIScreen mainScreen].bounds.size.height;
+    if (oWidth < maxWidth && oHeight < maxHeight) {
+        return originSize;
+    }
+    
+    CGFloat rWidth = 0, rHeight = 0;
+    if (oWidth / maxWidth < oHeight / maxHeight) {
+        rHeight = maxHeight;
+        rWidth = oWidth / oHeight * rHeight;
+    } else {
+        rWidth = maxWidth;
+        rHeight = oHeight / oWidth * rWidth;
+    }
+    CGFloat scale = [UIScreen mainScreen].scale;
+    return CGSizeMake(rWidth * scale, rHeight * scale);
 }
 
 #pragma mark - setter

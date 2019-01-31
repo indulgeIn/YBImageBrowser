@@ -24,6 +24,7 @@
 		2338C3F7213259AC0002183E /* CustomCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2338C3F6213259AC0002183E /* CustomCell.xib */; };
 		2338C3FB213266690002183E /* localGifImage0.gif in Resources */ = {isa = PBXBuildFile; fileRef = 2338C3FA213266680002183E /* localGifImage0.gif */; };
 		2338C4042132869A0002183E /* localLongImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 2338C4022132869A0002183E /* localLongImage0.jpeg */; };
+		23562B8E2202986A00B4E9C2 /* localBigImage1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 23562B8D2202986A00B4E9C2 /* localBigImage1.jpg */; };
 		2357955F214A5C5500AD685B /* YBIBCopywriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2357955E214A5C5500AD685B /* YBIBCopywriter.m */; };
 		235B98F0213512E00022815A /* video0.MP4 in Resources */ = {isa = PBXBuildFile; fileRef = 235B98EF213512E00022815A /* video0.MP4 */; };
 		236D18DF216F0EEF00DB3009 /* localGifImage1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 236D18DE216F0EEF00DB3009 /* localGifImage1.gif */; };
@@ -94,6 +95,7 @@
 		2338C3F6213259AC0002183E /* CustomCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomCell.xib; sourceTree = "<group>"; };
 		2338C3FA213266680002183E /* localGifImage0.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = localGifImage0.gif; sourceTree = "<group>"; };
 		2338C4022132869A0002183E /* localLongImage0.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = localLongImage0.jpeg; sourceTree = "<group>"; };
+		23562B8D2202986A00B4E9C2 /* localBigImage1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = localBigImage1.jpg; sourceTree = "<group>"; };
 		2357955D214A5C5500AD685B /* YBIBCopywriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBCopywriter.h; sourceTree = "<group>"; };
 		2357955E214A5C5500AD685B /* YBIBCopywriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBCopywriter.m; sourceTree = "<group>"; };
 		235B98EF213512E00022815A /* video0.MP4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video0.MP4; sourceTree = "<group>"; };
@@ -353,6 +355,7 @@
 				2338C3FA213266680002183E /* localGifImage0.gif */,
 				236D18DE216F0EEF00DB3009 /* localGifImage1.gif */,
 				70D0FC0820886DE30026D7DE /* localBigImage0.jpeg */,
+				23562B8D2202986A00B4E9C2 /* localBigImage1.jpg */,
 				70D0FBF52088371A0026D7DE /* localImage0.jpeg */,
 				70D0FBF42088371A0026D7DE /* localImage1.jpeg */,
 				70D0FBF22088371A0026D7DE /* localImage2.jpeg */,
@@ -442,6 +445,7 @@
 				70D0FBFB2088371B0026D7DE /* localImage3.jpeg in Resources */,
 				70D0FBFF2088371B0026D7DE /* localImage4.jpeg in Resources */,
 				70D0FBFD2088371B0026D7DE /* localImage0.jpeg in Resources */,
+				23562B8E2202986A00B4E9C2 /* localBigImage1.jpg in Resources */,
 				70D0FBFA2088371B0026D7DE /* localImage2.jpeg in Resources */,
 				70D0FC0920886DE30026D7DE /* localBigImage0.jpeg in Resources */,
 				2338C3F7213259AC0002183E /* CustomCell.xib in Resources */,
@@ -666,7 +670,7 @@
 				INFOPLIST_FILE = YBImageBrowserDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowser0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowser4;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -684,7 +688,7 @@
 				INFOPLIST_FILE = YBImageBrowserDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowser0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yb.YBImageBrowser4;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";

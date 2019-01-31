@@ -134,6 +134,8 @@
 #pragma mark - <UIScrollViewDelegate>
 
 - (void)scrollViewDidZoom:(UIScrollView *)scrollView {
+    self.cellData.zoomScale = scrollView.zoomScale;
+    
     CGRect imageViewFrame = self.mainImageView.frame;
     CGFloat width = imageViewFrame.size.width,
     height = imageViewFrame.size.height,

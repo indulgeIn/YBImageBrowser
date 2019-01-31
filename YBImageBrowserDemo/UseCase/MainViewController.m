@@ -205,6 +205,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
         case 1: {
             self.dataArray = @[@"localImage0.jpeg",
                                @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524118803027&di=beab81af52d767ebf74b03610508eb36&imgtype=0&src=http%3A%2F%2Fe.hiphotos.baidu.com%2Fbaike%2Fpic%2Fitem%2F2e2eb9389b504fc2995aaaa1efdde71190ef6d08.jpg",
+                               @"localBigImage1.jpg",
                                @"video0.MP4",
                                @"https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200ff00000bdkpfpdd2r6fb5kf6m50&line=0.MP4",
                                @"localGifImage0.gif",

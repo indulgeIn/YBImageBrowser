@@ -58,11 +58,4 @@ UIViewController *YBIBGetTopController(void) {
     return isIphoneX;
 }
 
-+ (void)countTimeConsumingOfCode:(void(^)(void))code {
-    CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent();
-    code?code():nil;
-    CFAbsoluteTime linkTime = (CFAbsoluteTimeGetCurrent() - startTime);
-    YBIBLOG(@"TimeConsuming: %f ms", linkTime *1000.0);
-}
-
 @end
