@@ -67,15 +67,15 @@ static BOOL _cacheShouldDecompressImages;
 }
 
 + (void)storeImage:(UIImage *)image imageData:(NSData *)data forKey:(NSURL *)key toDisk:(BOOL)toDisk {
-    key = SDWebImageManager.sharedManager.cacheKeyFilter(key);
-    [[SDImageCache sharedImageCache] storeImage:image imageData:data forKey:key.absoluteString toDisk:toDisk completion:nil];
+    NSString *cacheKey = SDWebImageManager.sharedManager.cacheKeyFilter(key);
+    [[SDImageCache sharedImageCache] storeImage:image imageData:data forKey:cacheKey toDisk:toDisk completion:nil];
 }
 
 + (void)queryCacheOperationForKey:(NSURL *)key completed:(YBIBWebImageManagerCacheQueryCompletedBlock)completed {
     if (!key) return;
     SDImageCacheOptions options = SDImageCacheQueryDataWhenInMemory;
-    key = SDWebImageManager.sharedManager.cacheKeyFilter(key);
-    [[SDImageCache sharedImageCache] queryCacheOperationForKey:key.absoluteString options:options done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
+    NSString *cacheKey = SDWebImageManager.sharedManager.cacheKeyFilter(key);
+    [[SDImageCache sharedImageCache] queryCacheOperationForKey:cacheKey options:options done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
         if (completed) {
             completed(image, data);
         }
