@@ -67,6 +67,7 @@ static BOOL _cacheShouldDecompressImages;
 }
 
 + (void)storeImage:(UIImage *)image imageData:(NSData *)data forKey:(NSURL *)key toDisk:(BOOL)toDisk {
+    key = SDWebImageManager.sharedManager.cacheKeyFilter(key);
     [[SDImageCache sharedImageCache] storeImage:image imageData:data forKey:key.absoluteString toDisk:toDisk completion:nil];
 }
 
