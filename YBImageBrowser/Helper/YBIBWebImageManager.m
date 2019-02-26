@@ -17,6 +17,11 @@
 #else
 #import "SDImageCache.h"
 #endif
+#if __has_include(<SDWebImage/SDWebImageManager.h>)
+#import <SDWebImage/SDWebImageManager.h>
+#else
+#import "SDWebImageManager.h"
+#endif
 
 static BOOL _downloaderShouldDecompressImages;
 static BOOL _cacheShouldDecompressImages;
@@ -68,6 +73,7 @@ static BOOL _cacheShouldDecompressImages;
 + (void)queryCacheOperationForKey:(NSURL *)key completed:(YBIBWebImageManagerCacheQueryCompletedBlock)completed {
     if (!key) return;
     SDImageCacheOptions options = SDImageCacheQueryDataWhenInMemory;
+    key = SDWebImageManager.sharedManager.cacheKeyFilter(key);
     [[SDImageCache sharedImageCache] queryCacheOperationForKey:key.absoluteString options:options done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
         if (completed) {
             completed(image, data);
