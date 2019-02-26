@@ -11,6 +11,7 @@
 #import "YBIBLayoutDirectionManager.h"
 #import "YBIBUtilities.h"
 #import "YBIBGestureInteractionProfile.h"
+#import "YBImageBrowser.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -32,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) id<YBImageBrowserDataSource> yb_dataSource;
 
-@property (nonatomic, weak) UIViewController<YBImageBrowserViewDelegate> *yb_delegate;
+@property (nonatomic, weak) YBImageBrowser<YBImageBrowserViewDelegate> *yb_delegate;
 
 @property (nonatomic, assign, readonly) NSUInteger currentIndex;
 

@@ -21,12 +21,13 @@
 @interface YBImageBrowseCell () <YBImageBrowserCellProtocol, UIScrollViewDelegate, UIGestureRecognizerDelegate> {
     YBImageBrowserLayoutDirection _layoutDirection;
     CGSize _containerSize;
-    BOOL _isZooming;
-    BOOL _isDragging;
-    BOOL _bodyIsInCenter;
+    BOOL _zooming;
+    BOOL _dragging;
+    BOOL _bodyInCenter;
+    BOOL _outTransitioning;
     
     CGPoint _gestureInteractionStartPoint;
-    BOOL _isGestureInteraction;
+    BOOL _gestureInteracting;
     YBIBGestureInteractionProfile *_giProfile;
     
     UIInterfaceOrientation _statusBarOrientationBefore;
@@ -63,6 +64,11 @@
     return self;
 }
 
+- (void)willMoveToWindow:(UIWindow *)newWindow {
+    [super willMoveToWindow:newWindow];
+    self->_outTransitioning = NO;
+}
+
 - (void)prepareForReuse {
     [self initVars];
     [self removeObserverForDataState];
@@ -76,14 +82,15 @@
 }
 
 - (void)initVars {
-    self->_isZooming = NO;
-    self->_isDragging = NO;
-    self->_bodyIsInCenter = YES;
+    self->_zooming = NO;
+    self->_dragging = NO;
+    self->_bodyInCenter = YES;
+    self->_outTransitioning = NO;
     self->_layoutDirection = YBImageBrowserLayoutDirectionUnknown;
     self->_containerSize = CGSizeMake(1, 1);
     
     self->_gestureInteractionStartPoint = CGPointZero;
-    self->_isGestureInteraction = NO;
+    self->_gestureInteracting = NO;
 }
 
 #pragma mark - <YBImageBrowserCellProtocol>
@@ -106,7 +113,7 @@
     
     [self hideTailoringImageView];
     
-    if (self->_isGestureInteraction) {
+    if (self->_gestureInteracting) {
         [self restoreGestureInteractionWithDuration:0];
     }
     
@@ -115,11 +122,10 @@
 }
 
 - (void)yb_browserBodyIsInTheCenter:(BOOL)isIn {
-    self->_bodyIsInCenter = isIn;
+    self->_bodyInCenter = isIn;
 }
 
 - (UIView *)yb_browserCurrentForegroundView {
-    [self hideTailoringImageView];
     return self.mainImageView;
 }
 
@@ -163,21 +169,21 @@
 }
 
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
-    self->_isZooming = YES;
+    self->_zooming = YES;
     [self hideTailoringImageView];
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view atScale:(CGFloat)scale {
-    self->_isZooming = NO;
+    self->_zooming = NO;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    self->_isDragging = YES;
+    self->_dragging = YES;
     [self hideTailoringImageView];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    self->_isDragging = NO;
+    self->_dragging = NO;
 }
 
 #pragma mark - <UIGestureRecognizerDelegate>
@@ -203,7 +209,7 @@
 }
 
 - (void)respondsToTapSingle:(UITapGestureRecognizer *)tap {
-    self.yb_browserDismissBlock();
+    [self browserDismiss];
 }
 
 - (void)respondsToTapDouble:(UITapGestureRecognizer *)tap {
@@ -239,7 +245,7 @@
     } else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateRecognized || pan.state == UIGestureRecognizerStateFailed) {
         
         // END
-        if (self->_isGestureInteraction) {
+        if (self->_gestureInteracting) {
             CGPoint velocity = [pan velocityInView:self.mainContentView];
             
             BOOL velocityArrive = ABS(velocity.y) > self->_giProfile.dismissVelocityY;
@@ -247,7 +253,7 @@
             
             BOOL shouldDismiss = distanceArrive || velocityArrive;
             if (shouldDismiss) {
-                self.yb_browserDismissBlock();
+                [self browserDismiss];
             } else {
                 [self restoreGestureInteractionWithDuration:self->_giProfile.restoreDuration];
             }
@@ -263,11 +269,11 @@
         BOOL upArrive = point.y - self->_gestureInteractionStartPoint.y > triggerDistance && self.mainContentView.contentOffset.y <= 1,
         downArrive = point.y - self->_gestureInteractionStartPoint.y < -triggerDistance && self.mainContentView.contentOffset.y + self.mainContentView.bounds.size.height >= MAX(self.mainContentView.contentSize.height, self.mainContentView.bounds.size.height) - 1;
         
-        BOOL shouldStart = startPointValid && !self->_isGestureInteraction && (upArrive || downArrive) && distanceArrive && self->_bodyIsInCenter && !self->_isZooming;
+        BOOL shouldStart = startPointValid && !self->_gestureInteracting && (upArrive || downArrive) && distanceArrive && self->_bodyInCenter && !self->_zooming;
         // START
         if (shouldStart) {
             if ([UIApplication sharedApplication].statusBarOrientation != self->_statusBarOrientationBefore) {
-                self.yb_browserDismissBlock();
+                [self browserDismiss];
             } else {
                 [self hideTailoringImageView];
                 
@@ -283,12 +289,12 @@
                 self.yb_browserScrollEnabledBlock(NO);
                 self.yb_browserToolBarHiddenBlock(YES);
                 
-                self->_isGestureInteraction = YES;
+                self->_gestureInteracting = YES;
             }
         }
         
         // CHNAGE
-        if (self->_isGestureInteraction) {
+        if (self->_gestureInteracting) {
             self.mainContentView.center = point;
             CGFloat scale = 1 - ABS(point.y - self->_gestureInteractionStartPoint.y) / (self->_containerSize.height * 1.2);
             if (scale > 1) scale = 1;
@@ -319,7 +325,7 @@
         self.mainContentView.scrollEnabled = YES;
         
         self->_gestureInteractionStartPoint = CGPointZero;
-        self->_isGestureInteraction = NO;
+        self->_gestureInteracting = NO;
         
         [self cutImage];
     };
@@ -343,12 +349,20 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if (object == self.cellData && [keyPath isEqualToString:@"dataState"]) {
+    if (!self->_outTransitioning && object == self.cellData && [keyPath isEqualToString:@"dataState"]) {
         [self cellDataStateChanged];
     } 
 }
 
 #pragma mark - private
+
+- (void)browserDismiss {
+    self->_outTransitioning = YES;
+    [self hideTailoringImageView];
+    [self.contentView yb_hideProgressView];
+    [self yb_hideProgressView];
+    self.yb_browserDismissBlock();
+}
 
 - (void)cellDataStateChanged {
     YBImageBrowseCellData *data = self.cellData;
@@ -459,7 +473,7 @@
 }
 
 - (void)showTailoringImageView:(UIImage *)image {
-    if (self->_isGestureInteraction) return;
+    if (self->_gestureInteracting) return;
     if (!self.tailoringImageView.superview) {
         [self.contentView addSubview:self.tailoringImageView];
     }
@@ -476,7 +490,7 @@
 }
 
 - (void)cutImage {
-    if ([self.cellData needCompress] && !self.cellData.isCutting && self.mainContentView.zoomScale > 1.15) {
+    if ([self.cellData needCompress] && !self.cellData.cutting && self.mainContentView.zoomScale > 1.15) {
         [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(_cutImage) object:nil];
         [self performSelector:@selector(_cutImage) withObject:nil afterDelay:0.25];
     }
@@ -491,7 +505,7 @@
     
     YBImageBrowseCellData *tmp = self.cellData;
     [self.cellData cuttingImageToRect:CGRectMake(x, y, width, height) complete:^(UIImage *image) {
-        if (tmp == self.cellData && !self->_isDragging) {
+        if (tmp == self.cellData && !self->_dragging) {
             [self showTailoringImageView:image];
         }
     }];
