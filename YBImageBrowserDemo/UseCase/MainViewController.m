@@ -21,9 +21,6 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
 @property (nonatomic, strong) UIButton *clearButton;
 @property (nonatomic, strong) UISegmentedControl *segmentControl;
 @property (nonatomic, copy) NSArray *dataArray;
-
-@property (nonatomic, strong) YBImageBrowser *browserView;
-
 @end
 
 @implementation MainViewController
@@ -53,16 +50,10 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
         [browserDataArr addObject:data];
     }];
     
-    if (_browserView) {
-        [_browserView show];
-        return;
-    }
-    
     YBImageBrowser *browser = [YBImageBrowser new];
     browser.dataSourceArray = browserDataArr;
     browser.currentIndex = index;
     [browser show];
-    _browserView = browser;
 }
 
 #pragma mark - Show 'YBImageBrowser' : Mixed case
@@ -201,7 +192,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
     switch (sender.selectedSegmentIndex) {
         case 0: {
             self.dataArray = @[@"http://img4.duitang.com/uploads/item/201601/15/20160115231312_TWuG5.gif",
-                               @"",
+                               @"http://c.hiphotos.baidu.com/baike/pic/item/d1a20cf431adcbefd4018f2ea1af2edda3cc9fe5.jpg",
                                @"http://img3.duitang.com/uploads/item/201605/28/20160528202026_BvuWP.jpeg",
                                @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1524118823131&di=aa588a997ac0599df4e87ae39ebc7406&imgtype=0&src=http%3A%2F%2Fimg3.duitang.com%2Fuploads%2Fitem%2F201605%2F08%2F20160508154653_AQavc.png",
                                @"https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=722693321,3238602439&fm=27&gp=0.jpg",
