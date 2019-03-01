@@ -27,7 +27,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
     __weak id _downloadToken;
 }
 @property (nonatomic, strong) YBImage *image;
-@property (nonatomic, assign) BOOL    isLoading;
+@property (nonatomic, assign) BOOL    loading;
 @end
 
 @implementation YBImageBrowseCellData
@@ -55,9 +55,9 @@ static BOOL _shouldDecodeAsynchronously = YES;
     self->_allowSaveToPhotoAlbum = YES;
     self->_allowShowSheetView = YES;
     
-    self->_isCutting = NO;
+    self->_cutting = NO;
     
-    self->_isLoading = NO;
+    self->_loading = NO;
 }
 
 #pragma mark - <YBImageBrowserCellDataProtocol>
@@ -115,7 +115,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
 #pragma mark - internal
 
 - (void)loadData {
-    if (self.isLoading) {
+    if (self.loading) {
         YBImageBrowseCellDataState tmpState = self.dataState;
         if (self.thumbImage) {
             self.dataState = YBImageBrowseCellDataStateThumbImageReady;
@@ -123,7 +123,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
         self.dataState = tmpState;
         return;
     } else {
-        self.isLoading = YES;
+        self.loading = YES;
     }
     
     if (self.image) {
@@ -139,7 +139,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
         [self loadImageFromPHAsset];
     } else {
         self.dataState = YBImageBrowseCellDataStateInvalid;
-        self.isLoading = NO;
+        self.loading = NO;
     }
 }
 
@@ -148,13 +148,13 @@ static BOOL _shouldDecodeAsynchronously = YES;
     if ([self needCompress]) {
         if (self.compressImage) {
             self.dataState = YBImageBrowseCellDataStateCompressImageReady;
-            self.isLoading = NO;
+            self.loading = NO;
         } else {
             [self compressingImage];
         }
     } else {
         self.dataState = YBImageBrowseCellDataStateImageReady;
-        self.isLoading = NO;
+        self.loading = NO;
     }
 }
 
@@ -196,7 +196,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
         } failed:^{
             YBIB_GET_QUEUE_MAIN_ASYNC(^{
                 self.dataState = YBImageBrowseCellDataStateLoadPHAssetFailed;
-                self.isLoading = NO;
+                self.loading = NO;
             });
         }];
     };
@@ -260,7 +260,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
     } failed:^(NSError * _Nullable error, BOOL finished) {
         if (!finished) return;
         self.dataState = YBImageBrowseCellDataStateDownloadFailed;
-        self.isLoading = NO;
+        self.loading = NO;
     }];
 }
 
@@ -306,8 +306,8 @@ static BOOL _shouldDecodeAsynchronously = YES;
 
 - (void)cuttingImageToRect:(CGRect)rect complete:(void(^)(UIImage *image))complete {
     if (!self.image) return;
-    if (self->_isCutting) return;
-    self->_isCutting = YES;
+    if (self->_cutting) return;
+    self->_cutting = YES;
     
     CGFloat zoomScale = self.zoomScale;
     BOOL (^isCancelled)(void) = ^BOOL{
@@ -328,7 +328,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
         CGImageRelease(cgImage);
         
         YBIB_GET_QUEUE_MAIN_ASYNC(^{
-            self->_isCutting = NO;
+            self->_cutting = NO;
             if (complete && !isCancelled() && resultImage) {
                 complete(resultImage);
             }

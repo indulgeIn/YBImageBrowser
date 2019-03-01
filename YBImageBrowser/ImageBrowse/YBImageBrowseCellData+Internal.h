@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, YBImageBrowseCellDataState) {
 
 @property (nonatomic, strong) UIImage *compressImage;
 @property (nonatomic, assign) CGFloat downloadProgress;
-@property (nonatomic, assign) BOOL    isCutting;
+@property (nonatomic, assign) BOOL    cutting;
 @property (nonatomic, assign) CGFloat zoomScale;
 
 - (void)loadData;

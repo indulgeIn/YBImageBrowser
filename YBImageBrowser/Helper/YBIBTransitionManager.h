@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) YBImageBrowser *imageBrowser;
 
-@property (nonatomic, assign, readonly) BOOL isTransitioning;
+@property (nonatomic, assign, readonly) BOOL transitioning;
 
 @end
 

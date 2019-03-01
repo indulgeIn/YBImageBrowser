@@ -12,10 +12,10 @@
 #import "YBImageBrowserCellProtocol.h"
 
 @interface YBIBTransitionManager () {
-    BOOL _isEnter;
+    BOOL _enter;
 }
 @property (nonatomic, strong) UIImageView *animateImageView;
-@property (nonatomic, assign) BOOL isTransitioning;
+@property (nonatomic, assign) BOOL transitioning;
 @end
 
 @implementation YBIBTransitionManager
@@ -25,8 +25,8 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.isTransitioning = NO;
-        self->_isEnter = NO;
+        self.transitioning = NO;
+        self->_enter = NO;
     }
     return self;
 }
@@ -35,7 +35,7 @@
 
 - (void)animationEnded:(BOOL)transitionCompleted {
     if (self.imageBrowser && self.imageBrowser.delegate && [self.imageBrowser.delegate respondsToSelector:@selector(yb_imageBrowser:transitionAnimationEndedWithIsEnter:)]) {
-        [self.imageBrowser.delegate yb_imageBrowser:self.imageBrowser transitionAnimationEndedWithIsEnter:self->_isEnter];
+        [self.imageBrowser.delegate yb_imageBrowser:self.imageBrowser transitionAnimationEndedWithIsEnter:self->_enter];
     }
 }
 
@@ -52,8 +52,8 @@
     
     // Enter
     if (toController.isBeingPresented) {
-        self->_isEnter = YES;
-        self.isTransitioning = YES;
+        self->_enter = YES;
+        self.transitioning = YES;
         switch (self.imageBrowser.enterTransitionType) {
             case YBImageBrowserTransitionTypeNone: {
                 [containerView addSubview:toView];
@@ -99,8 +99,8 @@
     
     // Out
     if (fromController.isBeingDismissed) {
-        self->_isEnter = NO;
-        self.isTransitioning = YES;
+        self->_enter = NO;
+        self.transitioning = YES;
         switch (self.imageBrowser.outTransitionType) {
             case YBImageBrowserTransitionTypeNone: {
                 [self completeTransition:transitionContext isEnter:NO];
@@ -149,7 +149,7 @@
 
 - (void)completeTransition:(nullable id <UIViewControllerContextTransitioning>)transitionContext isEnter:(BOOL)isEnter {
     [transitionContext completeTransition:!transitionContext.transitionWasCancelled];
-    self.isTransitioning = NO;
+    self.transitioning = NO;
     if (!isEnter) {
         self.imageBrowser.hiddenSourceObject = nil;
     }

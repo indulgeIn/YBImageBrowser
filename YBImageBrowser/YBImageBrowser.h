@@ -96,6 +96,9 @@ typedef NS_ENUM(NSInteger, YBImageBrowserTransitionType) {
 /** The default is 0.25. */
 @property (nonatomic, assign) NSTimeInterval transitionDuration;
 
+/** Whether the browser is transitioning. */
+@property (nonatomic, assign, readonly) BOOL transitioning;
+
 /** Parameter configuration object for gesture interaction animation. */
 @property (nonatomic, strong) YBIBGestureInteractionProfile *giProfile;
 
