@@ -295,7 +295,8 @@ static BOOL _shouldDecodeAsynchronously = YES;
     YBIB_GET_QUEUE_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         UIGraphicsBeginImageContext(size);
         [self.image drawInRect:CGRectMake(0, 0, size.width, size.height)];
-        self->_compressImage = UIGraphicsGetImageFromCurrentImageContext();
+        self.compressImage = UIGraphicsGetImageFromCurrentImageContext();
+        if (!self.compressImage) self.compressImage = self.image;
         UIGraphicsEndImageContext();
         YBIB_GET_QUEUE_MAIN_ASYNC(^{
             self.dataState = YBImageBrowseCellDataStateCompressImageComplete;
