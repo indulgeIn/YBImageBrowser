@@ -1,7 +1,7 @@
 # YBImageBrowser 
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/YBImageBrowser.svg)](https://cocoapods.org/pods/YBImageBrowser)&nbsp;
-[![License](https://img.shields.io/github/license/indulgeIn/YBImageBrowser.svg)]()&nbsp;
+[![License](https://img.shields.io/github/license/indulgeIn/YBImageBrowser.svg)](https://github.com/indulgeIn/YBImageBrowser/blob/master/LICENSE)&nbsp;
 
 
 # Preview
