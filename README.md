@@ -1,8 +1,7 @@
 # YBImageBrowser 
 
-https://img.shields.io/cocoapods/v/YBImageBrowser.svg
+[CocoaPods](https://img.shields.io/cocoapods/v/YBImageBrowser.svg)
 
-========
 
 
 <center>
