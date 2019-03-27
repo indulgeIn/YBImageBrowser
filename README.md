@@ -1,4 +1,9 @@
-# YBImageBrowser ( Latest version : 2.1.5 )
+# YBImageBrowser 
+
+https://img.shields.io/cocoapods/v/YBImageBrowser.svg
+
+========
+
 
 <center>
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
