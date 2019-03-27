@@ -1,6 +1,6 @@
 # YBImageBrowser 
 
-![CocoaPods](https://img.shields.io/cocoapods/v/YBImageBrowser.svg)
+[![CocoaPods](https://img.shields.io/cocoapods/v/YBImageBrowser.svg)](https://cocoapods.org/pods/YBImageBrowser)&nbsp
 
 
 
