@@ -22,10 +22,6 @@ typedef void(^YBIBWebImageManagerCacheQueryCompletedBlock)(UIImage * _Nullable i
 
 @interface YBIBWebImageManager : NSObject
 
-+ (void)storeOutsideConfiguration;
-
-+ (void)restoreOutsideConfiguration;
-
 + (id)downloadImageWithURL:(NSURL *)url progress:(YBIBWebImageManagerProgressBlock)progress success:(YBIBWebImageManagerSuccessBlock)success failed:(YBIBWebImageManagerFailedBlock)failed;
 
 + (void)cancelTaskWithDownloadToken:(id)token;
