@@ -13,6 +13,7 @@
 #import "YBImageBrowserTipView.h"
 #import "YBImageBrowser.h"
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/SDImageCache.h>
 
 static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMainImageCell";
 

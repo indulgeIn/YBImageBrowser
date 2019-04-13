@@ -34,8 +34,6 @@
 #pragma mark - life cycle
 
 - (void)dealloc {
-    // If the current instance is released (possibly uncontrollable release), we need to restore the changes to external business.
-    [YBIBWebImageManager restoreOutsideConfiguration];
     self.hiddenSourceObject = nil;
     [self setStatusBarHide:NO];
     [self removeObserverForSystem];
@@ -49,7 +47,6 @@
         self.automaticallyAdjustsScrollViewInsets = NO;
         
         [self initVars];
-        [YBIBWebImageManager storeOutsideConfiguration];
         [self.layoutDirectionManager startObserve];
     }
     return self;

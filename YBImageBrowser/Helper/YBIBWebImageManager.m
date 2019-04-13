@@ -7,30 +7,28 @@
 //
 
 #import "YBIBWebImageManager.h"
+
 #if __has_include(<SDWebImage/SDWebImageManager.h>)
 #import <SDWebImage/SDWebImageManager.h>
 #else
 #import "SDWebImageManager.h"
 #endif
 
-static BOOL _downloaderShouldDecompressImages;
-static BOOL _cacheShouldDecompressImages;
+#if __has_include(<SDWebImage/SDWebImageDownloader.h>)
+#import <SDWebImage/SDWebImageDownloader.h>
+#else
+#import "SDWebImageDownloader.h"
+#endif
+
+#if __has_include(<SDWebImage/SDWebImageDownloader.h>)
+#import <SDWebImage/SDImageCache.h>
+#else
+#import "SDImageCache.h"
+#endif
 
 @implementation YBIBWebImageManager
 
 #pragma mark public
-
-+ (void)storeOutsideConfiguration {
-    _downloaderShouldDecompressImages = [SDWebImageDownloader sharedDownloader].shouldDecompressImages;
-    _cacheShouldDecompressImages = [SDImageCache sharedImageCache].config.shouldDecompressImages;
-    [SDWebImageDownloader sharedDownloader].shouldDecompressImages = NO;
-    [SDImageCache sharedImageCache].config.shouldDecompressImages = NO;
-}
-
-+ (void)restoreOutsideConfiguration {
-    [SDWebImageDownloader sharedDownloader].shouldDecompressImages = _downloaderShouldDecompressImages;
-    [SDImageCache sharedImageCache].config.shouldDecompressImages = _cacheShouldDecompressImages;
-}
 
 + (id)downloadImageWithURL:(NSURL *)url progress:(YBIBWebImageManagerProgressBlock)progress success:(YBIBWebImageManagerSuccessBlock)success failed:(YBIBWebImageManagerFailedBlock)failed {
     if (!url) return nil;
@@ -71,7 +69,7 @@ static BOOL _cacheShouldDecompressImages;
     if (!cacheKey) QUERY_CACHE_FAILED
 #undef QUERY_CACHE_FAILED
         
-    SDImageCacheOptions options = SDImageCacheQueryDataWhenInMemory;
+    SDImageCacheOptions options = SDImageCacheQueryMemoryData;
     [[SDImageCache sharedImageCache] queryCacheOperationForKey:cacheKey options:options done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
         if (completed) {
             completed(image, data);

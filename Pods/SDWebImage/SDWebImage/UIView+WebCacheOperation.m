@@ -7,14 +7,11 @@
  */
 
 #import "UIView+WebCacheOperation.h"
-
-#if SD_UIKIT || SD_MAC
-
 #import "objc/runtime.h"
 
 static char loadOperationKey;
 
-// key is copy, value is weak because operation instance is retained by SDWebImageManager's runningOperations property
+// key is strong, value is weak because operation instance is retained by SDWebImageManager's runningOperations property
 // we should use lock to keep thread-safe because these method may not be acessed from main queue
 typedef NSMapTable<NSString *, id<SDWebImageOperation>> SDOperationsDictionary;
 
@@ -32,6 +29,17 @@ typedef NSMapTable<NSString *, id<SDWebImageOperation>> SDOperationsDictionary;
     }
 }
 
+- (nullable id<SDWebImageOperation>)sd_imageLoadOperationForKey:(nullable NSString *)key  {
+    id<SDWebImageOperation> operation;
+    if (key) {
+        SDOperationsDictionary *operationDictionary = [self sd_operationDictionary];
+        @synchronized (self) {
+            operation = [operationDictionary objectForKey:key];
+        }
+    }
+    return operation;
+}
+
 - (void)sd_setImageLoadOperation:(nullable id<SDWebImageOperation>)operation forKey:(nullable NSString *)key {
     if (key) {
         [self sd_cancelImageLoadOperationWithKey:key];
@@ -45,18 +53,21 @@ typedef NSMapTable<NSString *, id<SDWebImageOperation>> SDOperationsDictionary;
 }
 
 - (void)sd_cancelImageLoadOperationWithKey:(nullable NSString *)key {
-    // Cancel in progress downloader from queue
-    SDOperationsDictionary *operationDictionary = [self sd_operationDictionary];
-    id<SDWebImageOperation> operation;
-    @synchronized (self) {
-        operation = [operationDictionary objectForKey:key];
-    }
-    if (operation) {
-        if ([operation conformsToProtocol:@protocol(SDWebImageOperation)]){
-            [operation cancel];
-        }
+    if (key) {
+        // Cancel in progress downloader from queue
+        SDOperationsDictionary *operationDictionary = [self sd_operationDictionary];
+        id<SDWebImageOperation> operation;
+        
         @synchronized (self) {
-            [operationDictionary removeObjectForKey:key];
+            operation = [operationDictionary objectForKey:key];
+        }
+        if (operation) {
+            if ([operation conformsToProtocol:@protocol(SDWebImageOperation)]) {
+                [operation cancel];
+            }
+            @synchronized (self) {
+                [operationDictionary removeObjectForKey:key];
+            }
         }
     }
 }
@@ -71,5 +82,3 @@ typedef NSMapTable<NSString *, id<SDWebImageOperation>> SDOperationsDictionary;
 }
 
 @end
-
-#endif
