@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "YBImageBrowser"
-  s.version      = "2.1.5"
+  s.version      = "2.1.7"
   s.summary      = "image browser for iOS (powerful, superior performance)"
   s.description  = <<-DESC
   					image browser for iOS (powerful, superior performance), 
@@ -31,7 +31,7 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
-  s.dependency 'SDWebImage'
+  s.dependency 'SDWebImage', '~>5.0.0'
   s.dependency 'YYImage'
 
 end
