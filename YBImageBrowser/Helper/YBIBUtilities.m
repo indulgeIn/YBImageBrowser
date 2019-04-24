@@ -32,11 +32,31 @@ UIViewController *YBIBGetTopController(void) {
         topController = nextResponder;
     } else {
         topController = window.rootViewController;
-        while (topController.presentedViewController) {
-            topController = topController.presentedViewController;
+    }
+    
+    while ([topController isKindOfClass:UITabBarController.class] || [topController isKindOfClass:UINavigationController.class]) {
+        if ([topController isKindOfClass:UITabBarController.class]) {
+            topController = ((UITabBarController *)topController).selectedViewController;
+        } else if ([topController isKindOfClass:UINavigationController.class]) {
+            topController = ((UINavigationController *)topController).topViewController;
         }
     }
+    
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+    
     return topController;
+}
+
+BOOL YBIBLowMemory(void) {
+    static BOOL lowMemory = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        unsigned long long physicalMemory = [[NSProcessInfo processInfo] physicalMemory];
+        lowMemory = physicalMemory > 0 && physicalMemory < 1024 * 1024 * 1500;
+    });
+    return lowMemory;
 }
 
 

@@ -75,7 +75,7 @@
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self->_tipType = YBImageBrowserTipTypeNone;
+        _tipType = YBImageBrowserTipTypeNone;
         
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8];
         self.userInteractionEnabled = NO;
@@ -98,7 +98,7 @@
 }
 
 - (void)layoutSubviews {
-    if (self->_tipType != YBImageBrowserTipTypeNone) {
+    if (_tipType != YBImageBrowserTipTypeNone) {
         [self _startAnimation];
     }
     [super layoutSubviews];
@@ -108,7 +108,7 @@
 
 - (void)startAnimationWithText:(NSString *)text type:(YBImageBrowserTipType)tipType {
     self.textLabel.text = text;
-    self->_tipType = tipType;
+    _tipType = tipType;
     [self setNeedsLayout];
 }
 
@@ -129,7 +129,7 @@
     CGFloat r = 13.0;
     CGFloat x = self.bounds.size.width / 2.0;
     CGFloat y = 38.0;
-    switch (self->_tipType) {
+    switch (_tipType) {
         case YBImageBrowserTipTypeHook: {
             [bezierPath moveToPoint:CGPointMake(x - r - r / 2, y)];
             [bezierPath addLineToPoint:CGPointMake(x - r / 2, y + r)];

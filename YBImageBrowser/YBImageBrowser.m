@@ -54,35 +54,41 @@
 }
 
 - (void)initVars {
-    self->_isFirstViewDidAppear = NO;
-    self->_isRestoringDeviceOrientation = NO;
+    _isFirstViewDidAppear = NO;
+    _isRestoringDeviceOrientation = NO;
     
-    self->_currentIndex = 0;
-    self->_supportedOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
-    self->_backgroundColor = [UIColor blackColor];
-    self->_enterTransitionType = YBImageBrowserTransitionTypeCoherent;
-    self->_outTransitionType = YBImageBrowserTransitionTypeCoherent;
-    self->_transitionDuration = 0.25;
-    self->_autoHideSourceObject = YES;
+    _currentIndex = 0;
+    _supportedOrientations = UIInterfaceOrientationMaskAllButUpsideDown;
+    _backgroundColor = [UIColor blackColor];
+    _enterTransitionType = YBImageBrowserTransitionTypeCoherent;
+    _outTransitionType = YBImageBrowserTransitionTypeCoherent;
+    _transitionDuration = 0.25;
+    _autoHideSourceObject = YES;
     
-    self.shouldPreload = YES;
+    if (YBIBLowMemory()) {
+        self.shouldPreload = NO;
+        self.dataCacheCountLimit = 1;
+    } else {
+        self.shouldPreload = YES;
+        self.dataCacheCountLimit = 8;
+    }
     
     YBImageBrowserToolBar *toolBar = [YBImageBrowserToolBar new];
-    self->_defaultToolBar = toolBar;
-    self->_toolBars = @[toolBar];
+    _defaultToolBar = toolBar;
+    _toolBars = @[toolBar];
     
     YBImageBrowserSheetView *sheetView = [YBImageBrowserSheetView new];
     YBImageBrowserSheetAction *saveAction = [YBImageBrowserSheetAction actionWithName:[YBIBCopywriter shareCopywriter].saveToPhotoAlbum identity:kYBImageBrowserSheetActionIdentitySaveToPhotoAlbum action:nil];
     sheetView.actions = @[saveAction];
-    self->_defaultSheetView = sheetView;
-    self->_sheetView = sheetView;
+    _defaultSheetView = sheetView;
+    _sheetView = sheetView;
     
-    self->_shouldHideStatusBar = YES;
+    _shouldHideStatusBar = YES;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = self->_backgroundColor;
+    self.view.backgroundColor = _backgroundColor;
     [self addGesture];
 }
 
@@ -93,18 +99,18 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    self->_windowLevelByDefault = self.view.window.windowLevel;
+    _windowLevelByDefault = self.view.window.windowLevel;
     [self setStatusBarHide:YES];
     
-    if (!self->_isFirstViewDidAppear) {
+    if (!_isFirstViewDidAppear) {
         
         [self updateLayoutOfSubViewsWithLayoutDirection:[YBIBLayoutDirectionManager getLayoutDirectionByStatusBar]];
         
-        [self.browserView scrollToPageWithIndex:self->_currentIndex];
+        [self.browserView scrollToPageWithIndex:_currentIndex];
         
         [self addSubViews];
  
-        self->_isFirstViewDidAppear = YES;
+        _isFirstViewDidAppear = YES;
 
         [self addObserverForSystem];
     }
@@ -145,7 +151,7 @@
         
         if (self.sheetView && (![[self currentData] respondsToSelector:@selector(yb_browserAllowShowSheetView)] || [[self currentData] yb_browserAllowShowSheetView])) {
             [self.view addSubview:self.sheetView];
-            [self.sheetView yb_browserShowSheetViewWithData:[self currentData] layoutDirection:self->_layoutDirection containerSize:self->_containerSize];
+            [self.sheetView yb_browserShowSheetViewWithData:[self currentData] layoutDirection:_layoutDirection containerSize:_containerSize];
         }
     }
 }
@@ -162,7 +168,7 @@
 
 - (void)didChangeStatusBarFrame {
     if ([UIApplication sharedApplication].statusBarFrame.size.height > YBIB_HEIGHT_STATUSBAR) {
-        self.view.frame = CGRectMake(0, 0, self->_containerSize.width, self->_containerSize.height);
+        self.view.frame = CGRectMake(0, 0, _containerSize.width, _containerSize.height);
     }
 }
 
@@ -175,10 +181,10 @@
         if ([obj respondsToSelector:@selector(setYb_browserShowSheetViewBlock:)]) {
             __weak typeof(self) wSelf = self;
             [obj setYb_browserShowSheetViewBlock:^(id<YBImageBrowserCellDataProtocol> _Nonnull data) {
-                __strong typeof(wSelf) sSelf = wSelf;
-                if (sSelf.sheetView) {
-                    [sSelf.view addSubview:sSelf.sheetView];
-                    [sSelf.sheetView yb_browserShowSheetViewWithData:data layoutDirection:sSelf->_layoutDirection containerSize:sSelf->_containerSize];
+                __strong typeof(wSelf) self = wSelf;
+                if (self.sheetView) {
+                    [self.view addSubview:self.sheetView];
+                    [self.sheetView yb_browserShowSheetViewWithData:data layoutDirection:self->_layoutDirection containerSize:self->_containerSize];
                 }
             }];
         }
@@ -186,9 +192,9 @@
 }
 
 - (void)updateLayoutOfSubViewsWithLayoutDirection:(YBImageBrowserLayoutDirection)layoutDirection {
-    self->_layoutDirection = layoutDirection;
+    _layoutDirection = layoutDirection;
     CGSize containerSize = layoutDirection == YBImageBrowserLayoutDirectionHorizontal ? CGSizeMake(YBIMAGEBROWSER_HEIGHT, YBIMAGEBROWSER_WIDTH) : CGSizeMake(YBIMAGEBROWSER_WIDTH, YBIMAGEBROWSER_HEIGHT);
-    self->_containerSize = containerSize;
+    _containerSize = containerSize;
     
     if (self.sheetView && self.sheetView.superview) {
         [self.sheetView yb_browserHideSheetViewWithAnimation:NO];
@@ -201,7 +207,7 @@
 }
 
 - (void)pageIndexChanged:(NSUInteger)index {
-    self->_currentIndex = index;
+    _currentIndex = index;
     
     id<YBImageBrowserCellDataProtocol> data = [self currentData];
     
@@ -250,7 +256,7 @@
 
 - (void)reloadData {
     [self.browserView yb_reloadData];
-    [self.browserView scrollToPageWithIndex:self->_currentIndex];
+    [self.browserView scrollToPageWithIndex:_currentIndex];
     [self pageIndexChanged:self.browserView.currentIndex];
 }
 
@@ -279,8 +285,8 @@
         }
     }
     
-    self->_statusBarOrientationBefore = [UIApplication sharedApplication].statusBarOrientation;
-    self.browserView.statusBarOrientationBefore = self->_statusBarOrientationBefore;
+    _statusBarOrientationBefore = [UIApplication sharedApplication].statusBarOrientation;
+    self.browserView.statusBarOrientationBefore = _statusBarOrientationBefore;
     [fromController presentViewController:self animated:YES completion:nil];
 }
 
@@ -316,7 +322,7 @@
 #pragma mark - internal
 
 - (void)setHiddenSourceObject:(id)hiddenSourceObject {
-    if (!self->_autoHideSourceObject) return;
+    if (!_autoHideSourceObject) return;
     if (_hiddenSourceObject && [_hiddenSourceObject respondsToSelector:@selector(setHidden:)]) {
         [_hiddenSourceObject setValue:@(NO) forKey:@"hidden"];
     }
@@ -343,14 +349,14 @@
         obj.hidden = YES;
     }];
     
-    if ([UIApplication sharedApplication].statusBarOrientation != self->_statusBarOrientationBefore && [[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
+    if ([UIApplication sharedApplication].statusBarOrientation != _statusBarOrientationBefore && [[UIDevice currentDevice] respondsToSelector:@selector(setOrientation:)]) {
         SEL selector = NSSelectorFromString(@"setOrientation:");
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[UIDevice instanceMethodSignatureForSelector:selector]];
         [invocation setSelector:selector];
         [invocation setTarget:[UIDevice currentDevice]];
-        NSInteger val = self->_statusBarOrientationBefore;
+        NSInteger val = _statusBarOrientationBefore;
         [invocation setArgument:&val atIndex:2];
-        self->_isRestoringDeviceOrientation = YES;
+        _isRestoringDeviceOrientation = YES;
         [invocation invoke];
     }
     
@@ -413,10 +419,10 @@
         _layoutDirectionManager = [YBIBLayoutDirectionManager new];
         __weak typeof(self) wSelf = self;
         [_layoutDirectionManager setLayoutDirectionChangedBlock:^(YBImageBrowserLayoutDirection layoutDirection) {
-            __strong typeof(self) sSelf = wSelf;
-            if (layoutDirection == YBImageBrowserLayoutDirectionUnknown || sSelf.transitionManager.transitioning || sSelf->_isRestoringDeviceOrientation) return;
+            __strong typeof(wSelf) self = wSelf;
+            if (layoutDirection == YBImageBrowserLayoutDirectionUnknown || self.transitionManager.transitioning || self->_isRestoringDeviceOrientation) return;
             
-            [sSelf updateLayoutOfSubViewsWithLayoutDirection:layoutDirection];
+            [self updateLayoutOfSubViewsWithLayoutDirection:layoutDirection];
         }];
     }
     return _layoutDirectionManager;

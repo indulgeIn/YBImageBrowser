@@ -45,8 +45,8 @@ static CGFloat kToolBarDefaultsHeight = 50.0;
 - (void)setOperationButtonImage:(UIImage *)image title:(NSString *)title operation:(YBImageBrowserToolBarOperationBlock)operation {
     [self.operationButton setImage:image forState:UIControlStateNormal];
     [self.operationButton setTitle:title forState:UIControlStateNormal];
-    self->_operation = operation;
-    self->_operationType = YBImageBrowserToolBarOperationTypeCustom;
+    _operation = operation;
+    _operationType = YBImageBrowserToolBarOperationTypeCustom;
 }
 
 - (void)hideOperationButton {
@@ -67,7 +67,7 @@ static CGFloat kToolBarDefaultsHeight = 50.0;
 }
 
 - (void)yb_browserPageIndexChanged:(NSUInteger)pageIndex totalPage:(NSUInteger)totalPage data:(id<YBImageBrowserCellDataProtocol>)data {
-    switch (self->_operationType) {
+    switch (_operationType) {
         case YBImageBrowserToolBarOperationTypeSave: {
             if ([data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)] && [data respondsToSelector:@selector(yb_browserAllowSaveToPhotoAlbum)] && [data yb_browserAllowSaveToPhotoAlbum]) {
                 self.operationButton.hidden = NO;
@@ -83,39 +83,39 @@ static CGFloat kToolBarDefaultsHeight = 50.0;
         }
             break;
         case YBImageBrowserToolBarOperationTypeCustom: {
-            self.operationButton.hidden = !self->_operation;
+            self.operationButton.hidden = !_operation;
         }
             break;
     }
     
-    self->_data = data;
+    _data = data;
     if (totalPage <= 1) {
         self.indexLabel.hidden = YES;
     } else {
         self.indexLabel.hidden  = NO;
-        self.indexLabel.text = [NSString stringWithFormat:@"%ld/%ld", pageIndex + 1, totalPage];
+        self.indexLabel.text = [NSString stringWithFormat:@"%ld/%ld", (unsigned long)(pageIndex + 1), (unsigned long)totalPage];
     }
 }
 
 #pragma mark - event
 
 - (void)clickOperationButton:(UIButton *)button {
-    switch (self->_operationType) {
+    switch (_operationType) {
         case YBImageBrowserToolBarOperationTypeSave: {
-            if ([self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)]) {
-                [self->_data yb_browserSaveToPhotoAlbum];
+            if ([_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)]) {
+                [_data yb_browserSaveToPhotoAlbum];
             } else {
                 [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
             }
         }
             break;
         case YBImageBrowserToolBarOperationTypeMore: {
-            self.yb_browserShowSheetViewBlock(self->_data);
+            self.yb_browserShowSheetViewBlock(_data);
         }
             break;
         case YBImageBrowserToolBarOperationTypeCustom: {
-            if (self->_operation) {
-                self->_operation(self->_data);
+            if (_operation) {
+                _operation(_data);
             }
         }
             break;

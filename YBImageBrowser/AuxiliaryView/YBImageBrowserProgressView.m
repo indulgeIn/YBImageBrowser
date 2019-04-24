@@ -82,13 +82,13 @@
     [bottomPath stroke];
     
     [[UIColor whiteColor] setStroke];
-    UIBezierPath *activePath = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI / 2.0 endAngle:M_PI * 2 * self->_progress - M_PI / 2.0 clockwise:true];
+    UIBezierPath *activePath = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI / 2.0 endAngle:M_PI * 2 * _progress - M_PI / 2.0 clockwise:true];
     activePath.lineWidth = strokeWidth;
     activePath.lineCapStyle = kCGLineCapRound;
     activePath.lineJoinStyle = kCGLineCapRound;
     [activePath stroke];
     
-    NSString *string = [NSString stringWithFormat:@"%.0lf%@", self->_progress * 100, @"%"];
+    NSString *string = [NSString stringWithFormat:@"%.0lf%@", _progress * 100, @"%"];
     NSMutableAttributedString *atts = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:10], NSForegroundColorAttributeName:[UIColor whiteColor]}];
     CGSize size = atts.size;
     [atts drawAtPoint:CGPointMake(center.x - size.width / 2.0, center.y - size.height / 2.0)];
@@ -152,7 +152,7 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserProgressType) {
 
 - (void)showProgress:(CGFloat)progress {
     self.userInteractionEnabled = NO;
-    self->_type = YBImageBrowserProgressTypeProgress;
+    _type = YBImageBrowserProgressTypeProgress;
     self.drawView.hidden = NO;
     self.textLabel.hidden = YES;
     self.imageView.hidden = YES;
@@ -164,7 +164,7 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserProgressType) {
 
 - (void)showLoading {
     self.userInteractionEnabled = NO;
-    self->_type = YBImageBrowserProgressTypeLoad;
+    _type = YBImageBrowserProgressTypeLoad;
     self.drawView.hidden = YES;
     self.textLabel.hidden = YES;
     self.imageView.hidden = NO;
@@ -190,7 +190,7 @@ typedef NS_ENUM(NSUInteger, YBImageBrowserProgressType) {
 
 - (void)showText:(NSString *)text click:(void(^)(void))click {
     self.userInteractionEnabled = click ? YES : NO;
-    self->_type = YBImageBrowserProgressTypeText;
+    _type = YBImageBrowserProgressTypeText;
     self.drawView.hidden = YES;
     self.textLabel.hidden = NO;
     self.imageView.hidden = YES;

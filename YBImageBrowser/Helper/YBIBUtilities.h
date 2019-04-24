@@ -47,9 +47,11 @@ CFAbsoluteTime linkTime = (CFAbsoluteTimeGetCurrent() - startTime); \
 YBIBLOG(@"countTimeWithCode: %f ms", linkTime * 1000.0);
 
 
-UIWindow *YBIBGetNormalWindow(void);
+UIWindow * _Nonnull YBIBGetNormalWindow(void);
 
-UIViewController *YBIBGetTopController(void);
+UIViewController * _Nullable YBIBGetTopController(void);
+
+BOOL YBIBLowMemory(void);
 
 
 NS_ASSUME_NONNULL_BEGIN

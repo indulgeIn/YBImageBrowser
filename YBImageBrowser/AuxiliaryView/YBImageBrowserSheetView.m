@@ -75,10 +75,10 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self->_heightOfCell = 50;
-        self->_cancelText = [YBIBCopywriter shareCopywriter].cancel;
-        self->_maxHeightScale = 0.7;
-        self->_animateDuration = 0.2;
+        _heightOfCell = 50;
+        _cancelText = [YBIBCopywriter shareCopywriter].cancel;
+        _maxHeightScale = 0.7;
+        _animateDuration = 0.2;
         
         [self addSubview:self.tableView];
     }
@@ -90,20 +90,20 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
 - (void)yb_browserShowSheetViewWithData:(id<YBImageBrowserCellDataProtocol>)data layoutDirection:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize {
     if (self.actions.count <= 0) return;
     
-    self->_data = data;
+    _data = data;
     
     CGFloat width = containerSize.width, height = containerSize.height;
     
     CGFloat tableViewHeight = MIN(self.heightOfCell * self.actions.count + self.heightOfCell + 5 + YBIB_HEIGHT_EXTRABOTTOM, height * self.maxHeightScale);
-    self->_hideFrame = CGRectMake(0, height, width, tableViewHeight);
-    self->_showFrame = CGRectMake(0, height - tableViewHeight, width, tableViewHeight);
+    _hideFrame = CGRectMake(0, height, width, tableViewHeight);
+    _showFrame = CGRectMake(0, height - tableViewHeight, width, tableViewHeight);
     
     self.frame = CGRectMake(0, 0, width, height);
     self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
-    self.tableView.frame = self->_hideFrame;
+    self.tableView.frame = _hideFrame;
     [self.tableView reloadData];
     self.footer.frame = CGRectMake(0, 0, width, YBIB_HEIGHT_EXTRABOTTOM);
-    [UIView animateWithDuration:self->_animateDuration animations:^{
+    [UIView animateWithDuration:_animateDuration animations:^{
         self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.35];
         self.tableView.frame = self->_showFrame;
     }];
@@ -120,7 +120,7 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
         [self removeFromSuperview];
     };
     if (animation) {
-        [UIView animateWithDuration:self->_animateDuration animations:animationsBlock completion:completionBlock];
+        [UIView animateWithDuration:_animateDuration animations:animationsBlock completion:completionBlock];
     } else {
         animationsBlock();
         completionBlock(NO);
@@ -175,13 +175,13 @@ static NSString * const kIdentityOfYBImageBrowserSheetCell = @"kIdentityOfYBImag
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0) {
         if ([self.actions[indexPath.row].identity isEqualToString:kYBImageBrowserSheetActionIdentitySaveToPhotoAlbum]) {
-            if ([self->_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)] && [self->_data respondsToSelector:@selector(yb_browserAllowSaveToPhotoAlbum)] && [self->_data yb_browserAllowSaveToPhotoAlbum]) {
-                [self->_data yb_browserSaveToPhotoAlbum];
+            if ([_data respondsToSelector:@selector(yb_browserSaveToPhotoAlbum)] && [_data respondsToSelector:@selector(yb_browserAllowSaveToPhotoAlbum)] && [_data yb_browserAllowSaveToPhotoAlbum]) {
+                [_data yb_browserSaveToPhotoAlbum];
             } else {
                 [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].unableToSave];
             }
         } else {
-            self.actions[indexPath.row].action(self->_data);
+            self.actions[indexPath.row].action(_data);
         }
     }
     [self yb_browserHideSheetViewWithAnimation:YES];

@@ -90,27 +90,27 @@
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
     [super willMoveToWindow:newWindow];
-    self->_outTransitioning = NO;
+    _outTransitioning = NO;
 }
 
 - (void)initVars {
-    self->_layoutDirection = YBImageBrowserLayoutDirectionUnknown;
-    self->_containerSize = CGSizeMake(1, 1);
-    self->_playing = NO;
-    self->_currentIndexIsSelf = NO;
-    self->_bodyInCenter = YES;
-    self->_gestureInteractionStartPoint = CGPointZero;
-    self->_gestureInteracting = NO;
-    self->_active = YES;
-    self->_outTransitioning = NO;
+    _layoutDirection = YBImageBrowserLayoutDirectionUnknown;
+    _containerSize = CGSizeMake(1, 1);
+    _playing = NO;
+    _currentIndexIsSelf = NO;
+    _bodyInCenter = YES;
+    _gestureInteractionStartPoint = CGPointZero;
+    _gestureInteracting = NO;
+    _active = YES;
+    _outTransitioning = NO;
 }
 
 #pragma mark - <YBImageBrowserCellProtocol>
 
 - (void)yb_initializeBrowserCellWithData:(id<YBImageBrowserCellDataProtocol>)data layoutDirection:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize {
-    self->_containerSize = containerSize;
-    self->_layoutDirection = layoutDirection;
-    self->_currentIndexIsSelf = YES;
+    _containerSize = containerSize;
+    _layoutDirection = layoutDirection;
+    _currentIndexIsSelf = YES;
     
     if (![data isKindOfClass:YBVideoBrowseCellData.class]) return;
     self.cellData = data;
@@ -121,10 +121,10 @@
 }
 
 - (void)yb_browserLayoutDirectionChanged:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize {
-    self->_containerSize = containerSize;
-    self->_layoutDirection = layoutDirection;
+    _containerSize = containerSize;
+    _layoutDirection = layoutDirection;
     
-    if (self->_gestureInteracting) {
+    if (_gestureInteracting) {
         [self restoreGestureInteractionWithDuration:0];
     }
     
@@ -133,15 +133,15 @@
 
 - (void)yb_browserPageIndexChanged:(NSUInteger)pageIndex ownIndex:(NSUInteger)ownIndex {
     if (pageIndex != ownIndex) {
-        if (self->_playing) {
+        if (_playing) {
             [self.baseView yb_hideProgressView];
             [self cancelPlay];
             [self.cellData loadData];
         }
         [self restoreGestureInteractionWithDuration:0];
-        self->_currentIndexIsSelf = NO;
+        _currentIndexIsSelf = NO;
     } else {
-        self->_currentIndexIsSelf = YES;
+        _currentIndexIsSelf = YES;
         [self autoPlay];
     }
 }
@@ -153,9 +153,9 @@
 }
 
 - (void)yb_browserBodyIsInTheCenter:(BOOL)isIn {
-    self->_bodyInCenter = isIn;
+    _bodyInCenter = isIn;
     if (!isIn) {
-        self->_gestureInteractionStartPoint = CGPointZero;
+        _gestureInteractionStartPoint = CGPointZero;
     }
 }
 
@@ -169,11 +169,11 @@
 }
 
 - (void)yb_browserSetGestureInteractionProfile:(YBIBGestureInteractionProfile *)giProfile {
-    self->_giProfile = giProfile;
+    _giProfile = giProfile;
 }
 
 - (void)yb_browserStatusBarOrientationBefore:(UIInterfaceOrientation)orientation {
-    self->_statusBarOrientationBefore = orientation;
+    _statusBarOrientationBefore = orientation;
 }
 
 #pragma mark - <UIGestureRecognizerDelegate>
@@ -185,15 +185,15 @@
 #pragma mark - <YBVideoBrowseActionBarDelegate>
 
 - (void)yb_videoBrowseActionBar:(YBVideoBrowseActionBar *)actionBar clickPlayButton:(UIButton *)playButton {
-    if (self->_player) {
-        [self->_player play];
+    if (_player) {
+        [_player play];
         [self.actionBar play];
     }
 }
 
 - (void)yb_videoBrowseActionBar:(YBVideoBrowseActionBar *)actionBar clickPauseButton:(UIButton *)pauseButton {
-    if (self->_player) {
-        [self->_player pause];
+    if (_player) {
+        [_player pause];
         [self.actionBar pause];
     }
 }
@@ -211,35 +211,36 @@
 #pragma mark - private
 
 - (void)browserDismiss {
-    self->_outTransitioning = YES;
+    _outTransitioning = YES;
     [self.contentView yb_hideProgressView];
     [self yb_hideProgressView];
     self.yb_browserDismissBlock();
+    _gestureInteracting = NO;
 }
 
 - (void)updateLayoutWithContainerSize:(CGSize)containerSize {
     self.baseView.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
     self.firstFrameImageView.frame = [self.cellData.class getImageViewFrameWithImageSize:self.cellData.firstFrame.size];
     self.playButton.center = self.baseView.center;
-    if (self->_playerLayer) {
-        self->_playerLayer.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
+    if (_playerLayer) {
+        _playerLayer.frame = CGRectMake(0, 0, containerSize.width, containerSize.height);
     }
     self.actionBar.frame = [self.actionBar getFrameWithContainerSize:containerSize];
     self.topBar.frame = [self.topBar getFrameWithContainerSize:containerSize];
 }
 
 - (void)startPlay {
-    if (!self.cellData.avAsset || self->_playing) return;
+    if (!self.cellData.avAsset || _playing) return;
     
     [self cancelPlay];
     
-    self->_playing = YES;
+    _playing = YES;
     
-    self->_playerItem = [AVPlayerItem playerItemWithAsset:self.cellData.avAsset];
-    self->_player = [AVPlayer playerWithPlayerItem:self->_playerItem];
-    self->_playerLayer = [AVPlayerLayer playerLayerWithPlayer:self->_player];
-    self->_playerLayer.frame = CGRectMake(0, 0, self->_containerSize.width, self->_containerSize.height);
-    [self.baseView.layer addSublayer:self->_playerLayer];
+    _playerItem = [AVPlayerItem playerItemWithAsset:self.cellData.avAsset];
+    _player = [AVPlayer playerWithPlayerItem:_playerItem];
+    _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+    _playerLayer.frame = CGRectMake(0, 0, _containerSize.width, _containerSize.height);
+    [self.baseView.layer addSublayer:_playerLayer];
     
     [self addObserverForPlayer];
     
@@ -255,22 +256,22 @@
 }
 
 - (void)restorePlay {
-    if (self->_actionBar) self.actionBar.hidden = YES;
-    if (self->_topBar) self.topBar.hidden = YES;
+    if (_actionBar) self.actionBar.hidden = YES;
+    if (_topBar) self.topBar.hidden = YES;
     
     [self removeObserverForPlayer];
     
-    if (self->_player) {
-        [self->_player pause];
-        self->_player = nil;
+    if (_player) {
+        [_player pause];
+        _player = nil;
     }
-    if (self->_playerLayer) {
-        [self->_playerLayer removeFromSuperlayer];
-        self->_playerLayer = nil;
+    if (_playerLayer) {
+        [_playerLayer removeFromSuperlayer];
+        _playerLayer = nil;
     }
-    self->_playerItem = nil;
+    _playerItem = nil;
     
-    self->_playing = NO;
+    _playing = NO;
 }
 
 - (void)restoreAsset {
@@ -295,9 +296,9 @@
 }
 
 - (void)videoJumpWithScale:(float)scale {
-    CMTime startTime = CMTimeMakeWithSeconds(scale, self->_player.currentTime.timescale);
-    AVPlayer *tmpPlayer = self->_player;
-    [self->_player seekToTime:startTime toleranceBefore:CMTimeMake(1, 1000) toleranceAfter:CMTimeMake(1, 1000) completionHandler:^(BOOL finished) {
+    CMTime startTime = CMTimeMakeWithSeconds(scale, _player.currentTime.timescale);
+    AVPlayer *tmpPlayer = _player;
+    [_player seekToTime:startTime toleranceBefore:CMTimeMake(1, 1000) toleranceAfter:CMTimeMake(1, 1000) completionHandler:^(BOOL finished) {
         if (finished && tmpPlayer == self->_player) {
             [self->_player play];
             [self.actionBar play];
@@ -370,13 +371,13 @@
 }
 
 - (void)avPlayerItemStatusChanged {
-    if (!self->_active) return;
+    if (!_active) return;
     
     self.playButton.hidden = YES;
-    switch (self->_playerItem.status) {
+    switch (_playerItem.status) {
         case AVPlayerItemStatusReadyToPlay: {
             
-            [self->_player play];
+            [_player play];
             
             [self.baseView addSubview:self.actionBar];
             [self.baseView addSubview:self.topBar];
@@ -385,7 +386,7 @@
             self.yb_browserToolBarHiddenBlock(YES);
             
             [self.actionBar play];
-            double max = CMTimeGetSeconds(self->_playerItem.duration);
+            double max = CMTimeGetSeconds(_playerItem.duration);
             [self.actionBar setMaxValue:isnan(max) || isinf(max) ? 0 : max];
             
             [self.baseView yb_hideProgressView];
@@ -407,20 +408,20 @@
 #pragma mark - observe
 
 - (void)addObserverForPlayer {
-    [self->_playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
+    [_playerItem addObserver:self forKeyPath:@"status" options:NSKeyValueObservingOptionNew context:nil];
     __weak typeof(self) wSelf = self;
-    [self->_player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
+    [_player addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
         __strong typeof(wSelf) sSelf = wSelf;
         if (!sSelf) return;
         float currentTime = time.value / time.timescale;
         [sSelf.actionBar setCurrentValue:currentTime];
     }];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoPlayFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:self->_playerItem];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoPlayFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:_playerItem];
 }
 
 - (void)removeObserverForPlayer {
-    [self->_playerItem removeObserver:self forKeyPath:@"status"];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:self->_playerItem];
+    [_playerItem removeObserver:self forKeyPath:@"status"];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:AVPlayerItemDidPlayToEndTimeNotification object:_playerItem];
 }
 
 - (void)addObserverForDataState {
@@ -435,12 +436,12 @@
 }
 
 - (void)videoPlayFinish:(NSNotification *)noti {
-    if (noti.object == self->_playerItem) {
+    if (noti.object == _playerItem) {
         YBVideoBrowseCellData *data = self.cellData;
         if (data.repeatPlayCount > 0) {
             --data.repeatPlayCount;
             [self videoJumpWithScale:0];
-            [self->_player play];
+            [_player play];
         } else {
             [self cancelPlay];
             [self.cellData loadData];
@@ -449,8 +450,8 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    if (!self->_outTransitioning) {
-        if (object == self->_playerItem) {
+    if (!_outTransitioning) {
+        if (object == _playerItem) {
             if ([keyPath isEqualToString:@"status"]) {
                 [self avPlayerItemStatusChanged];
             }
@@ -480,21 +481,21 @@
 }
 
 - (void)applicationWillResignActive:(NSNotification *)notification {
-    self->_active = NO;
-    if (self->_player && self->_playing) {
-        [self->_player pause];
+    _active = NO;
+    if (_player && _playing) {
+        [_player pause];
         [self.actionBar pause];
     }
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)notification {
-    self->_active = YES;
+    _active = YES;
 }
 
 - (void)didChangeStatusBarFrame {
     if ([UIApplication sharedApplication].statusBarFrame.size.height > YBIB_HEIGHT_STATUSBAR) {
-        if (self->_player && self->_playing) {
-            [self->_player pause];
+        if (_player && _playing) {
+            [_player pause];
             [self.actionBar pause];
         }
     }
@@ -507,8 +508,8 @@
         case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
             break;
         case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
-            if (self->_player && self->_playing) {
-//                [self->_player pause];
+            if (_player && _playing) {
+                [_player pause];
                 [self.actionBar pause];
             }
             break;
@@ -524,13 +525,15 @@
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToPanGesture:)];
     panGesture.cancelsTouchesInView = NO;
     panGesture.delegate = self;
+    
     [tapGesture requireGestureRecognizerToFail:panGesture];
+    
     [self.baseView addGestureRecognizer:tapGesture];
     [self.baseView addGestureRecognizer:panGesture];
 }
 
 - (void)respondsToTapGesture:(UITapGestureRecognizer *)tap {
-    if (self->_playing) {
+    if (_playing) {
         self.actionBar.hidden = !self.actionBar.isHidden;
         self.topBar.hidden = !self.topBar.isHidden;
     } else {
@@ -539,47 +542,47 @@
 }
 
 - (void)respondsToPanGesture:(UIPanGestureRecognizer *)pan {
-    if ((!self.firstFrameImageView.image && !self->_playing) || self->_giProfile.disable) return;
+    if ((!self.firstFrameImageView.image && !_playing) || _giProfile.disable) return;
     
     CGPoint point = [pan locationInView:self];
     if (pan.state == UIGestureRecognizerStateBegan) {
         
-        self->_gestureInteractionStartPoint = point;
+        _gestureInteractionStartPoint = point;
         
     } else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateRecognized || pan.state == UIGestureRecognizerStateFailed) {
         
         // END
-        if (self->_gestureInteracting) {
+        if (_gestureInteracting) {
             CGPoint velocity = [pan velocityInView:self.baseView];
             
-            BOOL velocityArrive = ABS(velocity.y) > self->_giProfile.dismissVelocityY;
-            BOOL distanceArrive = ABS(point.y - self->_gestureInteractionStartPoint.y) > self->_containerSize.height * self->_giProfile.dismissScale;
+            BOOL velocityArrive = ABS(velocity.y) > _giProfile.dismissVelocityY;
+            BOOL distanceArrive = ABS(point.y - _gestureInteractionStartPoint.y) > _containerSize.height * _giProfile.dismissScale;
             
             BOOL shouldDismiss = distanceArrive || velocityArrive;
             if (shouldDismiss) {
                 [self browserDismiss];
             } else {
-                [self restoreGestureInteractionWithDuration:self->_giProfile.restoreDuration];
+                [self restoreGestureInteractionWithDuration:_giProfile.restoreDuration];
             }
         }
         
     } else if (pan.state == UIGestureRecognizerStateChanged) {
         
         CGPoint velocityPoint = [pan velocityInView:self.baseView];
-        CGFloat triggerDistance = self->_giProfile.triggerDistance;
+        CGFloat triggerDistance = _giProfile.triggerDistance;
         
-        BOOL distanceArrive = ABS(point.y - self->_gestureInteractionStartPoint.y) > triggerDistance && (ABS(point.x - self->_gestureInteractionStartPoint.x) < triggerDistance && ABS(velocityPoint.x) < 500);
+        BOOL distanceArrive = ABS(point.y - _gestureInteractionStartPoint.y) > triggerDistance && (ABS(point.x - _gestureInteractionStartPoint.x) < triggerDistance && ABS(velocityPoint.x) < 500);
         
-        BOOL shouldStart = !self->_gestureInteracting && distanceArrive && self->_currentIndexIsSelf && self->_bodyInCenter;
+        BOOL shouldStart = !_gestureInteracting && distanceArrive && _currentIndexIsSelf && _bodyInCenter;
         // START
         if (shouldStart) {
-            if (self->_actionBar) self.actionBar.hidden = YES;
-            if (self->_topBar) self.topBar.hidden = YES;
+            if (_actionBar) self.actionBar.hidden = YES;
+            if (_topBar) self.topBar.hidden = YES;
             
-            if ([UIApplication sharedApplication].statusBarOrientation != self->_statusBarOrientationBefore) {
+            if ([UIApplication sharedApplication].statusBarOrientation != _statusBarOrientationBefore) {
                 [self browserDismiss];
             } else {
-                self->_gestureInteractionStartPoint = point;
+                _gestureInteractionStartPoint = point;
                 
                 CGRect startFrame = self.baseView.bounds;
                 CGFloat anchorX = (point.x - startFrame.origin.x) / startFrame.size.width,
@@ -590,19 +593,19 @@
                 self.yb_browserScrollEnabledBlock(NO);
                 self.yb_browserToolBarHiddenBlock(YES);
                 
-                self->_gestureInteracting = YES;
+                _gestureInteracting = YES;
             }
         }
         
         // CHANGE
-        if (self->_gestureInteracting) {
+        if (_gestureInteracting) {
             self.baseView.center = point;
-            CGFloat scale = 1 - ABS(point.y - self->_gestureInteractionStartPoint.y) / (self->_containerSize.height * 1.2);
+            CGFloat scale = 1 - ABS(point.y - _gestureInteractionStartPoint.y) / (_containerSize.height * 1.2);
             if (scale > 1) scale = 1;
             if (scale < 0.35) scale = 0.35;
             self.baseView.transform = CGAffineTransformMakeScale(scale, scale);
             
-            CGFloat alpha = 1 - ABS(point.y - self->_gestureInteractionStartPoint.y) / (self->_containerSize.height * 1.1);
+            CGFloat alpha = 1 - ABS(point.y - _gestureInteractionStartPoint.y) / (_containerSize.height * 1.1);
             if (alpha > 1) alpha = 1;
             if (alpha < 0) alpha = 0;
             self.yb_browserChangeAlphaBlock(alpha, 0);
@@ -611,8 +614,8 @@
 }
 
 - (void)restoreGestureInteractionWithDuration:(NSTimeInterval)duration {
-    if (self->_actionBar) self.actionBar.hidden = NO;
-    if (self->_topBar) self.topBar.hidden = NO;
+    if (_actionBar) self.actionBar.hidden = NO;
+    if (_topBar) self.topBar.hidden = NO;
     
     self.yb_browserChangeAlphaBlock(1, duration);
     

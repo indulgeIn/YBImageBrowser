@@ -66,7 +66,7 @@
 
 - (void)willMoveToWindow:(UIWindow *)newWindow {
     [super willMoveToWindow:newWindow];
-    self->_outTransitioning = NO;
+    _outTransitioning = NO;
 }
 
 - (void)prepareForReuse {
@@ -82,22 +82,22 @@
 }
 
 - (void)initVars {
-    self->_zooming = NO;
-    self->_dragging = NO;
-    self->_bodyInCenter = YES;
-    self->_outTransitioning = NO;
-    self->_layoutDirection = YBImageBrowserLayoutDirectionUnknown;
-    self->_containerSize = CGSizeMake(1, 1);
+    _zooming = NO;
+    _dragging = NO;
+    _bodyInCenter = YES;
+    _outTransitioning = NO;
+    _layoutDirection = YBImageBrowserLayoutDirectionUnknown;
+    _containerSize = CGSizeMake(1, 1);
     
-    self->_gestureInteractionStartPoint = CGPointZero;
-    self->_gestureInteracting = NO;
+    _gestureInteractionStartPoint = CGPointZero;
+    _gestureInteracting = NO;
 }
 
 #pragma mark - <YBImageBrowserCellProtocol>
 
 - (void)yb_initializeBrowserCellWithData:(id<YBImageBrowserCellDataProtocol>)data layoutDirection:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize {
-    self->_containerSize = containerSize;
-    self->_layoutDirection = layoutDirection;
+    _containerSize = containerSize;
+    _layoutDirection = layoutDirection;
     
     if (![data isKindOfClass:YBImageBrowseCellData.class]) return;
     self.cellData = data;
@@ -108,12 +108,12 @@
 }
 
 - (void)yb_browserLayoutDirectionChanged:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize {
-    self->_containerSize = containerSize;
-    self->_layoutDirection = layoutDirection;
+    _containerSize = containerSize;
+    _layoutDirection = layoutDirection;
     
     [self hideTailoringImageView];
     
-    if (self->_gestureInteracting) {
+    if (_gestureInteracting) {
         [self restoreGestureInteractionWithDuration:0];
     }
     
@@ -122,7 +122,7 @@
 }
 
 - (void)yb_browserBodyIsInTheCenter:(BOOL)isIn {
-    self->_bodyInCenter = isIn;
+    _bodyInCenter = isIn;
 }
 
 - (UIView *)yb_browserCurrentForegroundView {
@@ -130,11 +130,11 @@
 }
 
 - (void)yb_browserSetGestureInteractionProfile:(YBIBGestureInteractionProfile *)giProfile {
-    self->_giProfile = giProfile;
+    _giProfile = giProfile;
 }
 
 - (void)yb_browserStatusBarOrientationBefore:(UIInterfaceOrientation)orientation {
-    self->_statusBarOrientationBefore = orientation;
+    _statusBarOrientationBefore = orientation;
 }
 
 #pragma mark - <UIScrollViewDelegate>
@@ -169,21 +169,21 @@
 }
 
 - (void)scrollViewWillBeginZooming:(UIScrollView *)scrollView withView:(UIView *)view {
-    self->_zooming = YES;
+    _zooming = YES;
     [self hideTailoringImageView];
 }
 
 - (void)scrollViewDidEndZooming:(UIScrollView *)scrollView withView:(nullable UIView *)view atScale:(CGFloat)scale {
-    self->_zooming = NO;
+    _zooming = NO;
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    self->_dragging = YES;
+    _dragging = YES;
     [self hideTailoringImageView];
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    self->_dragging = NO;
+    _dragging = NO;
 }
 
 #pragma mark - <UIGestureRecognizerDelegate>
@@ -199,10 +199,14 @@
     tapSingle.numberOfTapsRequired = 1;
     UITapGestureRecognizer *tapDouble = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToTapDouble:)];
     tapDouble.numberOfTapsRequired = 2;
-    [tapSingle requireGestureRecognizerToFail:tapDouble];
     UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(respondsToPan:)];
     pan.maximumNumberOfTouches = 1;
     pan.delegate = self;
+    
+    [tapSingle requireGestureRecognizerToFail:tapDouble];
+    [tapSingle requireGestureRecognizerToFail:pan];
+    [tapDouble requireGestureRecognizerToFail:pan];
+    
     [self.mainContentView addGestureRecognizer:tapSingle];
     [self.mainContentView addGestureRecognizer:tapDouble];
     [self.mainContentView addGestureRecognizer:pan];
@@ -235,49 +239,50 @@
 }
 
 - (void)respondsToPan:(UIPanGestureRecognizer *)pan {
-    if ((CGRectIsEmpty(self.mainImageView.frame) || !self.mainImageView.image) || self->_giProfile.disable) return;
+    if ((CGRectIsEmpty(self.mainImageView.frame) || !self.mainImageView.image) || _giProfile.disable) return;
     
     CGPoint point = [pan locationInView:self];
     if (pan.state == UIGestureRecognizerStateBegan) {
         
-        self->_gestureInteractionStartPoint = point;
+        _gestureInteractionStartPoint = point;
         
     } else if (pan.state == UIGestureRecognizerStateCancelled || pan.state == UIGestureRecognizerStateEnded || pan.state == UIGestureRecognizerStateRecognized || pan.state == UIGestureRecognizerStateFailed) {
         
         // END
-        if (self->_gestureInteracting) {
+        if (_gestureInteracting) {
             CGPoint velocity = [pan velocityInView:self.mainContentView];
             
-            BOOL velocityArrive = ABS(velocity.y) > self->_giProfile.dismissVelocityY;
-            BOOL distanceArrive = ABS(point.y - self->_gestureInteractionStartPoint.y) > self->_containerSize.height * self->_giProfile.dismissScale;
+            BOOL velocityArrive = ABS(velocity.y) > _giProfile.dismissVelocityY;
+            BOOL distanceArrive = ABS(point.y - _gestureInteractionStartPoint.y) > _containerSize.height * _giProfile.dismissScale;
             
             BOOL shouldDismiss = distanceArrive || velocityArrive;
             if (shouldDismiss) {
                 [self browserDismiss];
             } else {
-                [self restoreGestureInteractionWithDuration:self->_giProfile.restoreDuration];
+                YBIBLOG(@"restore");
+                [self restoreGestureInteractionWithDuration:_giProfile.restoreDuration];
             }
         }
         
     } else if (pan.state == UIGestureRecognizerStateChanged) {
         
         CGPoint velocity = [pan velocityInView:self.mainContentView];
-        CGFloat triggerDistance = self->_giProfile.triggerDistance;
+        CGFloat triggerDistance = _giProfile.triggerDistance;
         
-        BOOL startPointValid = !CGPointEqualToPoint(self->_gestureInteractionStartPoint, CGPointZero);
-        BOOL distanceArrive = ABS(point.x - self->_gestureInteractionStartPoint.x) < triggerDistance && ABS(velocity.x) < 500;
-        BOOL upArrive = point.y - self->_gestureInteractionStartPoint.y > triggerDistance && self.mainContentView.contentOffset.y <= 1,
-        downArrive = point.y - self->_gestureInteractionStartPoint.y < -triggerDistance && self.mainContentView.contentOffset.y + self.mainContentView.bounds.size.height >= MAX(self.mainContentView.contentSize.height, self.mainContentView.bounds.size.height) - 1;
+        BOOL startPointValid = !CGPointEqualToPoint(_gestureInteractionStartPoint, CGPointZero);
+        BOOL distanceArrive = ABS(point.x - _gestureInteractionStartPoint.x) < triggerDistance && ABS(velocity.x) < 500;
+        BOOL upArrive = point.y - _gestureInteractionStartPoint.y > triggerDistance && self.mainContentView.contentOffset.y <= 1;
+        BOOL downArrive = point.y - _gestureInteractionStartPoint.y < -triggerDistance && self.mainContentView.contentOffset.y + self.mainContentView.bounds.size.height >= MAX(self.mainContentView.contentSize.height, self.mainContentView.bounds.size.height) - 1;
         
-        BOOL shouldStart = startPointValid && !self->_gestureInteracting && (upArrive || downArrive) && distanceArrive && self->_bodyInCenter && !self->_zooming;
+        BOOL shouldStart = startPointValid && !_gestureInteracting && (upArrive || downArrive) && distanceArrive && _bodyInCenter && !_zooming;
         // START
         if (shouldStart) {
-            if ([UIApplication sharedApplication].statusBarOrientation != self->_statusBarOrientationBefore) {
+            if ([UIApplication sharedApplication].statusBarOrientation != _statusBarOrientationBefore) {
                 [self browserDismiss];
             } else {
                 [self hideTailoringImageView];
                 
-                self->_gestureInteractionStartPoint = point;
+                _gestureInteractionStartPoint = point;
                 
                 CGRect startFrame = self.mainContentView.frame;
                 CGFloat anchorX = point.x / startFrame.size.width,
@@ -289,19 +294,19 @@
                 self.yb_browserScrollEnabledBlock(NO);
                 self.yb_browserToolBarHiddenBlock(YES);
                 
-                self->_gestureInteracting = YES;
+                _gestureInteracting = YES;
             }
         }
         
         // CHNAGE
-        if (self->_gestureInteracting) {
+        if (_gestureInteracting) {
             self.mainContentView.center = point;
-            CGFloat scale = 1 - ABS(point.y - self->_gestureInteractionStartPoint.y) / (self->_containerSize.height * 1.2);
+            CGFloat scale = 1 - ABS(point.y - _gestureInteractionStartPoint.y) / (_containerSize.height * 1.2);
             if (scale > 1) scale = 1;
             if (scale < 0.35) scale = 0.35;
             self.mainContentView.transform = CGAffineTransformMakeScale(scale, scale);
             
-            CGFloat alpha = 1 - ABS(point.y - self->_gestureInteractionStartPoint.y) / (self->_containerSize.height * 1.1);
+            CGFloat alpha = 1 - ABS(point.y - _gestureInteractionStartPoint.y) / (_containerSize.height * 1.1);
             if (alpha > 1) alpha = 1;
             if (alpha < 0) alpha = 0;
             self.yb_browserChangeAlphaBlock(alpha, 0);
@@ -349,7 +354,7 @@
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if (!self->_outTransitioning && object == self.cellData && [keyPath isEqualToString:@"dataState"]) {
+    if (!_outTransitioning && object == self.cellData && [keyPath isEqualToString:@"dataState"]) {
         [self cellDataStateChanged];
     } 
 }
@@ -357,11 +362,12 @@
 #pragma mark - private
 
 - (void)browserDismiss {
-    self->_outTransitioning = YES;
+    _outTransitioning = YES;
     [self hideTailoringImageView];
     [self.contentView yb_hideProgressView];
     [self yb_hideProgressView];
     self.yb_browserDismissBlock();
+    _gestureInteracting = NO;
 }
 
 - (void)cellDataStateChanged {
@@ -375,7 +381,7 @@
         case YBImageBrowseCellDataStateImageReady: {
             if (self.mainImageView.image != data.image) {
                 self.mainImageView.image = data.image;
-                [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
+                [self updateMainContentViewLayoutWithContainerSize:_containerSize fillType:[data getFillTypeWithLayoutDirection:_layoutDirection]];
             }
         }
             break;
@@ -392,7 +398,7 @@
         case YBImageBrowseCellDataStateCompressImageReady: {
             if (self.mainImageView.image != data.compressImage) {
                 self.mainImageView.image = data.compressImage;
-                [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
+                [self updateMainContentViewLayoutWithContainerSize:_containerSize fillType:[data getFillTypeWithLayoutDirection:_layoutDirection]];
             }
         }
             break;
@@ -400,7 +406,7 @@
             // If the image has been display, discard the thumb image.
             if (!self.mainImageView.image) {
                 self.mainImageView.image = data.thumbImage;
-                [self updateMainContentViewLayoutWithContainerSize:self->_containerSize fillType:[data getFillTypeWithLayoutDirection:self->_layoutDirection]];
+                [self updateMainContentViewLayoutWithContainerSize:_containerSize fillType:[data getFillTypeWithLayoutDirection:_layoutDirection]];
             }
         }
             break;
@@ -473,18 +479,18 @@
 }
 
 - (void)showTailoringImageView:(UIImage *)image {
-    if (self->_gestureInteracting) return;
+    if (_gestureInteracting) return;
     if (!self.tailoringImageView.superview) {
         [self.contentView addSubview:self.tailoringImageView];
     }
-    self.tailoringImageView.frame = CGRectMake(0, 0, self->_containerSize.width, self->_containerSize.height);
+    self.tailoringImageView.frame = CGRectMake(0, 0, _containerSize.width, _containerSize.height);
     self.tailoringImageView.hidden = NO;
     self.tailoringImageView.image = image;
 }
 
 - (void)hideTailoringImageView {
     // Don't use 'getter' method, because it's according to the need to load.
-    if (self->_tailoringImageView) {
+    if (_tailoringImageView) {
         self.tailoringImageView.hidden = YES;
     }
 }

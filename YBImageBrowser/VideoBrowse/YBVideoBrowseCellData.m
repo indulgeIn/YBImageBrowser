@@ -36,12 +36,12 @@
 }
 
 - (void)initVars {
-    self->_autoPlayCount = 0;
-    self->_allowSaveToPhotoAlbum = YES;
-    self->_allowShowSheetView = YES;
-    self->_dataState = YBVideoBrowseCellDataStateInvalid;
-    self->_dataDownloadState = YBVideoBrowseCellDataDownloadStateNone;
-    self->_loading = NO;
+    _autoPlayCount = 0;
+    _allowSaveToPhotoAlbum = YES;
+    _allowShowSheetView = YES;
+    _dataState = YBVideoBrowseCellDataStateInvalid;
+    _dataDownloadState = YBVideoBrowseCellDataDownloadStateNone;
+    _loading = NO;
 }
 
 #pragma mark - <YBImageBrowserCellDataProtocol>
@@ -204,8 +204,8 @@
     
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
-    self->_downloadTask = [session downloadTaskWithURL:url];
-    [self->_downloadTask resume];
+    _downloadTask = [session downloadTaskWithURL:url];
+    [_downloadTask resume];
 }
 
 #pragma mark - <NSURLSessionDelegate>
@@ -255,7 +255,7 @@ didFinishDownloadingToURL:(NSURL *)location {
 
 - (void)setUrl:(NSURL *)url {
     _url = [url isKindOfClass:NSString.class] ? [NSURL URLWithString:(NSString *)url] : url;
-    self.avAsset = [AVURLAsset URLAssetWithURL:self->_url options:nil];
+    self.avAsset = [AVURLAsset URLAssetWithURL:_url options:nil];
 }
 
 @end

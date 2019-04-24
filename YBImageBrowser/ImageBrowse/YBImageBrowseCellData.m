@@ -34,9 +34,13 @@ static BOOL _shouldDecodeAsynchronously = YES;
 
 #pragma mark - life cycle
 
++ (void)initialize {
+    _shouldDecodeAsynchronously = !YBIBLowMemory();
+}
+
 - (void)dealloc {
-    if (self->_downloadToken) {
-        [YBIBWebImageManager cancelTaskWithDownloadToken:self->_downloadToken];
+    if (_downloadToken) {
+        [YBIBWebImageManager cancelTaskWithDownloadToken:_downloadToken];
     }
 }
 
@@ -49,15 +53,15 @@ static BOOL _shouldDecodeAsynchronously = YES;
 }
 
 - (void)initVars {
-    self->_maxZoomScale = 0;
-    self->_verticalfillType = YBImageBrowseFillTypeUnknown;
-    self->_horizontalfillType = YBImageBrowseFillTypeUnknown;
-    self->_allowSaveToPhotoAlbum = YES;
-    self->_allowShowSheetView = YES;
+    _maxZoomScale = 0;
+    _verticalfillType = YBImageBrowseFillTypeUnknown;
+    _horizontalfillType = YBImageBrowseFillTypeUnknown;
+    _allowSaveToPhotoAlbum = YES;
+    _allowShowSheetView = YES;
     
-    self->_cutting = NO;
+    _cutting = NO;
     
-    self->_loading = NO;
+    _loading = NO;
 }
 
 #pragma mark - <YBImageBrowserCellDataProtocol>
@@ -234,7 +238,7 @@ static BOOL _shouldDecodeAsynchronously = YES;
     if (!self.url) return;
     
     self.dataState = YBImageBrowseCellDataStateIsDownloading;
-    self->_downloadToken = [YBIBWebImageManager downloadImageWithURL:self.url progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
+    _downloadToken = [YBIBWebImageManager downloadImageWithURL:self.url progress:^(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL) {
         CGFloat value = receivedSize * 1.0 / expectedSize ?: 0;
         self->_downloadProgress = value;
         
@@ -307,8 +311,8 @@ static BOOL _shouldDecodeAsynchronously = YES;
 
 - (void)cuttingImageToRect:(CGRect)rect complete:(void(^)(UIImage *image))complete {
     if (!self.image) return;
-    if (self->_cutting) return;
-    self->_cutting = YES;
+    if (_cutting) return;
+    _cutting = YES;
     
     CGFloat zoomScale = self.zoomScale;
     BOOL (^isCancelled)(void) = ^BOOL{

@@ -32,7 +32,7 @@ static NSInteger const preloadCount = 2;
 #pragma mark - life cycle
 
 - (void)dealloc {
-    self->_dataCache = nil;
+    _dataCache = nil;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -61,24 +61,24 @@ static NSInteger const preloadCount = 2;
 }
 
 - (void)initVars {
-    self->_layoutDirection = YBImageBrowserLayoutDirectionUnknown;
-    self->_reuseIdentifierSet = [NSMutableSet set];
-    self->_isDealingScreenRotation = NO;
-    self->_bodyIsInCenter = YES;
-    self->_currentIndex = NSUIntegerMax;
-    self->_isDealedSELInitializeFirst = NO;
-    self->_cacheCountLimit = 8;
+    _layoutDirection = YBImageBrowserLayoutDirectionUnknown;
+    _reuseIdentifierSet = [NSMutableSet set];
+    _isDealingScreenRotation = NO;
+    _bodyIsInCenter = YES;
+    _currentIndex = NSUIntegerMax;
+    _isDealedSELInitializeFirst = NO;
+    _cacheCountLimit = 8;
 }
 
 #pragma mark - public
 
 - (void)updateLayoutWithDirection:(YBImageBrowserLayoutDirection)layoutDirection containerSize:(CGSize)containerSize {
-    if (self->_layoutDirection == layoutDirection) return;
-    self->_isDealingScreenRotation = YES;
+    if (_layoutDirection == layoutDirection) return;
+    _isDealingScreenRotation = YES;
     
-    self->_containerSize = containerSize;
-    self.frame = CGRectMake(0, 0, self->_containerSize.width, self->_containerSize.height);
-    self->_layoutDirection = layoutDirection;
+    _containerSize = containerSize;
+    self.frame = CGRectMake(0, 0, _containerSize.width, _containerSize.height);
+    _layoutDirection = layoutDirection;
     
     if (self.superview) {
         // Notice 'visibleCells' layout direction changed, can't use '-reloadData' because it will triggering '-prepareForReuse' of cell.
@@ -92,7 +92,7 @@ static NSInteger const preloadCount = 2;
     }
     
     [self layoutIfNeeded];
-    self->_isDealingScreenRotation = NO;
+    _isDealingScreenRotation = NO;
 }
 
 - (void)scrollToPageWithIndex:(NSInteger)index {
@@ -111,7 +111,7 @@ static NSInteger const preloadCount = 2;
 }
 
 - (void)yb_reloadData {
-    self->_dataCache = nil;
+    _dataCache = nil;
     [self reloadData];
 }
 
@@ -122,17 +122,17 @@ static NSInteger const preloadCount = 2;
 - (id<YBImageBrowserCellDataProtocol>)dataAtIndex:(NSUInteger)index {
     if (index < 0 || index >= [self.yb_dataSource yb_numberOfCellForImageBrowserView:self]) return nil;
     
-    if (!self->_dataCache) {
-        self->_dataCache = [NSCache new];
-        self->_dataCache.countLimit = self.cacheCountLimit;
+    if (!_dataCache) {
+        _dataCache = [NSCache new];
+        _dataCache.countLimit = self.cacheCountLimit;
     }
     
     id<YBImageBrowserCellDataProtocol> data;
-    if (self->_dataCache && [self->_dataCache objectForKey:@(index)]) {
-        data = [self->_dataCache objectForKey:@(index)];
+    if (_dataCache && [_dataCache objectForKey:@(index)]) {
+        data = [_dataCache objectForKey:@(index)];
     } else {
         data = [self.yb_dataSource yb_imageBrowserView:self dataForCellAtIndex:index];
-        [self->_dataCache setObject:data forKey:@(index)];
+        [_dataCache setObject:data forKey:@(index)];
     }
     return data;
 }
@@ -166,20 +166,20 @@ static NSInteger const preloadCount = 2;
     NSAssert(cellClass, @"the class get from '-yb_classOfBrowserCell' is invalid");
     
     NSString *identifier = NSStringFromClass(cellClass);
-    if (![self->_reuseIdentifierSet containsObject:cellClass]) {
+    if (![_reuseIdentifierSet containsObject:cellClass]) {
         NSString *path = [[NSBundle mainBundle] pathForResource:identifier ofType:@"nib"];
         if (path) {
             [collectionView registerNib:[UINib nibWithNibName:identifier bundle:nil] forCellWithReuseIdentifier:identifier];
         } else {
             [collectionView registerClass:cellClass forCellWithReuseIdentifier:identifier];
         }
-        [self->_reuseIdentifierSet addObject:cellClass];
+        [_reuseIdentifierSet addObject:cellClass];
     }
     UICollectionViewCell<YBImageBrowserCellProtocol> *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     NSAssert(cell, @"your custom cell must be subclass of 'UICollectionViewCell'");
     
     NSAssert([cell respondsToSelector:@selector(yb_initializeBrowserCellWithData:layoutDirection:containerSize:)], @"your custom cell must conforms '<YBImageBrowserCellProtocol>' and implement '-yb_initializeBrowserCellWithData:layoutDirection:containerSize:'");
-    [cell yb_initializeBrowserCellWithData:data layoutDirection:self->_layoutDirection containerSize:self->_containerSize];
+    [cell yb_initializeBrowserCellWithData:data layoutDirection:_layoutDirection containerSize:_containerSize];
     
     if ([cell respondsToSelector:@selector(yb_browserStatusBarOrientationBefore:)]) {
         [cell yb_browserStatusBarOrientationBefore:self.statusBarOrientationBefore];
@@ -221,9 +221,9 @@ static NSInteger const preloadCount = 2;
         }];
     }
     
-    if ([cell respondsToSelector:@selector(yb_browserInitializeFirst:)] && !self->_isDealedSELInitializeFirst) {
-        self->_isDealedSELInitializeFirst = YES;
-        [cell yb_browserInitializeFirst:self->_currentIndex == indexPath.row];
+    if ([cell respondsToSelector:@selector(yb_browserInitializeFirst:)] && !_isDealedSELInitializeFirst) {
+        _isDealedSELInitializeFirst = YES;
+        [cell yb_browserInitializeFirst:_currentIndex == indexPath.row];
     }
     
     if (collectionView.window && self.shouldPreload) {
@@ -240,8 +240,8 @@ static NSInteger const preloadCount = 2;
     NSUInteger index = (NSUInteger)(indexF + 0.5);
     
     BOOL isInCenter = indexF <= (NSInteger)indexF + 0.001 && indexF >= (NSInteger)indexF - 0.001;
-    if (self->_bodyIsInCenter != isInCenter) {
-        self->_bodyIsInCenter = isInCenter;
+    if (_bodyIsInCenter != isInCenter) {
+        _bodyIsInCenter = isInCenter;
         
         NSArray<UICollectionViewCell<YBImageBrowserCellProtocol> *> *cells = [self visibleCells];
         [cells enumerateObjectsUsingBlock:^(UICollectionViewCell<YBImageBrowserCellProtocol> * _Nonnull cell, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -252,7 +252,7 @@ static NSInteger const preloadCount = 2;
     }
     
     if (index >= [self.yb_dataSource yb_numberOfCellForImageBrowserView:self]) return;
-    if (self.currentIndex != index && !self->_isDealingScreenRotation) {
+    if (self.currentIndex != index && !_isDealingScreenRotation) {
         self.currentIndex = index;
         
         [self.yb_delegate yb_imageBrowserView:self pageIndexChanged:self.currentIndex];

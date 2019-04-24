@@ -26,7 +26,7 @@
     self = [super init];
     if (self) {
         self.transitioning = NO;
-        self->_enter = NO;
+        _enter = NO;
     }
     return self;
 }
@@ -35,7 +35,7 @@
 
 - (void)animationEnded:(BOOL)transitionCompleted {
     if (self.imageBrowser && self.imageBrowser.delegate && [self.imageBrowser.delegate respondsToSelector:@selector(yb_imageBrowser:transitionAnimationEndedWithIsEnter:)]) {
-        [self.imageBrowser.delegate yb_imageBrowser:self.imageBrowser transitionAnimationEndedWithIsEnter:self->_enter];
+        [self.imageBrowser.delegate yb_imageBrowser:self.imageBrowser transitionAnimationEndedWithIsEnter:_enter];
     }
 }
 
@@ -52,7 +52,7 @@
     
     // Enter
     if (toController.isBeingPresented) {
-        self->_enter = YES;
+        _enter = YES;
         self.transitioning = YES;
         switch (self.imageBrowser.enterTransitionType) {
             case YBImageBrowserTransitionTypeNone: {
@@ -99,48 +99,65 @@
     
     // Out
     if (fromController.isBeingDismissed) {
-        self->_enter = NO;
-        self.transitioning = YES;
-        switch (self.imageBrowser.outTransitionType) {
-            case YBImageBrowserTransitionTypeNone: {
+        
+        void(^noneBlock)(void) = ^{
+            [self completeTransition:transitionContext isEnter:NO];
+        };
+        
+        void(^fadeBlock)(void) = ^{
+            UIView *fromAnimateView = [self out_fromAnimateView];
+            [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+                fromAnimateView.alpha = 0;
+                fromView.alpha = 0;
+            } completion:^(BOOL finished) {
                 [self completeTransition:transitionContext isEnter:NO];
-            }
-                break;
-            case YBImageBrowserTransitionTypeFade: {
-                UIView *fromAnimateView = [self out_fromAnimateView];
+            }];
+        };
+        
+        void(^coherentBlock)(void) = ^{
+            UIView *fromAnimateView = [self out_fromAnimateView];
+            if (fromAnimateView) {
+                CGRect fromFrame = fromAnimateView.frame;
+                CGRect toFrame = [self out_toFrameWithView:fromAnimateView.superview];
+                if (CGRectEqualToRect(toFrame, CGRectZero)) {
+                    fadeBlock();
+                    return;
+                }
+                
                 [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
-                    fromAnimateView.alpha = 0;
-                    fromView.alpha = 0;
+                    fromView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
+                    id sourceObj = [self out_toSourceObj];
+                    if ([sourceObj isKindOfClass:UIView.class])
+                        fromAnimateView.contentMode = ((UIImageView *)sourceObj).contentMode;
+                    
+                    if ([fromAnimateView isKindOfClass:UIImageView.class]) {
+                        fromAnimateView.frame = toFrame;
+                    } else {
+                        CGFloat scale = MAX(toFrame.size.width / fromFrame.size.width, toFrame.size.height / fromFrame.size.height);
+                        fromAnimateView.center = CGPointMake(toFrame.size.width * fromAnimateView.layer.anchorPoint.x + toFrame.origin.x, toFrame.size.height * fromAnimateView.layer.anchorPoint.y + toFrame.origin.y);;
+                        fromAnimateView.transform = CGAffineTransformScale(fromAnimateView.transform, scale, scale);
+                    }
                 } completion:^(BOOL finished) {
                     [self completeTransition:transitionContext isEnter:NO];
                 }];
+            } else {
+                [self completeTransition:transitionContext isEnter:NO];
+            }
+        };
+        
+        _enter = NO;
+        self.transitioning = YES;
+        switch (self.imageBrowser.outTransitionType) {
+            case YBImageBrowserTransitionTypeNone: {
+                noneBlock();
+            }
+                break;
+            case YBImageBrowserTransitionTypeFade: {
+                fadeBlock();
             }
                 break;
             case YBImageBrowserTransitionTypeCoherent: {
-                UIView *fromAnimateView = [self out_fromAnimateView];
-                if (fromAnimateView) {
-                    CGRect fromFrame = fromAnimateView.frame;
-                    CGRect toFrame = [self out_toFrameWithView:fromAnimateView.superview];
-                    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
-                        
-                        fromView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
-                        id sourceObj = [self out_toSourceObj];
-                        if ([sourceObj isKindOfClass:UIView.class])
-                            fromAnimateView.contentMode = ((UIImageView *)sourceObj).contentMode;
-                        
-                        if ([fromAnimateView isKindOfClass:UIImageView.class]) {
-                            fromAnimateView.frame = toFrame;
-                        } else {
-                            CGFloat scale = MAX(toFrame.size.width / fromFrame.size.width, toFrame.size.height / fromFrame.size.height);
-                            fromAnimateView.center = CGPointMake(toFrame.size.width * fromAnimateView.layer.anchorPoint.x + toFrame.origin.x, toFrame.size.height * fromAnimateView.layer.anchorPoint.y + toFrame.origin.y);;
-                            fromAnimateView.transform = CGAffineTransformScale(fromAnimateView.transform, scale, scale);
-                        }
-                    } completion:^(BOOL finished) {
-                        [self completeTransition:transitionContext isEnter:NO];
-                    }];
-                } else {
-                    [self completeTransition:transitionContext isEnter:NO];
-                }
+                coherentBlock();
             }
                 break;
         }
@@ -215,9 +232,7 @@
 }
 
 - (CGRect)out_toFrameWithView:(UIView *)view {
-    CGFloat width = [UIScreen mainScreen].bounds.size.width,
-    height = [UIScreen mainScreen].bounds.size.height;
-    CGRect frame = CGRectMake(width / 2, height / 2, 1, 1);
+    CGRect frame = CGRectZero;
     id sourceObj = [self out_toSourceObj];
     if (!sourceObj || ![sourceObj respondsToSelector:@selector(bounds)]) {
         return frame;

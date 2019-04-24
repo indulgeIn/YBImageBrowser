@@ -53,7 +53,7 @@ static CGFloat kActionBarDefaultsHeight = 50.0;
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        self->_isDragging = NO;
+        _isDragging = NO;
         
         [self.layer addSublayer:self.gradientLayer];
         [self addSubview:self.playButton];
@@ -90,7 +90,7 @@ static CGFloat kActionBarDefaultsHeight = 50.0;
 
 - (void)play {
     self.playButton.selected = YES;
-    self->_isDragging = NO;
+    _isDragging = NO;
     self.slider.userInteractionEnabled = YES;
 }
 
@@ -100,7 +100,7 @@ static CGFloat kActionBarDefaultsHeight = 50.0;
 }
 
 - (void)setCurrentValue:(float)value {
-    if (!self->_isDragging) {
+    if (!_isDragging) {
         [self.slider setValue:value animated:YES];
     }
     self.preTimeLabel.text = [self.class timeformatFromSeconds:value];
@@ -109,7 +109,8 @@ static CGFloat kActionBarDefaultsHeight = 50.0;
 #pragma mark - tool
 
 + (NSString *)timeformatFromSeconds:(NSInteger)seconds {
-    return seconds > 3600 ? [NSString stringWithFormat:@"%02ld:%02ld:%02ld", seconds / 3600, (seconds % 3600) / 60, seconds % 60] : [NSString stringWithFormat:@"%02ld:%02ld", (seconds % 3600) / 60, seconds % 60];
+    NSInteger hour = seconds / 3600, min = (seconds % 3600) / 60, sec = seconds % 60;
+    return seconds > 3600 ? [NSString stringWithFormat:@"%02ld:%02ld:%02ld", (long)hour, (long)min, (long)sec] : [NSString stringWithFormat:@"%02ld:%02ld", (long)min, (long)sec];
 }
 
 #pragma mark - touch event
@@ -135,7 +136,7 @@ static CGFloat kActionBarDefaultsHeight = 50.0;
 }
 
 - (void)respondsToSliderTouchDown:(UISlider *)slider {
-    self->_isDragging = YES;
+    _isDragging = YES;
     slider.userInteractionEnabled = NO;
 }
 
