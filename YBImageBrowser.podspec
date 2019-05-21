@@ -15,19 +15,19 @@ Pod::Spec.new do |s|
 
   s.license      = "MIT"
 
-  s.author             = { "杨波" => "1106355439@qq.com" }
+  s.author       = { "杨波" => "1106355439@qq.com" }
  
   s.platform     = :ios, "8.0"
 
   s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{s.version}" }
 
-  s.source_files  = "YBImageBrowser/**/*.{h,m}"
+  s.source_files = "YBImageBrowser/**/*.{h,m}"
   # s.exclude_files = "YBImageBrowser/Exclude"
 
-  s.resources = "YBImageBrowser/YBImageBrowser.bundle"
+  s.resources    = "YBImageBrowser/YBImageBrowser.bundle"
 
-  s.frameworks = 
-"Foundation","UIKit"
+  s.frameworks   = 
+  "Foundation","UIKit"
 
   s.requires_arc = true
 
