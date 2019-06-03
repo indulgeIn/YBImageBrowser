@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-- (id)yb_browserCellSourceObject;
+- (UIView *)yb_browserCellSourceObject;
 
 - (BOOL)yb_browserAllowSaveToPhotoAlbum;
 - (void)yb_browserSaveToPhotoAlbum;

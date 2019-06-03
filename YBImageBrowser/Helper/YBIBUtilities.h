@@ -60,6 +60,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (BOOL)isIphoneX;
 
++ (UIImage *)snapsHotView:(UIView *)view;
+
++ (UIImage *)screenShotLayer:(CALayer *)layer;
+
 @end
 
 NS_ASSUME_NONNULL_END

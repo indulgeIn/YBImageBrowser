@@ -39,8 +39,8 @@ typedef __kindof UIImage * _Nullable (^YBIBLocalImageBlock)(void);
 @property (nonatomic, strong, nullable) PHAsset *phAsset;
 
 /** The source rendering object corresponding to the current data model, it's used for animation.
- In general, it's 'UIImageView', but it can also be 'UIView' or 'CALayer'. */
-@property (nonatomic, weak, nullable) id sourceObject;
+ In general, it's 'UIImageView', but it can also be 'UIView'. */
+@property (nonatomic, weak, nullable) __kindof UIView *sourceObject;
 
 /** As a preview image. It's usually a low quality image.
  If 'sourceObject' is valid and is kind of 'UIImageView', it will automatic setting 'thumbImage'. */

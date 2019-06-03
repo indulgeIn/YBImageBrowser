@@ -24,8 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) AVAsset *avAsset;
 
 /** The source rendering object corresponding to the current data model, it's used for animation.
- In general, it's 'UIImageView', but it can also be 'UIView' or 'CALayer'. */
-@property (nonatomic, weak, nullable) id sourceObject;
+ In general, it's 'UIImageView', but it can also be 'UIView'. */
+@property (nonatomic, weak, nullable) __kindof UIView *sourceObject;
 
 /** As a preview image. Without explicit settings, the first frame will be loaded from the video source and consume some CPU resources. */
 @property (nonatomic, strong, nullable) UIImage *firstFrame;

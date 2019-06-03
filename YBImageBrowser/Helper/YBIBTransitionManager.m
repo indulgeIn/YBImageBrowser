@@ -180,34 +180,29 @@
     id<YBImageBrowserCellDataProtocol> data = [self.imageBrowser.browserView dataAtIndex:self.imageBrowser.currentIndex];
     if (!data) return NO;
     if (![data respondsToSelector:@selector(yb_browserCellSourceObject)]) return NO;
-    id sourceObj = data.yb_browserCellSourceObject;
-    if (!sourceObj) return NO;
+    UIView *sourceView = data.yb_browserCellSourceObject;
+    if (!sourceView) return NO;
     
-    self.imageBrowser.hiddenSourceObject = sourceObj;
+    self.imageBrowser.hiddenSourceObject = sourceView;
     
-    CALayer *sourceLayer = nil;
-    if ([sourceObj isKindOfClass:UIView.class]) {
-        UIView *view = (UIView *)sourceObj;
-        sourceLayer = view.layer;
-        self.animateImageView.contentMode = view.contentMode;
-        if ([view isKindOfClass:UIImageView.class]) {
-            self.animateImageView.image = ((UIImageView *)view).image;
+    // Read sources.
+    if ([sourceView isKindOfClass:UIView.class]) {
+        if ([sourceView isKindOfClass:UIImageView.class]) {
+            self.animateImageView.contentMode = sourceView.contentMode;
+            self.animateImageView.image = ((UIImageView *)sourceView).image;
         } else {
-            self.animateImageView.layer.contents = view.layer;
+            self.animateImageView.image = [YBIBUtilities snapsHotView:sourceView];
         }
-    } else if ([sourceObj isKindOfClass:CALayer.class]) {
-        sourceLayer = sourceObj;
-        self.animateImageView.layer.contents = sourceLayer.contents;
     } else {
         return NO;
     }
     
     // Ensure the best transition effect.
+    CALayer *sourceLayer = sourceView.layer;
     self.animateImageView.layer.masksToBounds = sourceLayer.masksToBounds;
     self.animateImageView.layer.cornerRadius = sourceLayer.cornerRadius;
     self.animateImageView.layer.backgroundColor = sourceLayer.backgroundColor;
-    
-    self.animateImageView.frame = [sourceObj convertRect:sourceLayer.bounds toView:YBIBGetNormalWindow()];
+    self.animateImageView.frame = [sourceView convertRect:sourceLayer.bounds toView:YBIBGetNormalWindow()];
     
     return YES;
 }

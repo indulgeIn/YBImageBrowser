@@ -50,7 +50,7 @@
     return YBVideoBrowseCell.class;
 }
 
-- (id)yb_browserCellSourceObject {
+- (UIView *)yb_browserCellSourceObject {
     return self.sourceObject;
 }
 

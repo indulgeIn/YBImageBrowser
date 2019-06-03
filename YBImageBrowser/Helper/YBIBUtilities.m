@@ -78,4 +78,24 @@ BOOL YBIBLowMemory(void) {
     return isIphoneX;
 }
 
++ (UIImage *)snapsHotView:(UIView *)view {
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, [UIScreen mainScreen].scale);
+    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
++ (UIImage *)screenShotLayer:(CALayer *)layer {
+    UIImage *image = nil;
+    UIGraphicsBeginImageContextWithOptions(layer.frame.size, NO, [UIScreen mainScreen].scale);
+    [layer renderInContext:UIGraphicsGetCurrentContext()];
+    for (CALayer *subLayer in layer.sublayers) {
+        [subLayer renderInContext:UIGraphicsGetCurrentContext()];
+    }
+    image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
 @end
