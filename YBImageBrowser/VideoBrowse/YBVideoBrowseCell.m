@@ -335,8 +335,8 @@
             if (self.firstFrameImageView.image != data.firstFrame) {
                 self.firstFrameImageView.image = data.firstFrame;
                 self.firstFrameImageView.frame = [self.cellData.class getImageViewFrameWithImageSize:self.cellData.firstFrame.size];
-                self.playButton.hidden = NO;
             }
+            self.playButton.hidden = NO;
         }
             break;
         case YBVideoBrowseCellDataStateIsLoadingPHAsset: {
