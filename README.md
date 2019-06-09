@@ -7,13 +7,11 @@
 
 # Preview
 
-<center>
+<!-- <center>
     <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
-</center>
+</center> -->
 
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_image.PNG)
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_video.jpg)
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_custom.PNG)
+![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif)
 
 
 # Link
