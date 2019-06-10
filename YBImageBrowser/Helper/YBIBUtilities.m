@@ -34,16 +34,14 @@ UIViewController *YBIBGetTopController(void) {
         topController = window.rootViewController;
     }
     
-    while ([topController isKindOfClass:UITabBarController.class] || [topController isKindOfClass:UINavigationController.class]) {
+    while ([topController isKindOfClass:UITabBarController.class] || [topController isKindOfClass:UINavigationController.class] || topController.presentedViewController) {
         if ([topController isKindOfClass:UITabBarController.class]) {
             topController = ((UITabBarController *)topController).selectedViewController;
         } else if ([topController isKindOfClass:UINavigationController.class]) {
             topController = ((UINavigationController *)topController).topViewController;
+        } else if (topController.presentedViewController) {
+            topController = topController.presentedViewController;
         }
-    }
-    
-    while (topController.presentedViewController) {
-        topController = topController.presentedViewController;
     }
     
     return topController;
