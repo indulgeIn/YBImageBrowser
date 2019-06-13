@@ -18,12 +18,12 @@
 + (void)getPhotoAlbumAuthorizationSuccess:(void(^)(void))success failed:(void(^)(void))failed;
 
 /**
- Get 'AVAsset' through 'PHAsset' asynchronously.
+ Get 'AVAsset' by 'PHAsset' asynchronously, callback is in child thread.
  */
 + (void)getAVAssetWithPHAsset:(PHAsset *)phAsset success:(void(^)(AVAsset *asset))success failed:(void(^)(void))failed;
 
 /**
- Get 'ImageData' through 'PHAsset' asynchronously.
+ Get 'ImageData' by 'PHAsset' synchronously, callback is in child thread.
  */
 + (void)getImageDataWithPHAsset:(PHAsset *)phAsset success:(void(^)(NSData *data))success failed:(void(^)(void))failed;
 

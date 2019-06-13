@@ -24,27 +24,31 @@ UIWindow *YBIBGetNormalWindow(void) {
 }
 
 UIViewController *YBIBGetTopController(void) {
-    UIViewController *topController = nil;
     UIWindow *window = YBIBGetNormalWindow();
-    UIView *frontView = [[window subviews] objectAtIndex:0];
-    id nextResponder = [frontView nextResponder];
-    if ([nextResponder isKindOfClass:UIViewController.class]) {
-        topController = nextResponder;
+    if (!window) return nil;
+    
+    UIViewController *top = nil;
+    id nextResponder;
+    if (window.subviews.count > 0) {
+        UIView *frontView = [window.subviews objectAtIndex:0];
+        nextResponder = frontView.nextResponder;
+    }
+    if (nextResponder && [nextResponder isKindOfClass:UIViewController.class]) {
+        top = nextResponder;
     } else {
-        topController = window.rootViewController;
+        top = window.rootViewController;
     }
     
-    while ([topController isKindOfClass:UITabBarController.class] || [topController isKindOfClass:UINavigationController.class] || topController.presentedViewController) {
-        if ([topController isKindOfClass:UITabBarController.class]) {
-            topController = ((UITabBarController *)topController).selectedViewController;
-        } else if ([topController isKindOfClass:UINavigationController.class]) {
-            topController = ((UINavigationController *)topController).topViewController;
-        } else if (topController.presentedViewController) {
-            topController = topController.presentedViewController;
+    while ([top isKindOfClass:UITabBarController.class] || [top isKindOfClass:UINavigationController.class]) {
+        if ([top isKindOfClass:UITabBarController.class] || top.presentedViewController) {
+            top = ((UITabBarController *)top).selectedViewController;
+        } else if ([top isKindOfClass:UINavigationController.class]) {
+            top = ((UINavigationController *)top).topViewController;
+        } else if (top.presentedViewController) {
+            top = top.presentedViewController;
         }
     }
-    
-    return topController;
+    return top;
 }
 
 BOOL YBIBLowMemory(void) {
