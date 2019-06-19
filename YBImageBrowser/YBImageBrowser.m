@@ -53,6 +53,15 @@
     return self;
 }
 
+- (void)didReceiveMemoryWarning{
+    [super didReceiveMemoryWarning];
+    for (id _id in self.dataSourceArray) {
+        if([_id respondsToSelector:@selector(setImage:)]){
+            [_id performSelector:@selector(setImage:) withObject:nil]; //释放内存
+        }
+    }
+}
+
 - (void)initVars {
     _isFirstViewDidAppear = NO;
     _isRestoringDeviceOrientation = NO;
