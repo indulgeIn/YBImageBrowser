@@ -281,7 +281,6 @@ static BOOL _shouldDecodeAsynchronously = YES;
             } else if (data) {
                 self.thumbImage = [UIImage imageWithData:data];
             }
-            
             // If the target image is ready, ignore the thumb image.
             if (self.dataState != YBImageBrowseCellDataStateCompressImageReady && self.dataState != YBImageBrowseCellDataStateImageReady) {
                 self.dataState = YBImageBrowseCellDataStateThumbImageReady;

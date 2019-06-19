@@ -39,8 +39,8 @@ UIViewController *YBIBGetTopController(void) {
         top = window.rootViewController;
     }
     
-    while ([top isKindOfClass:UITabBarController.class] || [top isKindOfClass:UINavigationController.class]) {
-        if ([top isKindOfClass:UITabBarController.class] || top.presentedViewController) {
+    while ([top isKindOfClass:UITabBarController.class] || [top isKindOfClass:UINavigationController.class] || top.presentedViewController) {
+        if ([top isKindOfClass:UITabBarController.class]) {
             top = ((UITabBarController *)top).selectedViewController;
         } else if ([top isKindOfClass:UINavigationController.class]) {
             top = ((UINavigationController *)top).topViewController;
