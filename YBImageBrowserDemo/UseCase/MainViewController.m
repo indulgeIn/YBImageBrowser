@@ -34,7 +34,7 @@ static NSString * const kReuseIdentifierOfMainImageCell = @"kReuseIdentifierOfMa
  'YBImageBrowser' 是图片浏览器的主体类，有两种方式为其赋值数据源：一种是直接设置 'dataSourceArray' 数组属性，一种设置 'dataSource' 代理实现协议方法。
  数据源个体为 'id<YBImageBrowserCellDataProtocol>' 类型，框架默认实现了两个类：'YBImageBrowseCellData'(图片) 和 'YBVideoBrowseCellData'(视频)，你只需要初始化它们并且以数组或者代理的方式赋值给 'YBImageBrowser' 实例变量。
  
- 'YBImageBrowser'is the principal class of a image browser, and there are two ways to assign data sources to it: one is to set the 'dataSourceArray' array property directly, and the other is to set the 'dataSource' proxy and implementation protocol method.
+ 'YBImageBrowser'is the principal class of an image browser, and there are two ways to assign data sources to it: one is to set the 'dataSourceArray' array property directly, and the other is to set the 'dataSource' proxy and implementation protocol method.
  The framework implements two classes by default: 'YBImageBrowseCellData'(image) and 'YBVideoBrowseCellData'(video), you just initialize them and assign them to the 'YBImageBrowser' instance variable in an array or proxy.
  */
 
