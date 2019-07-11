@@ -620,14 +620,16 @@
     self.yb_browserChangeAlphaBlock(1, duration);
     
     void (^animations)(void) = ^{
-        self.baseView.layer.anchorPoint = CGPointMake(0.5, 0.5);
-        self.baseView.center = CGPointMake(self->_containerSize.width / 2, self->_containerSize.height / 2);
+        CGPoint anchorPoint = self.baseView.layer.anchorPoint;
+        self.baseView.center = CGPointMake(self->_containerSize.width * anchorPoint.x, self->_containerSize.height * anchorPoint.y);
         self.baseView.transform = CGAffineTransformIdentity;
     };
     void (^completion)(BOOL finished) = ^(BOOL finished){
         self.yb_browserScrollEnabledBlock(YES);
         if (!self->_playing) self.yb_browserToolBarHiddenBlock(NO);
         
+        self.baseView.layer.anchorPoint = CGPointMake(0.5, 0.5);
+        self.baseView.center = CGPointMake(self->_containerSize.width * 0.5, self->_containerSize.height * 0.5);
         self.baseView.userInteractionEnabled = YES;
         
         self->_gestureInteractionStartPoint = CGPointZero;

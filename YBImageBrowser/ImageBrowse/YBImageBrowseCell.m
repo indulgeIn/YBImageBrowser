@@ -259,7 +259,6 @@
             if (shouldDismiss) {
                 [self browserDismiss];
             } else {
-                YBIBLOG(@"restore");
                 [self restoreGestureInteractionWithDuration:_giProfile.restoreDuration];
             }
         }
@@ -318,14 +317,16 @@
     self.yb_browserChangeAlphaBlock(1, duration);
     
     void (^animations)(void) = ^{
-        self.mainContentView.layer.anchorPoint = CGPointMake(0.5, 0.5);
-        self.mainContentView.center = CGPointMake(self->_containerSize.width / 2, self->_containerSize.height / 2);
+        CGPoint anchorPoint = self.mainContentView.layer.anchorPoint;
+        self.mainContentView.center = CGPointMake(self->_containerSize.width * anchorPoint.x, self->_containerSize.height * anchorPoint.y);
         self.mainContentView.transform = CGAffineTransformIdentity;
     };
     void (^completion)(BOOL finished) = ^(BOOL finished){
         self.yb_browserScrollEnabledBlock(YES);
         self.yb_browserToolBarHiddenBlock(NO);
         
+        self.mainContentView.layer.anchorPoint = CGPointMake(0.5, 0.5);
+        self.mainContentView.center = CGPointMake(self->_containerSize.width * 0.5, self->_containerSize.height * 0.5);
         self.mainContentView.userInteractionEnabled = YES;
         self.mainContentView.scrollEnabled = YES;
         
