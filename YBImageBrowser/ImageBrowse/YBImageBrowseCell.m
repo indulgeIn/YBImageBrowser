@@ -444,7 +444,7 @@
         }
             break;
         case YBImageBrowseCellDataStateDownloadFailed: {
-            [self.contentView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].downloadImageFailed click:nil];
+            [self.contentView yb_showProgressViewWithText:[YBIBCopywriter shareCopywriter].downloadFailed click:nil];
         }
             break;
         default:

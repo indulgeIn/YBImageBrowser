@@ -225,7 +225,7 @@ totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
 didCompleteWithError:(nullable NSError *)error {
     self.dataDownloadState = YBVideoBrowseCellDataDownloadStateComplete;
     if (error) {
-        [[UIApplication sharedApplication].keyWindow yb_showForkTipView:@"下载失败"];
+        [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].downloadFailed];
     }
 }
 
@@ -234,16 +234,15 @@ didFinishDownloadingToURL:(NSURL *)location {
     NSString *cache = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) lastObject];
     NSString *file = [cache stringByAppendingPathComponent:downloadTask.response.suggestedFilename];
     [[NSFileManager defaultManager] moveItemAtURL:location toURL:[NSURL fileURLWithPath:file] error:nil];
+    self.dataDownloadState = YBVideoBrowseCellDataDownloadStateComplete;
     if (UIVideoAtPathIsCompatibleWithSavedPhotosAlbum(file)) {
         UISaveVideoAtPathToSavedPhotosAlbum(file, self, @selector(video:didFinishSavingWithError:contextInfo:), nil);
     } else {
-        self.dataDownloadState = YBVideoBrowseCellDataDownloadStateComplete;
         [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
     }
 }
 
 - (void)video:(NSString *)videoPath didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    self.dataDownloadState = YBVideoBrowseCellDataDownloadStateComplete;
     if (error) {
         [[UIApplication sharedApplication].keyWindow yb_showForkTipView:[YBIBCopywriter shareCopywriter].saveToPhotoAlbumFailed];
     } else {

@@ -38,7 +38,7 @@ typedef NS_ENUM(NSInteger, YBIBCopywriterType) {
 
 @property (nonatomic, copy) NSString *imageIsInvalid;
 
-@property (nonatomic, copy) NSString *downloadImageFailed;
+@property (nonatomic, copy) NSString *downloadFailed;
 
 @property (nonatomic, copy) NSString *getPhotoAlbumAuthorizationFailed;
 
