@@ -1,0 +1,18 @@
+//
+//  PrefixHeader.pch
+//  ToolsDemoByYangBo
+//
+//  Created by 杨波 on 17/3/3.
+//  Copyright © 2017年 yangbo. All rights reserved.
+//
+
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#if DEBUG
+#define NSLog(FORMAT, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String])
+#else
+#define NSLog(FORMAT, ...) nil
+#endif
+
+#endif /* PrefixHeader_pch */

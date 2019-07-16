@@ -3,66 +3,49 @@
 //  YBImageBrowserDemo
 //
 //  Created by 杨少 on 2018/4/11.
-//  Copyright © 2018年 杨波. All rights reserved.
+//  Copyright © 2018年 波儿菜. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-
-#if DEBUG
-#define YBIBLOG(format, ...) fprintf(stderr,"%s\n",[[NSString stringWithFormat:format, ##__VA_ARGS__] UTF8String])
-#else
-#define YBIBLOG(format, ...) nil
-#endif
-
-#define YBIBLOG_WARNING(discribe) YBIBLOG(@"%@ ⚠️ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
-#define YBIBLOG_ERROR(discribe)   YBIBLOG(@"%@ ❌ SEL-%@ %@", self.class, NSStringFromSelector(_cmd), discribe)
+NS_ASSUME_NONNULL_BEGIN
 
 
-#define YBIB_GET_QUEUE_ASYNC(queue, block)\
+#define YBIB_DISPATCH_ASYNC(queue, block)\
 if (strcmp(dispatch_queue_get_label(DISPATCH_CURRENT_QUEUE_LABEL), dispatch_queue_get_label(queue)) == 0) {\
 block();\
 } else {\
 dispatch_async(queue, block);\
 }
 
-#define YBIB_GET_QUEUE_MAIN_ASYNC(block) YBIB_GET_QUEUE_ASYNC(dispatch_get_main_queue(), block)
+#define YBIB_DISPATCH_ASYNC_MAIN(block) YBIB_DISPATCH_ASYNC(dispatch_get_main_queue(), block)
 
 
-#define YBIB_STATUSBAR_ORIENTATION    [UIApplication sharedApplication].statusBarOrientation
-#define YBIMAGEBROWSER_HEIGHT       ((YBIB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortrait || YBIB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortraitUpsideDown) ? [UIScreen mainScreen].bounds.size.height : [UIScreen mainScreen].bounds.size.width)
-#define YBIMAGEBROWSER_WIDTH        ((YBIB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortrait || YBIB_STATUSBAR_ORIENTATION == UIInterfaceOrientationPortraitUpsideDown) ? [UIScreen mainScreen].bounds.size.width : [UIScreen mainScreen].bounds.size.height)
-
-
-#define YBIB_IS_IPHONEX           [YBIBUtilities isIphoneX]
-#define YBIB_HEIGHT_EXTRABOTTOM   (YBIB_IS_IPHONEX ? 34.0 : 0)
-#define YBIB_HEIGHT_STATUSBAR     (YBIB_IS_IPHONEX ? 44.0 : 20.0)
-
-
-#define YBIB_CODE_EXEC_TIME(...) \
+#define YBIB_CODE_EXEC_TIME(KEY, ...) \
 CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent(); \
 __VA_ARGS__ \
 CFAbsoluteTime linkTime = (CFAbsoluteTimeGetCurrent() - startTime); \
-YBIBLOG(@"countTimeWithCode: %f ms", linkTime * 1000.0);
+NSLog(@"%@ Time-Consuming: %fms", KEY, linkTime * 1000.0);
 
 
-UIWindow * _Nonnull YBIBGetNormalWindow(void);
+UIWindow * _Nonnull YBIBNormalWindow(void);
 
-UIViewController * _Nullable YBIBGetTopController(void);
+UIViewController * _Nullable YBIBTopController(void);
+UIViewController * _Nullable YBIBTopControllerByWindow(UIWindow *);
 
 BOOL YBIBLowMemory(void);
 
+BOOL YBIBIsIphoneXSeries(void);
+CGFloat YBIBStatusbarHeight(void);
+CGFloat YBIBSafeAreaHeight(void);
 
-NS_ASSUME_NONNULL_BEGIN
+UIImage *YBIBSnapshotView(UIView *);
+
+/// This is orientation of 'YBImageBrowser' not 'UIDevice'.
+UIEdgeInsets YBIBPaddingByBrowserOrientation(UIDeviceOrientation);
+
 
 @interface YBIBUtilities : NSObject
-
-+ (BOOL)isIphoneX;
-
-+ (UIImage *)snapsHotView:(UIView *)view;
-
-+ (UIImage *)screenShotLayer:(CALayer *)layer;
 
 @end
 

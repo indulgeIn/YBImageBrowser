@@ -2,12 +2,11 @@
 //  YBImageBrowserDelegate.h
 //  YBImageBrowserDemo
 //
-//  Created by 杨波 on 2018/9/10.
-//  Copyright © 2018年 杨波. All rights reserved.
+//  Created by 波儿菜 on 2019/6/9.
+//  Copyright © 2019 波儿菜. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "YBImageBrowserCellDataProtocol.h"
+#import "YBIBDataProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,11 +16,38 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-- (void)yb_imageBrowser:(YBImageBrowser *)imageBrowser pageIndexChanged:(NSUInteger)index data:(id<YBImageBrowserCellDataProtocol>)data;
+/**
+ 页码变化
 
-- (void)yb_imageBrowser:(YBImageBrowser *)imageBrowser respondsToLongPress:(UILongPressGestureRecognizer *)longPress;
+ @param imageBrowser 图片浏览器
+ @param page 当前页码
+ @param data 数据
+ */
+- (void)yb_imageBrowser:(YBImageBrowser *)imageBrowser pageChanged:(NSInteger)page data:(id<YBIBDataProtocol>)data;
 
-- (void)yb_imageBrowser:(YBImageBrowser *)imageBrowser transitionAnimationEndedWithIsEnter:(BOOL)isEnter;
+/**
+ 响应长按手势（若实现该方法将阻止其它地方捕获到长按事件）
+
+ @param imageBrowser 图片浏览器
+ @param data 数据
+ */
+- (void)yb_imageBrowser:(YBImageBrowser *)imageBrowser respondsToLongPressWithData:(id<YBIBDataProtocol>)data;
+
+/**
+ 开始转场
+
+ @param imageBrowser 图片浏览器
+ @param isShow YES 表示入场，NO 表示出场
+ */
+- (void)yb_imageBrowser:(YBImageBrowser *)imageBrowser beginTransitioningWithIsShow:(BOOL)isShow;
+
+/**
+ 结束转场
+
+ @param imageBrowser 图片浏览器
+ @param isShow YES 表示入场，NO 表示出场
+ */
+- (void)yb_imageBrowser:(YBImageBrowser *)imageBrowser endTransitioningWithIsShow:(BOOL)isShow;
 
 @end
 

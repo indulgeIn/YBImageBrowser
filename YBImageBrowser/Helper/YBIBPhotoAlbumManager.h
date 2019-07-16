@@ -2,13 +2,13 @@
 //  YBIBPhotoAlbumManager.h
 //  YBImageBrowserDemo
 //
-//  Created by 杨波 on 2018/8/28.
-//  Copyright © 2018年 杨波. All rights reserved.
+//  Created by 波儿菜 on 2018/8/28.
+//  Copyright © 2018年 波儿菜. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <Photos/Photos.h>
-#import <AVFoundation/AVFoundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface YBIBPhotoAlbumManager : NSObject
 
@@ -20,17 +20,13 @@
 /**
  Get 'AVAsset' by 'PHAsset' asynchronously, callback is in child thread.
  */
-+ (void)getAVAssetWithPHAsset:(PHAsset *)phAsset success:(void(^)(AVAsset *asset))success failed:(void(^)(void))failed;
++ (void)getAVAssetWithPHAsset:(PHAsset *)phAsset completion:(void(^)(AVAsset * _Nullable asset))completion;
 
 /**
  Get 'ImageData' by 'PHAsset' synchronously, callback is in child thread.
  */
-+ (void)getImageDataWithPHAsset:(PHAsset *)phAsset success:(void(^)(NSData *data))success failed:(void(^)(void))failed;
-
-+ (void)saveImageToAlbum:(UIImage *)image;
-
-+ (void)saveDataToAlbum:(NSData *)data;
-
-+ (void)saveVideoToAlbumWithPath:(NSString *)path;
++ (void)getImageDataWithPHAsset:(PHAsset *)phAsset completion:(void(^)(NSData * _Nullable data))completion;
 
 @end
+
+NS_ASSUME_NONNULL_END

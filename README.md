@@ -4,54 +4,49 @@
 [![CocoaPods](https://img.shields.io/cocoapods/p/YBImageBrowser.svg)](https://github.com/indulgeIn/YBImageBrowser)&nbsp;
 [![License](https://img.shields.io/github/license/indulgeIn/YBImageBrowser.svg)](https://github.com/indulgeIn/YBImageBrowser)&nbsp;
 
+**iOS 图片浏览器，功能强大，易于拓展，极致的性能优化和严格的内存控制让其运行更加的流畅和稳健。**
 
-# Preview
+* 原理博客: TODO
 
-<!-- <center>
-    <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
-</center> -->
+#### 关于 3.x 版本
 
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif)
+为了彻底解决 2.x 版本的设计缺陷和代码漏洞，特花费大量业余时间进行了 3.x 深度重构，所以没办法做到完全的向下兼容，希望社区朋友们能体谅，根据情况进行版本迁移。
+3.x 版本有着更科学的架构，更极致的性能提升，更严格的内存控制，使用起来会更得心应手，也便于将来的迭代优化。
 
-
-# Link
-
-
-* Blog : [打造高性能 iOS 图片浏览器 (支持视频)](https://www.jianshu.com/p/bffdb9f0036c)
-
-* [中文介绍](#中文介绍)
-* [English Introduction](#english-introduction)
+**使用 2.x 版本请切换到 store_2.x 分支。**
 
 
+## 预览
 
-# 中文介绍
-
-
-**iOS 图片浏览器（支持视频），功能强大，性能优越，轻松集成，易于拓展。**
-
-关于版本的说明：2.x 版本全新升级，之前的代码仅保留 1.1.2 版本且不再维护，希望开发者朋友们升级到最新版本。
+![TODO]()
 
 
 
 ## 特性
 
-- 支持 GIF，APNG，WebP 等本地和网络图像类型（由 YYImage、SDWebImage 提供支持）。
-- 支持本地和网络视频。
-- 支持系统相册图像和视频
+- 支持 GIF，APNG，WebP 等本地和网络图片类型（由 YYImage、SDWebImage 提供支持）。
+- 支持系统相册图片和视频。
+- 支持简单的视频播放。
 - 支持高清图浏览。
-- 支持屏幕旋转。
-- 支持预加载提高用户体验。
-- 支持数组或协议配置数据源，自由决定内存占用和交互性能的取舍。
-- 支持数据重载。
-- 支持文案更改，默认有英语和简体中文的适配。
-- 支持业界流行的交互动效。
-- 基于面向协议设计模式，轻松自定义 Cell、ToolBar、SheetView。
-- 质量不错的代码细节和架构设计，易于拓展和维护。
-
-
-
+- 支持图片预处理（比如添加水印）。
+- 支持根据图片的大小判断是否需要预先解码（精确控制内存）。
+- 支持图片压缩、裁剪的界限设定。
+- 支持修改下载图片的 NSURLRequest。
+- 支持主动旋转或跟随控制器旋转。
+- 支持自定义图标。
+- 支持自定义 Toast/Loading。
+- 支持自定义文案（默认提供中文和英文）。
+- 支持自定义工具视图（比如查看原图功能）。
+- 支持自定义 Cell（比如添加一个广告模块）。
+- 支持添加到其它父视图上使用（比如加到控制器上）。
+- 支持转场动效、图片布局等深度定制。
+- 支持数据重载、局部更新。
+- 支持低粒度的内存控制和性能调优。
+- 极致的性能优化和严格的内存控制让其运行更加的流畅和稳健。
 
 ## 安装
+
+TODO
 
 ### CocoaPods
 
@@ -66,7 +61,7 @@
 
 1. 下载 YBImageBrowser 文件夹所有内容并且拖入你的工程中。
 2. 链接以下 frameworks：
-* SDWebImage 
+* SDWebImage
 * YYImage
 3. 导入 `YBImageBrowser.h`
 4. 注意：如果你需要支持 WebP，可以在 Podfile 中添加 `pod 'YYImage/WebP'`，或者到手动下载 [YYImage 仓库](https://github.com/ibireme/YYImage) 的 webP 支持文件。
@@ -76,288 +71,74 @@
 
 ## 用法
 
-`YBImageBrowser` 是图片浏览器的主体类，有两种方式为其赋值数据源：一种是直接设置 `dataSourceArray` 数组属性，一种设置 `dataSource` 代理属性实现协议方法。
-数据源个体为 `id<YBImageBrowserCellDataProtocol>` 类型，框架默认实现了两个类：`YBImageBrowseCellData` (图片) 和 `YBVideoBrowseCellData` (视频)，你只需要初始化它们并且以数组或者代理的方式赋值给 `YBImageBrowser` 实例变量。
+初始化`YBImageBrowser`并且赋值数据源`id<YBIBDataProtocol>`，默认提供`YBIBImageData` (图片) 和`YBIBVideoData` (视频) 两种数据源。
+
+图片处理是组件的核心，笔者精力有限，视频播放做得很轻量，若有更高的要求最好是自定义 Cell，望体谅。
+
+Demo 中提供了很多示例代码，演示较复杂的拓展方式，所以若需要深度定制最好是下载 Demo 查看。
 
 
-### 简易使用
+### 基本使用
 
-```objc
+```
+// 本地图片
+YBIBImageData *data0 = [YBIBImageData new];
+data0.imageName = ...;
+data0.projectiveView = ...;
+
 // 网络图片
-YBImageBrowseCellData *data0 = [YBImageBrowseCellData new];
-data0.url = ...;
-data0.sourceObject = ...;    
+YBIBImageData *data1 = [YBIBImageData new];
+data1.imageURL = ...;
+data1.projectiveView = ...;
 
-// 本地图片（推荐使用 YBImage）
-YBImageBrowseCellData *data1 = [YBImageBrowseCellData new];
-data1.imageBlock = ^__kindof UIImage * _Nullable{
-    return [YBImage imageNamed:...];
-};
-data1.sourceObject = ...; 
+// 视频
+YBIBVideoData *data2 = [YBIBVideoData new];
+data2.videoURL = ...;
+data2.projectiveView = ...;
 
-// 本地或网络视频
-YBVideoBrowseCellData *data2 = [YBVideoBrowseCellData new];
-data2.url = ...;
-data2.sourceObject = ...;  
-
-// 设置数据源数组并展示
 YBImageBrowser *browser = [YBImageBrowser new];
 browser.dataSourceArray = @[data0, data1, data2];
-browser.currentIndex = ...;
+browser.currentPage = ...;
 [browser show];
 ```
 
-两种数据模型都有一个属性  `sourceObject`，该属性是该数据模型的对应的视图对象。举个例子，经典的朋友圈九宫格，`sourceObject` 可以是九宫格里面的九张图片，它的作用主要是做动效。
 
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sourceObject.jpeg)
+### 设置支持的旋转方向
 
-### 使用代理设置数据源（可解决内存峰值过高问题）
+当图片浏览器依托的 UIViewController 仅支持一个方向：
 
-```objc
-// 设置数据源代理并展示
-YBImageBrowser *browser = [YBImageBrowser new];
-browser.dataSource = self;
-browser.currentIndex = index;
-[browser show];
+这种情况通过`YBImageBrowser.new.supportedOrientations`设置图片浏览器支持的旋转方向。
 
-// 实现 <YBImageBrowserDataSource> 协议方法配置数据源
-- (NSUInteger)yb_numberOfCellForImageBrowserView:(YBImageBrowserView *)imageBrowserView { 
-    return ...; 
-}
-- (id<YBImageBrowserCellDataProtocol>)yb_imageBrowserView:(YBImageBrowserView *)imageBrowserView dataForCellAtIndex:(NSUInteger)index {
-    YBImageBrowseCellData *data = [YBImageBrowseCellData new];
-    data.url = ...;
-    data.sourceObject = ...;
-    return data;
-}
-```
-更具体的用法请下载 Demo 查看。
+否则：
 
+上面的属性将失效，图片浏览器会跟随控制器的旋转而旋转，由于各种原因这种情况的旋转过渡有瑕疵，建议不使用这种方式。
 
-### 内存占用和交互性能的取舍
 
-通过设置数组配置数据源，图片浏览器会持有这些数据模型，这些数据模型会缓存数据处理结果，从而提高用户交互性能。在数据量较少的情况下，笔者推荐这种方式。
+### 自定义图标
 
-但是，图片浏览器持有大量的数据会增加内存的负担，特别是已经绘制完成的图像对象（UIImage）会占用较高的内存。所以在数据模型很多的情况下（比如相册浏览），可以设置代理实现协议方法来配置数据源，值得注意的是，在你的业务中最好不要持有这些数据模型，不然它们仍然不会释放造成内存负担。虽然这种方式可能会降低用户体验，但也是权宜之计。
+修改`YBIBIconManager.sharedManager`实例的属性。
 
 
-### 关于缩略图（预览图）
+### 自定义文案
 
-`YBImageBrowseCellData` 有两个属性设置缩略图：`thumbImage` 和 `thumbUrl`。
-`YBVideoBrowseCellData` 有一个属性设置缩略图：`firstFrame`。
+修改`YBIBCopywriter.sharedCopywriter`实例的属性。
 
-数据模型若设置了 `sourceObject`，并且 `sourceObject` 是 `UIImageView` 类型的，那么组件会自动将该图片作为 `thumbImage`，所以这种情况不需要另外设置缩略图了。
 
+### 自定义 Toast / Loading
 
-### 图片处理的一些配置
+实现`YBIBAuxiliaryViewHandler`协议，并且赋值给`YBImageBrowser.new.auxiliaryViewHandler`属性，可参考和协议同名的默认实现类。
 
-当一张图片过大，组件会自动压缩显示，并且在放大的时候裁剪显示，这个纹理尺寸的临界值可以通过 `YBImageBrowseCellData` 的 `globalMaxTextureSize` 属性设置。
 
-对于图片的缩放比例，组件会根据图片的分辨率自动计算，你也可以通过 `maxZoomScale` 属性显式的设置。
+### 自定义工具视图（ToolView）
 
+默认实现的`YBImageBrowser.new.defaultToolViewHandler`处理器可以做一些属性配置，当满足不了业务需求时，最好是进行自定义，参考默认实现或 Demo 中“查看原图”功能实现。
 
-### 自定义文案（国际化）
+定义一个或多个类实现`YBIBToolViewHandler`协议，并且装入`YBImageBrowser.new.toolViewHandlers`数组属性。建议使用一个中介者来实现这个协议，然后所有的工具视图都由这个中介者来管理，当然也可以让每一个自定义的工具 UIView 都实现`YBIBToolViewHandler`协议，请根据具体需求取舍。
 
-组件中有一个单例，通过 `[YBIBCopywriter shareCopywriter]` 获取，组件内部的文案都是来自于这个实例变量，默认支持英语和简体中文，你可以更改暴露出来的所有文案属性，做更完整的语言国际化需求。
 
+### 自定义 Cell
 
-### 自定义工具栏（ToolBar）
+当默认提供的`YBIBImageData` (图片) 和`YBIBVideoData` (视频) 满足不了需求时，可自定义拓展 Cell，参考默认实现或 Demo 中的示例代码。
 
-组件提供了默认的工具栏，`YBImageBrowser` 下的 `defaultToolBar` ，它主要是显示页码，你可以通过它更改一些配置。
-
-当然，若你有更高的自定义需求，可以设置 `YBImageBrowser` 下的 `toolBars` ，该属性是一个数组类型，数组元素遵循 `<YBImageBrowserToolBarProtocol>` 协议，默认情况下，该数组包含了 `defaultToolBar`。
-
-所以，你只需要创建自己的工具栏并且实现 `<YBImageBrowserToolBarProtocol>` 协议，在协议方法中更新你的布局就行了（可以参考 `YBImageBrowserToolBar` 实现）。你不需要关心图层树的层级关系，只需要知道工具栏的层级高于浏览的图片和视频，组件会自动添加和隐藏工具栏。
-
-
-### 自定义弹出表单（SheetView）
-
-组件提供了默认的弹出表单，`YBImageBrowser` 下的 `defaultSheetView`，它主要是提供额外的操作，你可以通过它更改一些配置。
-
-当然，若你有更高的自定义需求，可以设置 `YBImageBrowser` 下的 `sheetView` ，该属性遵循 `<YBImageBrowserSheetViewProtocol>` 协议，默认情况下，它就是 `defaultSheetView`。
-
-所以，你只需要创建自己的弹出表单并且实现 `<YBImageBrowserSheetViewProtocol>` 协议，在协议方法中更新你的布局就行了（可以参考 `YBImageBrowserSheetView` 实现）。你不需要关心图层树的层级关系，只需要知道弹出表单的层级高于组件其它视图，组件会自动添加弹出表单，至于隐藏还是移除取决于你。
-
-
-### 自定义浏览器 Cell
-
-若图片浏览和视频播放的 Cell 还不能满足你的需求，可以定制你自己的 Cell，比如一个用于展示广告的 Cell。
-
-在这之前，你需要实现一个遵循 `<YBImageBrowserCellDataProtocol>` 协议的数据类，一个遵循 `<YBImageBrowserCellProtocol>` 协议的 UICollectionViewCell 子类。参考 `YBImageBrowseCell/YBImageBrowseCellData` 或 `YBVideoBrowseCell/YBVideoBrowseCellData`，也可以下载 Demo，演示案例中实现了一个自定义的 Cell。
-
-对于这两个协议，只需要实现 `@required` 协议方法就能成功构建，其它的方法可以自由选择实现。由于组件内置的两个 Cell 实现了比较复杂的交互和逻辑，所以协议方法看起来有些繁杂。
-
-
-
-<br>
-<br>
-<br>
-
-
-
-
-
-# English Introduction
-
-**The iOS image browser (support video), powerful, superior performance, easy integration, easy to expand.**
-
-
-
-## Features
-
-- Support for local and network image types such as GIF, APNG, WebP (supported by YYImage and SDWebImage).
-- Support for local and network video.
-- Support for system album image and video.
-- Support larger image browsing.
-- Support for screen rotation.
-- Support preloading to enhance user experience.
-- Support configure data sources with arrays or protocols, freely determining trade-off between memory occupancy and interaction performance.
-- Support data reload.
-- Support for copywriter changes, with English and simplified Chinese adaptation by default.
-- Support the industry popular interactive effect.
-- Based on protocol oriented design patterns, easy custom 'Cell', 'ToolBar', and 'SheetView'.
-- Good quality code details and architecture design, easy to expand and maintain.
-
-
-
-## Installation
-
-### CocoaPods
-
-1. Add `pod 'YBImageBrowser'` to your Podfile.
-2. Run `pod install` or `pod update`.
-3. Import `<YBImageBrowser/YBImageBrowser.h>`
-4. Notice: If you want to support WebP format, you may add `pod 'YYImage/WebP'` to your Podfile.
-
-If the search failure, using ` rm ~ / Library/Caches/CocoaPods/search_index json ` remove local indexes and then perform the installation, or update CocoaPods version.
-
-### Manually
-
-1. Download all the files in the YBImageBrowser subdirectory.
-2. Link with required frameworks:
-* SDWebImage
-* YYImage
-3. Import `YBImageBrowser.h`
-4. Notice: If you want to support WebP format, you may add `pod 'YYImage/WebP'` to your Podfile, or download webP support file manually from [YYImage](https://github.com/ibireme/YYImage).
-
-
-
-## Usage
-
-'YBImageBrowser'is the principal class of the image browser, and there are two ways to assign data sources to it: one is to set the 'dataSourceArray' array property directly, and the other is to set the 'dataSource' proxy and implementation protocol method.
-The framework implements two classes by default: 'YBImageBrowseCellData'(image) and 'YBVideoBrowseCellData'(video), you just initialize them and assign them to the 'YBImageBrowser' instance variable in an array or proxy.
-
-
-### Simple usage
-
-```objc
-// Network image.
-YBImageBrowseCellData *data0 = [YBImageBrowseCellData new];
-data0.url = ...;
-data0.sourceObject = ...;    
-
-// Local image.（It's recommended to use 'YBImage'）
-YBImageBrowseCellData *data1 = [YBImageBrowseCellData new];
-data1.imageBlock = ^__kindof UIImage * _Nullable{
-    return [YBImage imageNamed:...];
-};
-data1.sourceObject = ...;   
-
-// Local or network video.
-YBVideoBrowseCellData *data2 = [YBVideoBrowseCellData new];
-data2.url = ...;
-data2.sourceObject = ...;  
-
-// Set the data source array and display it.
-YBImageBrowser *browser = [YBImageBrowser new];
-browser.dataSourceArray = @[data0, data1, data2];
-browser.currentIndex = ...;
-[browser show];
-```
-Two kinds of data model has a property ` sourceObject `, this property is the view object of the corresponding data model, its main role is to do dynamic effect.
-
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sourceObject.jpeg)
-
-### Set up the data source proxy
-
-```objc
-// Set the data source proxy and show.
-YBImageBrowser *browser = [YBImageBrowser new];
-browser.dataSource = self;
-browser.currentIndex = index;
-[browser show];
-
-// Implement <YBImageBrowserDataSource> protocol methods to configure data sources.
-- (NSUInteger)yb_numberOfCellForImageBrowserView:(YBImageBrowserView *)imageBrowserView { 
-return ...; 
-}
-- (id<YBImageBrowserCellDataProtocol>)yb_imageBrowserView:(YBImageBrowserView *)imageBrowserView dataForCellAtIndex:(NSUInteger)index {
-YBImageBrowseCellData *data = [YBImageBrowseCellData new];
-data.url = ...;
-data.sourceObject = ...;
-return data;
-}
-```
-
-For more specific usage, please download the Demo.
-
-
-### Trade-off between memory footprint and interaction performance
-
-By setting up the array to configure data sources, 'Image browser' hold these data models, which cache data processing results and improve user interaction performance. I recommend this way if less data.
-
-However, having a large amount of data in a image browser will increase the burden of memory, especially the rendered image objects (such as 'UIImage'). So in the case of a large number of data model (such as photo album browsing), you can set the proxy and implementation protocol methods to configure the data sources. It is important to note that it is best not to hold the data models in your business, otherwise they are still not release and increase the burden of memory. Although this approach may reduce user experience, it is also an expedient measure.
-
-
-### About the thumbnail image
-
-` YBImageBrowseCellData ` has two propertys set the thumbnail image: ` thumbImage ` and ` thumbUrl `.
-`YBVideoBrowseCellData ` has an attribute set the thumbnail image: ` firstFrame `.
-
-If the `sourceObject` is set in the data model and `sourceObject` is kind of  `UIImageView` , the component will set the image as a `thumbImage` automatically, so there is no need to set up another thumbnail image in this case.
-
-
-### Some image configuration
-
-When an image is too large, the component will compress to display automatically, and clip to display when enlarged, the critical value of the texture size can be set by the `globalMaxTextureSize` property of `YBImageBrowseCellData`.
-
-For image scaling, the component will calculates automatically according to the resolution of the image, and you can also set it with the `maxZoomScale' property explicitly.
-
-
-### Custom copywriter
-
-There is a singleton in the component, which is retrieved by `[YBIBCopywriter shareCopywriter]'. The text inside the component comes from this instance variable. By default, English and Simplified Chinese are supported. You can change all the exposed text attributes to make more complete language internationalization requirements.
-
-
-### Custom the 'ToolBar'
-
-This component provides the default 'ToolBar', which is `defaultToolBar` in `YBImageBrowser`. It is used to display page numbers primarily, and you can change some configurations through it.
-
-Of course, if you have higher customization requirements, you can set `toolBars` in `YBImageBrowser`, which is an array type whose elements follow the `<YBImageBrowserToolBarProtocol>` protocol, and by default contains `defaultToolBar`.
-
-So you just need to create your own 'ToolBar' and implement the `<YBImageBrowserToolBarProtocol>` protocol and update your layout in the protocol method (see `YBImageBrowserToolBar` implementation). You don't need to care about layer relationships, just know that all the 'ToolBar' is higher than the browser's image and video, and the component adds and hides all the 'ToolBar' automatically.
-
-
-### Custom the 'SheetView'
-
-This component provides the default 'SheetView', which is `defaultSheetView` in `YBImageBrowser`. It is used to provide additional operations, and you can change some configurations through it.
-
-Of course, if you have higher customization requirements, you can set `sheetView` in `YBImageBrowser`, `sheetView`  follow the `<YBImageBrowserSheetViewProtocol>` protocol, and by default it's `defaultSheetView`.
-
-So you just need to create your own 'SheetView' and implement the `<YBImageBrowserSheetViewProtocol>` protocol and update your layout in the protocol method (see `YBImageBrowserSheetView` implementation). You don't need to care about layer relationships, just know that all the 'SheetView' is higher than all the layer of image browser, and the component adds the 'SheetView' automatically, as for concealment or removal, it depends on you.
-
-
-### Custom 'Cell'
-
-If the'Cell' for images and videos doesn't meet your needs, you can customize your own 'Cell', such as one for advertising.
-
-Before you do this, you need to implement a data class that follows the `<YBImageBrowserCellDataProtocol>` protocol, and a UICollectionViewCell subclass that follows the `<YBImageBrowserCellProtocol>`. Referring to `YBImageBrowseCell/YBImageBrowseCellData` , or `YBVideoBrowseCell/YBVideoBrowseCellData`, you can also download Demo, which implements a custom 'Cell' in the demo case.
-
-For these two protocols, only implement the `@required` protocol method can be successfully constructed, and other methods can be chosen to implement freely.
-
-
-
-
-
-
+定义一个实现`YBIBCellProtocol`协议的`UICollectionViewCell`类和一个实现`YBIBDataProtocol`协议的数据类，当要求不高时实现必选协议方法就能跑起来了，若对交互有要求就相对比较复杂，最好是参考默认的交互动效实现。
 

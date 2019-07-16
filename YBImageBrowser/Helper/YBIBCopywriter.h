@@ -2,8 +2,8 @@
 //  YBIBCopywriter.h
 //  YBImageBrowserDemo
 //
-//  Created by 杨波 on 2018/9/13.
-//  Copyright © 2018年 杨波. All rights reserved.
+//  Created by 波儿菜 on 2018/9/13.
+//  Copyright © 2018年 波儿菜. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,24 +11,26 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, YBIBCopywriterType) {
+    /// 简体中文
     YBIBCopywriterTypeSimplifiedChinese,
+    /// 英文
     YBIBCopywriterTypeEnglish
 };
 
+/**
+ 文案管理类
+ */
 @interface YBIBCopywriter : NSObject
 
 /**
- The instance variable obtained by this method are effective for the framework.
-
- @return instance variable
+ 唯一有效单例
  */
-+ (instancetype)shareCopywriter;
++ (instancetype)sharedCopywriter;
 
-/** You can set up language classes explicitly. */
+/// 语言类型
 @property (nonatomic, assign) YBIBCopywriterType type;
 
-
-// The following propertys can be changed.
+#pragma - 以下文案可更改
 
 @property (nonatomic, copy) NSString *videoIsInvalid;
 

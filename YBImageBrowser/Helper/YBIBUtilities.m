@@ -3,30 +3,33 @@
 //  YBImageBrowserDemo
 //
 //  Created by 杨少 on 2018/4/11.
-//  Copyright © 2018年 杨波. All rights reserved.
+//  Copyright © 2018年 波儿菜. All rights reserved.
 //
 
 #import "YBIBUtilities.h"
 #import <sys/utsname.h>
 
 
-UIWindow *YBIBGetNormalWindow(void) {
+UIWindow * _Nullable YBIBNormalWindow(void) {
     UIWindow *window = [[UIApplication sharedApplication] keyWindow];
     if (window.windowLevel != UIWindowLevelNormal) {
         NSArray *windows = [[UIApplication sharedApplication] windows];
         for(UIWindow *temp in windows) {
             if (temp.windowLevel == UIWindowLevelNormal) {
-                window = temp; break;
+                return temp;
             }
         }
     }
     return window;
 }
 
-UIViewController *YBIBGetTopController(void) {
-    UIWindow *window = YBIBGetNormalWindow();
+UIViewController * _Nullable YBIBTopController(void) {
+    return YBIBTopControllerByWindow(YBIBNormalWindow());
+}
+
+UIViewController * _Nullable YBIBTopControllerByWindow(UIWindow *window) {
     if (!window) return nil;
-    
+        
     UIViewController *top = nil;
     id nextResponder;
     if (window.subviews.count > 0) {
@@ -61,10 +64,7 @@ BOOL YBIBLowMemory(void) {
     return lowMemory;
 }
 
-
-@implementation YBIBUtilities
-
-+ (BOOL)isIphoneX {
+BOOL YBIBIsIphoneXSeries(void) {
     static BOOL isIphoneX = NO;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -80,7 +80,15 @@ BOOL YBIBLowMemory(void) {
     return isIphoneX;
 }
 
-+ (UIImage *)snapsHotView:(UIView *)view {
+CGFloat YBIBStatusbarHeight(void) {
+    return YBIBIsIphoneXSeries() ? 44 : 20;
+}
+
+CGFloat YBIBSafeAreaHeight(void) {
+    return YBIBIsIphoneXSeries() ? 34 : 0;
+}
+
+UIImage *YBIBSnapshotView(UIView *view) {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, [UIScreen mainScreen].scale);
     [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
@@ -88,16 +96,37 @@ BOOL YBIBLowMemory(void) {
     return image;
 }
 
-+ (UIImage *)screenShotLayer:(CALayer *)layer {
-    UIImage *image = nil;
-    UIGraphicsBeginImageContextWithOptions(layer.frame.size, NO, [UIScreen mainScreen].scale);
-    [layer renderInContext:UIGraphicsGetCurrentContext()];
-    for (CALayer *subLayer in layer.sublayers) {
-        [subLayer renderInContext:UIGraphicsGetCurrentContext()];
+UIEdgeInsets YBIBPaddingByBrowserOrientation(UIDeviceOrientation orientation) {
+    UIEdgeInsets padding = UIEdgeInsetsZero;
+    if (!YBIBIsIphoneXSeries()) return padding;
+    
+    UIDeviceOrientation barOrientation = (UIDeviceOrientation)UIApplication.sharedApplication.statusBarOrientation;
+    
+    if (UIDeviceOrientationIsLandscape(orientation)) {
+        BOOL same = orientation == barOrientation;
+        BOOL reverse = !same && UIDeviceOrientationIsLandscape(barOrientation);
+        if (same) {
+            padding.bottom = YBIBSafeAreaHeight();
+            padding.top = 0;
+        } else if (reverse) {
+            padding.top = YBIBSafeAreaHeight();
+            padding.bottom = 0;
+        }
+        padding.left = padding.right = MAX(YBIBSafeAreaHeight(), YBIBStatusbarHeight());
+    } else {
+        if (orientation == UIDeviceOrientationPortrait) {
+            padding.top = YBIBStatusbarHeight();
+            padding.bottom = barOrientation == UIDeviceOrientationPortrait ? YBIBSafeAreaHeight() : 0;
+        } else {
+            padding.bottom = YBIBStatusbarHeight();
+            padding.top = barOrientation == UIDeviceOrientationPortrait ? YBIBSafeAreaHeight() : 0;
+        }
+        padding.left = padding.right = UIDeviceOrientationIsLandscape(barOrientation) ? YBIBSafeAreaHeight() : 0 ;
     }
-    image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return image;
+    return padding;
 }
+
+
+@implementation YBIBUtilities
 
 @end

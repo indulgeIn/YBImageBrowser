@@ -2,33 +2,34 @@
 //  YBIBWebImageManager.h
 //  YBImageBrowserDemo
 //
-//  Created by 杨波 on 2018/8/29.
-//  Copyright © 2018年 杨波. All rights reserved.
+//  Created by 波儿菜 on 2018/8/29.
+//  Copyright © 2018年 波儿菜. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
 /*
- A mediator between the 'YBImageBrowser' and 'SDWebImage'.
+ A mediator between 'YBImageBrowser' and 'SDWebImage'.
  */
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void(^YBIBWebImageManagerProgressBlock)(NSInteger receivedSize, NSInteger expectedSize, NSURL * _Nullable targetURL);
-typedef void(^YBIBWebImageManagerSuccessBlock)(UIImage * _Nullable image, NSData * _Nullable data, BOOL finished);
-typedef void(^YBIBWebImageManagerFailedBlock)(NSError * _Nullable error, BOOL finished);
-typedef void(^YBIBWebImageManagerCacheQueryCompletedBlock)(UIImage * _Nullable image, NSData * _Nullable data);
+typedef NSURLRequest * _Nullable (^YBIBWebImageRequestModifierBlock)(NSURLRequest *request);
+
+typedef void(^YBIBWebImageProgressBlock)(NSInteger receivedSize, NSInteger expectedSize);
+typedef void(^YBIBWebImageSuccessBlock)(NSData * _Nullable imageData, BOOL finished);
+typedef void(^YBIBWebImageFailedBlock)(NSError * _Nullable error, BOOL finished);
+typedef void(^YBIBWebImageCacheQueryCompletedBlock)(UIImage * _Nullable image, NSData * _Nullable imageData);
 
 @interface YBIBWebImageManager : NSObject
 
-+ (id)downloadImageWithURL:(NSURL *)url progress:(YBIBWebImageManagerProgressBlock)progress success:(YBIBWebImageManagerSuccessBlock)success failed:(YBIBWebImageManagerFailedBlock)failed;
++ (id)downloadImageWithURL:(NSURL *)url requestModifier:(nullable YBIBWebImageRequestModifierBlock)requestModifier progress:(YBIBWebImageProgressBlock)progress success:(YBIBWebImageSuccessBlock)success failed:(YBIBWebImageFailedBlock)failed;
 
 + (void)cancelTaskWithDownloadToken:(id)token;
 
 + (void)storeImage:(nullable UIImage *)image imageData:(nullable NSData *)data forKey:(NSURL *)key toDisk:(BOOL)toDisk;
 
-+ (void)queryCacheOperationForKey:(NSURL *)key completed:(YBIBWebImageManagerCacheQueryCompletedBlock)completed;
++ (void)queryCacheOperationForKey:(NSURL *)key completed:(YBIBWebImageCacheQueryCompletedBlock)completed;
 
 @end
 

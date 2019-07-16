@@ -1,7 +1,7 @@
 PODS:
-  - SDWebImage (5.0.1):
-    - SDWebImage/Core (= 5.0.1)
-  - SDWebImage/Core (5.0.1)
+  - SDWebImage (5.0.6):
+    - SDWebImage/Core (= 5.0.6)
+  - SDWebImage/Core (5.0.6)
   - YYImage (1.0.4):
     - YYImage/Core (= 1.0.4)
   - YYImage/Core (1.0.4)
@@ -16,9 +16,9 @@ SPEC REPOS:
     - YYImage
 
 SPEC CHECKSUMS:
-  SDWebImage: 27dd2c9ea07a2252f94557c9fbb6105ee94b74c9
+  SDWebImage: 920f1a2ff1ca8296ad34f6e0510a1ef1d70ac965
   YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
 
 PODFILE CHECKSUM: db186c0b8eb2e469ad08fc0f51470ab0d9c23374
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.7.2
