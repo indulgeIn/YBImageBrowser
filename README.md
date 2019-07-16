@@ -18,7 +18,7 @@
 
 ## 预览
 
-[](https://github.com/indulgeIn/YBImageBrowser/blob/master/Images/preview.gif)
+![](https://github.com/indulgeIn/YBImageBrowser/blob/master/Images/preview.gif)
 
 
 
