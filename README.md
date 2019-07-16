@@ -44,26 +44,27 @@
 - 支持低粒度的内存控制和性能调优。
 - 极致的性能优化和严格的内存控制让其运行更加的流畅和稳健。
 
-## 安装
 
-TODO
+## 安装
 
 ### CocoaPods
 
-1. 在 Podfile 中添加 `pod 'YBImageBrowser'`。
+支持分库导入，核心部分就是图片浏览功能，视频播放作为拓展功能按需导入。
+
+1. 在 Podfile 中添加 `pod 'YBImageBrowser'`，视频功能需添加`pod 'YBImageBrowser/Video'`。
 2. 执行 `pod install` 或 `pod update`。
-3. 导入 `<YBImageBrowser/YBImageBrowser.h>`。
+3. 导入 `<YBImageBrowser/YBImageBrowser.h>`，视频功能需导入`<YBImageBrowser/YBIBVideoData.h>`。
 4. 注意：如果你需要支持 WebP，可以在 Podfile 中添加 `pod 'YYImage/WebP'`。
 
 若搜索不到库，可使用 `rm ~/Library/Caches/CocoaPods/search_index.json` 移除本地索引然后再执行安装，或者更新一下 CocoaPods 版本。
 
 ### 手动导入
 
-1. 下载 YBImageBrowser 文件夹所有内容并且拖入你的工程中。
+1. 下载 YBImageBrowser 文件夹所有内容并且拖入你的工程中，视频功能还需下载 Video 文件夹所有内容。
 2. 链接以下 frameworks：
 * SDWebImage
 * YYImage
-3. 导入 `YBImageBrowser.h`
+3. 导入 `YBImageBrowser.h`，视频功能需导入`YBIBVideoData.h`
 4. 注意：如果你需要支持 WebP，可以在 Podfile 中添加 `pod 'YYImage/WebP'`，或者到手动下载 [YYImage 仓库](https://github.com/ibireme/YYImage) 的 webP 支持文件。
 
 
