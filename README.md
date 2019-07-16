@@ -7,11 +7,7 @@
 
 # Preview
 
-<!-- <center>
-    <img src="https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif">
-</center> -->
-
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_use.gif)
+![](https://github.com/indulgeIn/YBImageBrowser/blob/store_2.x/OtherDocuments/ybib_st_use.gif)
 
 
 # Link
@@ -109,7 +105,7 @@ browser.currentIndex = ...;
 
 两种数据模型都有一个属性  `sourceObject`，该属性是该数据模型的对应的视图对象。举个例子，经典的朋友圈九宫格，`sourceObject` 可以是九宫格里面的九张图片，它的作用主要是做动效。
 
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sourceObject.jpeg)
+![](https://github.com/indulgeIn/YBImageBrowser/blob/store_2.x/OtherDocuments/ybib_st_sourceObject.jpeg)
 
 ### 使用代理设置数据源（可解决内存峰值过高问题）
 
@@ -276,7 +272,7 @@ browser.currentIndex = ...;
 ```
 Two kinds of data model has a property ` sourceObject `, this property is the view object of the corresponding data model, its main role is to do dynamic effect.
 
-![](https://github.com/indulgeIn/YBImageBrowser/blob/master/OtherDocuments/ybib_st_sourceObject.jpeg)
+![](https://github.com/indulgeIn/YBImageBrowser/blob/store_2.x/OtherDocuments/ybib_st_sourceObject.jpeg)
 
 ### Set up the data source proxy
 
