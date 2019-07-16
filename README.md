@@ -1,4 +1,4 @@
-# YBImageBrowser 
+![](https://github.com/indulgeIn/YBImageBrowser/blob/master/Images/banner.png)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/YBImageBrowser.svg)](https://cocoapods.org/pods/YBImageBrowser)&nbsp;
 [![CocoaPods](https://img.shields.io/cocoapods/p/YBImageBrowser.svg)](https://github.com/indulgeIn/YBImageBrowser)&nbsp;
