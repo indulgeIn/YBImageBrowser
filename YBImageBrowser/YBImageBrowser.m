@@ -462,7 +462,7 @@
 - (YBIBDataMediator *)dataMediator {
     if (!_dataMediator) {
         _dataMediator = [[YBIBDataMediator alloc] initWithBrowser:self];
-        _dataMediator.dataCacheCountLimit = 27;
+        _dataMediator.dataCacheCountLimit = YBIBLowMemory() ? 9 : 27;
         _dataMediator.preloadCount = YBIBLowMemory() ? 0 : 2;
     }
     return _dataMediator;

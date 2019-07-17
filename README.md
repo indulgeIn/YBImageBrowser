@@ -8,6 +8,7 @@
 
 **原理博客: TODO**
 
+
 #### 关于 3.x 版本
 
 为了彻底解决 2.x 版本的设计缺陷和代码漏洞，特花费大量业余时间进行了 3.x 深度重构，所以没办法做到向下兼容，希望社区朋友们能体谅，根据情况进行版本迁移。
@@ -154,3 +155,36 @@ browser.currentPage = ...;
 
 # 常见问题
 
+### SDWebImage pods 依赖冲突
+
+可能有其它库依赖更低版本的 SDWebImage 导致依赖冲突，方案一是升级其它库对 SDWebImage 的依赖版本；方案二是手动导入 YBImageBrowser，然后修改`YBIBWebImageManager`文件以适配低版本的 SDWebImage。
+
+为什么不去除依赖 SDWebImage 自己实现？时间成本太高。
+为什么不拖入 SDWebImage 修改类名？会扩大组件的体积，若外部有 SDWebImage 就存在一份多余代码。
+
+### 低内存设备 OOM 问题
+
+组件内部会降低在低内存设备上的性能，减小内存占用，但若高清图过多，可能需要手动去控制（以下是硬件消耗很低的状态）：
+
+```
+// 调低图片的缓存数量
+YBIBImageCache.sharedCache.imageCacheCountLimit = 1;
+
+YBIBImageData *data = YBIBImageData.new;
+// 取消预解码
+data.shouldPreDecodeAsync = NO;
+// 直接设大触发裁剪比例，绘制更小的裁剪区域压力更小，不过可能会让用户感觉奇怪，放很大才开始裁剪显示高清局部（这个属性很多时候不需要显式设置，内部会动态计算）
+data.cuttingZoomScale = 10;
+
+YBImageBrowser *browser = YBImageBrowser.new;
+// 预加载数量设为 0
+browser.preloadCount = 0;
+```
+
+### 视频播放功能简陋
+
+关于大家提的关于视频的需求，有些成本过高，笔者精力有限望体谅。若组件默认的视频播放器满足不了需求，就自定义一个 Cell 吧，把成熟的播放器集成到组件中肯定更加的稳定。
+
+### 关于 Swift 版本
+
+目前没有写 Swift 版本的计划，对笔者来说感觉收益太低了。 

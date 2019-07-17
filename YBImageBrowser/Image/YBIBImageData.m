@@ -347,20 +347,22 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         [YBIBWebImageManager queryCacheOperationForKey:self.thumbURL completed:^(UIImage * _Nullable image, NSData * _Nullable imageData) {
             __strong typeof(wSelf) self = wSelf;
             if (!self) return;
+            
+            UIImage *thumbImage;
             if (image) {
-                self.thumbImage = image;
+                thumbImage = image;
             } else if (imageData) {
-                self.thumbImage = [UIImage imageWithData:imageData];
+                thumbImage = [UIImage imageWithData:imageData];
             }
             // If the target image is ready, ignore the thumb image.
-            BOOL shouldIgnore = [self shouldCompress] ? (self.compressedImage != nil) : (self.originImage != nil);
+            BOOL shouldIgnore = [self shouldCompress] ? (self.compressedImage != nil) : (thumbImage != nil);
             if (!shouldIgnore) {
-                [self.delegate yb_imageData:self readyForThumbImage:self.thumbImage];
+                [self.delegate yb_imageData:self readyForThumbImage:thumbImage];
             }
         }];
     } else if (self.projectiveView && [self.projectiveView isKindOfClass:UIImageView.self] && ((UIImageView *)self.projectiveView).image) {
-        self.thumbImage = ((UIImageView *)self.projectiveView).image;
-        [self.delegate yb_imageData:self readyForThumbImage:self.thumbImage];
+        UIImage *thumbImage = ((UIImageView *)self.projectiveView).image;
+        [self.delegate yb_imageData:self readyForThumbImage:thumbImage];
     }
 }
 
@@ -653,7 +655,8 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     if (!self.originImage) return _cuttingZoomScale;
     CGFloat imagePixel = self.originImage.size.width * self.originImage.size.height * self.originImage.scale * self.originImage.scale;
     // The larger the image size, the larger the '_cuttingZoomScale', in order to reduce the burden of CPU and memory.
-    _cuttingZoomScale += (imagePixel / self.compressingSize * 0.19);
+    CGFloat scale = YBIBLowMemory() ? 0.28 : 0.19;
+    _cuttingZoomScale += (imagePixel / self.compressingSize * scale);
     return _cuttingZoomScale;
 }
 
