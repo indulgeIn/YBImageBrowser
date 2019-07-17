@@ -9,6 +9,24 @@
 #import "YBIBImageCache.h"
 #import "YBIBImageCache+Internal.h"
 #import "YBIBUtilities.h"
+#import <objc/runtime.h>
+
+
+@implementation NSObject (YBIBImageCache)
+static void *YBIBImageCacheKey = &YBIBImageCacheKey;
+- (void)setYbib_imageCache:(YBIBImageCache *)ybib_imageCache {
+    objc_setAssociatedObject(self, YBIBImageCacheKey, ybib_imageCache, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+- (YBIBImageCache *)ybib_imageCache {
+    YBIBImageCache *cache = objc_getAssociatedObject(self, YBIBImageCacheKey);
+    if (!cache) {
+        cache = [YBIBImageCache new];
+        self.ybib_imageCache = cache;
+    }
+    return cache;
+}
+@end
+
 
 @interface YBIBImageCachePack : NSObject
 @property (nonatomic, strong) UIImage *originImage;
@@ -24,15 +42,6 @@
 }
 
 #pragma mark - life cycle
-
-+ (instancetype)sharedCache {
-    static YBIBImageCache *cache;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        cache = [YBIBImageCache new];
-    });
-    return cache;
-}
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidReceiveMemoryWarningNotification object:nil];

@@ -42,7 +42,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     if (_downloadToken) {
         [YBIBWebImageManager cancelTaskWithDownloadToken:_downloadToken];
     }
-    [YBIBImageCache.sharedCache removeForKey:self.cacheKey];
+    [self.imageCache removeForKey:self.cacheKey];
 }
 
 - (instancetype)init {
@@ -270,7 +270,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     self.loadingStatus = YBIBImageLoadingStatusDownloading;
     __weak typeof(self) wSelf = self;
     _downloadToken = [YBIBWebImageManager downloadImageWithURL:self.imageURL requestModifier:^NSURLRequest * _Nullable(NSURLRequest * _Nonnull request) {
-        return self.requestModifier ? self.requestModifier(self, request) : nil;
+        return self.requestModifier ? self.requestModifier(self, request) : request;
     } progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         CGFloat progress = receivedSize * 1.0 / expectedSize ?: 0;
         YBIB_DISPATCH_ASYNC_MAIN(^{
@@ -445,7 +445,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 }
 
 - (void)clearCache {
-    [YBIBImageCache.sharedCache removeForKey:self.cacheKey];
+    [self.imageCache removeForKey:self.cacheKey];
 }
 
 #pragma mark - private
@@ -536,6 +536,10 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     [self saveToPhotoAlbumCompleteWithError:error];
 }
 
+- (YBIBImageCache *)imageCache {
+    return self.yb_backView.ybib_imageCache;
+}
+
 #pragma mark - <YBIBDataProtocol>
 
 @synthesize yb_isTransitioning = _yb_isTransitioning;
@@ -543,6 +547,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 @synthesize yb_containerSize = _yb_containerSize;
 @synthesize yb_containerView = _yb_containerView;
 @synthesize yb_auxiliaryViewHandler = _yb_auxiliaryViewHandler;
+@synthesize yb_backView = _yb_backView;
 
 - (nonnull Class)yb_classOfCell {
     return YBIBImageCell.self;
@@ -609,7 +614,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     } else {
         _freezing = YES;
         // Remove the resident cache if '_delegate' is nil.
-        [YBIBImageCache.sharedCache removeResidentForKey:self.cacheKey];
+        [self.imageCache removeResidentForKey:self.cacheKey];
     }
 }
 - (id<YBIBImageDataDelegate>)delegate {
@@ -627,18 +632,18 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 
 - (void)setOriginImage:(__kindof UIImage *)originImage {
     // 'image' should be resident if '_delegate' exists.
-    [YBIBImageCache.sharedCache setImage:originImage type:YBIBImageCacheTypeOrigin forKey:self.cacheKey resident:self->_delegate != nil];
+    [self.imageCache setImage:originImage type:YBIBImageCacheTypeOrigin forKey:self.cacheKey resident:self->_delegate != nil];
 }
 - (UIImage *)originImage {
-    return [YBIBImageCache.sharedCache imageForKey:self.cacheKey type:YBIBImageCacheTypeOrigin];
+    return [self.imageCache imageForKey:self.cacheKey type:YBIBImageCacheTypeOrigin];
 }
 
 - (void)setCompressedImage:(UIImage *)compressedImage {
     // 'image' should be resident if '_delegate' exists.
-    [YBIBImageCache.sharedCache setImage:compressedImage type:YBIBImageCacheTypeCompressed forKey:self.cacheKey resident:_delegate != nil];
+    [self.imageCache setImage:compressedImage type:YBIBImageCacheTypeCompressed forKey:self.cacheKey resident:_delegate != nil];
 }
 - (UIImage *)compressedImage {
-    return [YBIBImageCache.sharedCache imageForKey:self.cacheKey type:YBIBImageCacheTypeCompressed];
+    return [self.imageCache imageForKey:self.cacheKey type:YBIBImageCacheTypeCompressed];
 }
 
 - (void)setLoadingStatus:(YBIBImageLoadingStatus)loadingStatus {
