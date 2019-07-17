@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
 
   s.name         = "YBImageBrowser"
 
-  s.version      = "3.0-beta"
+  s.version      = "3.0-beta2"
 
   s.summary      = "iOS image browser / iOS 图片浏览器"
 

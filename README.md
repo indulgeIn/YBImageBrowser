@@ -167,9 +167,6 @@ browser.currentPage = ...;
 组件内部会降低在低内存设备上的性能，减小内存占用，但若高清图过多，可能需要手动去控制（以下是硬件消耗很低的状态）：
 
 ```
-// 调低图片的缓存数量
-YBIBImageCache.sharedCache.imageCacheCountLimit = 1;
-
 YBIBImageData *data = YBIBImageData.new;
 // 取消预解码
 data.shouldPreDecodeAsync = NO;
@@ -177,6 +174,8 @@ data.shouldPreDecodeAsync = NO;
 data.cuttingZoomScale = 10;
 
 YBImageBrowser *browser = YBImageBrowser.new;
+// 调低图片的缓存数量
+browser.ybib_imageCache.imageCacheCountLimit = 1;
 // 预加载数量设为 0
 browser.preloadCount = 0;
 ```
