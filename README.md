@@ -4,7 +4,7 @@
 [![CocoaPods](https://img.shields.io/cocoapods/p/YBImageBrowser.svg)](https://github.com/indulgeIn/YBImageBrowser)&nbsp;
 [![License](https://img.shields.io/github/license/indulgeIn/YBImageBrowser.svg)](https://github.com/indulgeIn/YBImageBrowser)&nbsp;
 
-**iOS 图片浏览器，功能强大，易于拓展，极致的性能优化和严格的内存控制让其运行更加的流畅和稳健。**
+**iOS 图片浏览器，功能强大，易于拓展，性能优化和内存控制让其运行更加的流畅和稳健。**
 
 **原理博客: TODO**
 
