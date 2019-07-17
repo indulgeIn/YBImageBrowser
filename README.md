@@ -8,7 +8,16 @@
 
 **原理博客: TODO**
 
-## 关于 3.x 版本
+# 目录
+
+* [关于 3.x 版本](#关于 3.x 版本)
+* [预览](#预览)
+* [特性](#特性)
+* [安装](#安装)
+* [用法](#用法)
+* [常见问题](#常见问题)
+
+# 关于 3.x 版本
 
 为了彻底解决 2.x 版本的设计缺陷和代码漏洞，特花费大量业余时间进行了 3.x 深度重构，所以没办法做到向下兼容，希望社区朋友们能体谅，根据情况进行版本迁移。
 3.x 版本有着更科学的架构，更极致的性能提升，更严格的内存控制，使用起来会更得心应手，也便于将来的迭代优化。
@@ -16,13 +25,13 @@
 **使用 2.x 版本请切换到 store_2.x 分支。**
 
 
-## 预览
+# 预览
 
 ![](https://github.com/indulgeIn/YBImageBrowser/blob/master/Images/preview.gif)
 
 
 
-## 特性
+# 特性
 
 - 支持 GIF，APNG，WebP 等本地和网络图片类型（由 YYImage、SDWebImage 提供支持）。
 - 支持系统相册图片和视频。
@@ -45,7 +54,7 @@
 - 极致的性能优化和严格的内存控制让其运行更加的流畅和稳健。
 
 
-## 安装
+# 安装
 
 ### CocoaPods
 
@@ -70,7 +79,7 @@
 
 
 
-## 用法
+# 用法
 
 初始化`YBImageBrowser`并且赋值数据源`id<YBIBDataProtocol>`，默认提供`YBIBImageData` (图片) 和`YBIBVideoData` (视频) 两种数据源。
 
@@ -142,4 +151,7 @@ browser.currentPage = ...;
 当默认提供的`YBIBImageData` (图片) 和`YBIBVideoData` (视频) 满足不了需求时，可自定义拓展 Cell，参考默认实现或 Demo 中的示例代码。
 
 定义一个实现`YBIBCellProtocol`协议的`UICollectionViewCell`类和一个实现`YBIBDataProtocol`协议的数据类，当要求不高时实现必选协议方法就能跑起来了，若对交互有要求就相对比较复杂，最好是参考默认的交互动效实现。
+
+
+# 常见问题
 
