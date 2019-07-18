@@ -7,6 +7,7 @@
 //
 
 #import "YBIBWebImageManager.h"
+#import "YBIBUtilities.h"
 #if __has_include(<SDWebImage/SDWebImage.h>)
 #import <SDWebImage/SDWebImage.h>
 #else
@@ -46,13 +47,14 @@
     }
 }
 
-+ (void)storeImage:(UIImage *)image imageData:(NSData *)data forKey:(NSURL *)key toDisk:(BOOL)toDisk {
++ (void)storeToDiskWithImageData:(NSData *)data forKey:(NSURL *)key {
     if (!key) return;
     NSString *cacheKey = [SDWebImageManager.sharedManager cacheKeyForURL:key];
     if (!cacheKey) return;
     
-    // The 'image' must be existent, otherwise this methode will do nothing. (That is a strange design of SDWebImage 🐶)
-    [[SDImageCache sharedImageCache] storeImage:image imageData:data forKey:cacheKey toDisk:toDisk completion:nil];
+    YBIB_DISPATCH_ASYNC(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        [[SDImageCache sharedImageCache] storeImageDataToDisk:data forKey:cacheKey];
+    })
 }
 
 + (void)queryCacheOperationForKey:(NSURL *)key completed:(YBIBWebImageCacheQueryCompletedBlock)completed {

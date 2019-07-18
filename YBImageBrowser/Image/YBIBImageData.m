@@ -290,7 +290,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
             YBIB_DISPATCH_ASYNC_MAIN(^{
                 __strong typeof(wSelf) self = wSelf;
                 if (!self) return;
-                [YBIBWebImageManager storeImage:image imageData:imageData forKey:self.imageURL toDisk:YES];
+                [YBIBWebImageManager storeToDiskWithImageData:imageData forKey:self.imageURL];
                 self.loadingStatus = YBIBImageLoadingStatusNone;
                 if (image) {
                     [self setOriginImageAndLoadWithImage:image];

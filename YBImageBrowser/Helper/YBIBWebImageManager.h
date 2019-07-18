@@ -27,7 +27,7 @@ typedef void(^YBIBWebImageCacheQueryCompletedBlock)(UIImage * _Nullable image, N
 
 + (void)cancelTaskWithDownloadToken:(id)token;
 
-+ (void)storeImage:(nullable UIImage *)image imageData:(nullable NSData *)data forKey:(NSURL *)key toDisk:(BOOL)toDisk;
++ (void)storeToDiskWithImageData:(nullable NSData *)data forKey:(NSURL *)key;
 
 + (void)queryCacheOperationForKey:(NSURL *)key completed:(YBIBWebImageCacheQueryCompletedBlock)completed;
 
