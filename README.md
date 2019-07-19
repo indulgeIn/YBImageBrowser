@@ -65,7 +65,7 @@
 3. 导入 `<YBImageBrowser/YBImageBrowser.h>`，视频功能需导入`<YBImageBrowser/YBIBVideoData.h>`。
 4. 注意：如果你需要支持 WebP，可以在 Podfile 中添加 `pod 'YYImage/WebP'`。
 
-若搜索不到库，可使用 `rm ~/Library/Caches/CocoaPods/search_index.json` 移除本地索引然后再执行安装，或者更新一下 CocoaPods 版本。
+若搜索不到库，可执行`pod repo update`，或使用 `rm ~/Library/Caches/CocoaPods/search_index.json` 移除本地索引然后再执行安装，或更新一下 CocoaPods 版本。
 
 ### 手动导入
 
