@@ -292,7 +292,7 @@
         [obj setYb_totalPage:^NSInteger{
             __strong typeof(wSelf) self = wSelf;
             if (!self) return 0;
-            return [self.dataMediator numberOfCells] - 1;
+            return [self.dataMediator numberOfCells];
         }];
     }
     if ([obj respondsToSelector:@selector(setYb_backView:)]) {

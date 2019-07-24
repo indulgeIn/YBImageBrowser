@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
 
   s.name         = "YBImageBrowser"
 
-  s.version      = "3.0-beta2"
+  s.version      = "3.0.1"
 
   s.summary      = "iOS image browser / iOS 图片浏览器"
 
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "8.0"
 
-  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "3.0-beta3" }
 
   s.requires_arc = true
 
