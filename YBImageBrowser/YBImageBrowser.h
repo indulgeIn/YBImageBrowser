@@ -39,6 +39,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)showToView:(UIView *)view;
 - (void)show;
 
+/**
+ 隐藏图片浏览器（不建议外部持有图片浏览器重复使用）
+ */
+- (void)hide;
+
 /// 当前页码
 @property (nonatomic, assign) NSInteger currentPage;
 

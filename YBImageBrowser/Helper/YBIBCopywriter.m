@@ -28,7 +28,7 @@
         NSArray *appleLanguages = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleLanguages"];
         if (appleLanguages && appleLanguages.count > 0) {
             NSString *languages = appleLanguages[0];
-            if (![languages isEqualToString:@"zh-Hans-CN"]) {
+            if (![languages hasPrefix:@"zh-Hans"]) {
                 _type = YBIBCopywriterTypeEnglish;
             }
         }
@@ -61,6 +61,5 @@
     _type = type;
     [self initCopy];
 }
-
 
 @end

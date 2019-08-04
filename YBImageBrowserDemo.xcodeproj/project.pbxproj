@@ -68,6 +68,7 @@
 		23F26ACC22D71FB200C27C21 /* YBIBVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F26ACB22D71FB200C27C21 /* YBIBVideoView.m */; };
 		23F26ACF22D7206900C27C21 /* YBIBVideoTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F26ACE22D7206900C27C21 /* YBIBVideoTopBar.m */; };
 		23F26AD222D7208700C27C21 /* YBIBVideoActionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F26AD122D7208700C27C21 /* YBIBVideoActionBar.m */; };
+		23FF103622F6B6FC0091331F /* TestFController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23FF103522F6B6FC0091331F /* TestFController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -210,6 +211,8 @@
 		23F26ACE22D7206900C27C21 /* YBIBVideoTopBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBVideoTopBar.m; sourceTree = "<group>"; };
 		23F26AD022D7208700C27C21 /* YBIBVideoActionBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBVideoActionBar.h; sourceTree = "<group>"; };
 		23F26AD122D7208700C27C21 /* YBIBVideoActionBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBVideoActionBar.m; sourceTree = "<group>"; };
+		23FF103422F6B6FC0091331F /* TestFController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFController.h; sourceTree = "<group>"; };
+		23FF103522F6B6FC0091331F /* TestFController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestFController.m; sourceTree = "<group>"; };
 		97542AA3FE46C41411B15C5D /* Pods_YBImageBrowserDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YBImageBrowserDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7455F1D491BFCA198544CA1 /* Pods-YBImageBrowserDemo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBImageBrowserDemo.debug.xcconfig"; path = "Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo.debug.xcconfig"; sourceTree = "<group>"; };
 		F2A1E10DD2C568E5493980E0 /* Pods-YBImageBrowserDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YBImageBrowserDemo.release.xcconfig"; path = "Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo.release.xcconfig"; sourceTree = "<group>"; };
@@ -429,6 +432,7 @@
 				23CC34E622DC4B070037018B /* 自定义工具视图（例查看原图） */,
 				23CC34E722DC4B570037018B /* 自定义 Cell */,
 				23CC34E522DC49CC0037018B /* 图片显示预处理（例添加水印） */,
+				23FF103322F6B6BF0091331F /* 用代理配置数据源（以相册为例） */,
 				23CC34D822DC25450037018B /* 添加到控制器使用（以相册为例） */,
 			);
 			path = Example;
@@ -513,6 +517,15 @@
 				23CC34FD22DC6BC50037018B /* BaseFileManager.m */,
 			);
 			path = File;
+			sourceTree = "<group>";
+		};
+		23FF103322F6B6BF0091331F /* 用代理配置数据源（以相册为例） */ = {
+			isa = PBXGroup;
+			children = (
+				23FF103422F6B6FC0091331F /* TestFController.h */,
+				23FF103522F6B6FC0091331F /* TestFController.m */,
+			);
+			path = "用代理配置数据源（以相册为例）";
 			sourceTree = "<group>";
 		};
 		3B561BDD0EE4EB2318C37D22 /* Frameworks */ = {
@@ -738,6 +751,7 @@
 				23CC34D722DC252C0037018B /* MainController.m in Sources */,
 				23CC34F622DC593F0037018B /* TestEController.m in Sources */,
 				23C1F89422D1CB2200793CAA /* YBIBToolViewHandler.m in Sources */,
+				23FF103622F6B6FC0091331F /* TestFController.m in Sources */,
 				23ABA2AF22D0BAB700535F6A /* YBIBCopywriter.m in Sources */,
 				23C282F222D5F4540084E9E6 /* YBIBVideoCell.m in Sources */,
 				23ABA2A922D0BAB700535F6A /* YBIBToastView.m in Sources */,
