@@ -14,6 +14,7 @@
 #import "YBIBAnimatedTransition.h"
 #import "YBIBAuxiliaryViewHandler.h"
 #import "YBIBToolViewHandler.h"
+#import "YBIBWebImageMediator.h"
 #import "YBIBImageData.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -80,12 +81,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// 是否隐藏状态栏，默认为 YES
 @property (nonatomic, assign) BOOL shouldHideStatusBar;
 
-/**
- 工具视图处理器
- 
- 赋值可自定义，实现者可以直接用 UIView，或者创建一个中介者管理一系列的 UIView。
- 内部消息是按照数组下标顺序调度的，所以如果有多个处理器注意添加 UIView 的视图层级。
- */
+/// 工具视图处理器
+/// 赋值可自定义，实现者可以直接用 UIView，或者创建一个中介者管理一系列的 UIView。
+/// 内部消息是按照数组下标顺序调度的，所以如果有多个处理器注意添加 UIView 的视图层级。
 @property (nonatomic, copy) NSArray<id<YBIBToolViewHandler>> *toolViewHandlers;
 /// 默认工具视图处理器
 @property (nonatomic, weak, readonly) YBIBToolViewHandler *defaultToolViewHandler;
@@ -97,6 +95,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) id<YBIBAnimatedTransition> animatedTransition;
 /// 默认转场实现类 (可配置其属性)
 @property (nonatomic, weak, readonly) YBIBAnimatedTransition *defaultAnimatedTransition;
+
+/// 图片下载缓存相关的中介者（赋值可自定义）
+@property (nonatomic, strong) id<YBIBWebImageMediator> webImageMediator;
 
 /// 核心集合视图
 @property (nonatomic, strong, readonly) YBIBCollectionView *collectionView;

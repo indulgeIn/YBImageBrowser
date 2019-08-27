@@ -9,7 +9,6 @@
 #import "YBImage.h"
 #import "YBIBImageData.h"
 #import "YBIBImageCell.h"
-#import "YBIBWebImageManager.h"
 #import "YBIBPhotoAlbumManager.h"
 #import "YBIBImageData+Internal.h"
 #import "YBIBUtilities.h"
@@ -39,8 +38,8 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 #pragma mark - life cycle
 
 - (void)dealloc {
-    if (_downloadToken) {
-        [YBIBWebImageManager cancelTaskWithDownloadToken:_downloadToken];
+    if (_downloadToken && [self.yb_webImageMediator() respondsToSelector:@selector(yb_cancelTaskWithDownloadToken:)]) {
+        [self.yb_webImageMediator() yb_cancelTaskWithDownloadToken:_downloadToken];
     }
     [self.imageCache removeForKey:self.cacheKey];
 }
@@ -232,7 +231,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     YBImageDecodeDecision decision = [self defaultDecodeDecision];
     
     self.loadingStatus = YBIBImageLoadingStatusQuerying;
-    [YBIBWebImageManager queryCacheOperationForKey:self.imageURL completed:^(UIImage * _Nullable image, NSData * _Nullable imageData) {
+    [self.yb_webImageMediator() yb_queryCacheOperationForKey:self.imageURL completed:^(UIImage * _Nullable image, NSData * _Nullable imageData) {
         if (!imageData || imageData.length == 0) {
             YBIB_DISPATCH_ASYNC_MAIN(^{
                 self.loadingStatus = YBIBImageLoadingStatusNone;
@@ -269,7 +268,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     
     self.loadingStatus = YBIBImageLoadingStatusDownloading;
     __weak typeof(self) wSelf = self;
-    _downloadToken = [YBIBWebImageManager downloadImageWithURL:self.imageURL requestModifier:^NSURLRequest * _Nullable(NSURLRequest * _Nonnull request) {
+    _downloadToken = [self.yb_webImageMediator() yb_downloadImageWithURL:self.imageURL requestModifier:^NSURLRequest * _Nullable(NSURLRequest * _Nonnull request) {
         return self.requestModifier ? self.requestModifier(self, request) : request;
     } progress:^(NSInteger receivedSize, NSInteger expectedSize) {
         CGFloat progress = receivedSize * 1.0 / expectedSize ?: 0;
@@ -290,7 +289,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
             YBIB_DISPATCH_ASYNC_MAIN(^{
                 __strong typeof(wSelf) self = wSelf;
                 if (!self) return;
-                [YBIBWebImageManager storeToDiskWithImageData:imageData forKey:self.imageURL];
+                [self.yb_webImageMediator() yb_storeToDiskWithImageData:imageData forKey:self.imageURL];
                 self.loadingStatus = YBIBImageLoadingStatusNone;
                 if (image) {
                     [self setOriginImageAndLoadWithImage:image];
@@ -344,7 +343,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         [self.delegate yb_imageData:self readyForThumbImage:self.thumbImage];
     } else if (self.thumbURL) {
         __weak typeof(self) wSelf = self;
-        [YBIBWebImageManager queryCacheOperationForKey:self.thumbURL completed:^(UIImage * _Nullable image, NSData * _Nullable imageData) {
+        [self.yb_webImageMediator() yb_queryCacheOperationForKey:self.thumbURL completed:^(UIImage * _Nullable image, NSData * _Nullable imageData) {
             __strong typeof(wSelf) self = wSelf;
             if (!self) return;
             
@@ -547,6 +546,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 @synthesize yb_containerSize = _yb_containerSize;
 @synthesize yb_containerView = _yb_containerView;
 @synthesize yb_auxiliaryViewHandler = _yb_auxiliaryViewHandler;
+@synthesize yb_webImageMediator = _yb_webImageMediator;
 @synthesize yb_backView = _yb_backView;
 
 - (nonnull Class)yb_classOfCell {
@@ -587,7 +587,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         } else if (self.originImage) {
             saveImage(self.originImage);
         } else if (self.imageURL) {
-            [YBIBWebImageManager queryCacheOperationForKey:self.imageURL completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
+            [self.yb_webImageMediator() yb_queryCacheOperationForKey:self.imageURL completed:^(UIImage * _Nullable image, NSData * _Nullable data) {
                 if (data) {
                     saveData(data);
                 } else if (image) {

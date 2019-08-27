@@ -11,6 +11,8 @@
 #import "SDWebImageDefine.h"
 #import "SDImageCacheConfig.h"
 #import "SDImageCacheDefine.h"
+#import "SDMemoryCache.h"
+#import "SDDiskCache.h"
 
 /// Image Cache Options
 typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
@@ -44,7 +46,13 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
     /**
      * By default, for `SDAnimatedImage`, we decode the animated image frame during rendering to reduce memory usage. This flag actually trigger `preloadAllAnimatedImageFrames = YES` after image load from disk cache
      */
-    SDImageCachePreloadAllFrames = 1 << 6
+    SDImageCachePreloadAllFrames = 1 << 6,
+    /**
+     * By default, when you use `SDWebImageContextAnimatedImageClass` context option (like using `SDAnimatedImageView` which designed to use `SDAnimatedImage`), we may still use `UIImage` when the memory cache hit, or image decoder is not available, to behave as a fallback solution.
+     * Using this option, can ensure we always produce image with your provided class. If failed, a error with code `SDWebImageErrorBadImageData` will been used.
+     * Note this options is not compatible with `SDImageCacheDecodeFirstFrameOnly`, which always produce a UIImage/NSImage.
+     */
+    SDImageCacheMatchAnimatedImageClass = 1 << 7,
 };
 
 /**
@@ -60,6 +68,21 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
  *  The property is copy so change of currrent config will not accidentally affect other cache's config.
  */
 @property (nonatomic, copy, nonnull, readonly) SDImageCacheConfig *config;
+
+/**
+ * The memory cache implementation object used for current image cache.
+ * By default we use `SDMemoryCache` class, you can also use this to call your own implementation class method.
+ * @note To customize this class, check `SDImageCacheConfig.memoryCacheClass` property.
+ */
+@property (nonatomic, strong, readonly, nonnull) id<SDMemoryCache> memoryCache;
+
+/**
+ * The disk cache implementation object used for current image cache.
+ * By default we use `SDMemoryCache` class, you can also use this to call your own implementation class method.
+ * @note To customize this class, check `SDImageCacheConfig.diskCacheClass` property.
+ * @warning When calling method about read/write in disk cache, be sure to either make your disk cache implementation IO-safe or using the same access queue to avoid issues.
+ */
+@property (nonatomic, strong, readonly, nonnull) id<SDDiskCache> diskCache;
 
 /**
  *  The disk cache's root path

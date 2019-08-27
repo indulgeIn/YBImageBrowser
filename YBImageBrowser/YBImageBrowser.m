@@ -12,6 +12,9 @@
 #import "YBIBDataMediator.h"
 #import "YBIBScreenRotationHandler.h"
 #import "YBImageBrowser+Internal.h"
+#if __has_include("YBIBDefaultWebImageMediator.h")
+#import "YBIBDefaultWebImageMediator.h"
+#endif
 
 @interface YBImageBrowser () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (nonatomic, strong) YBIBCollectionView *collectionView;
@@ -49,6 +52,9 @@
     _auxiliaryViewHandler = [YBIBAuxiliaryViewHandler new];
     _shouldHideStatusBar = YES;
     _autoHideProjectiveView = YES;
+#if __has_include("YBIBDefaultWebImageMediator.h")
+    _webImageMediator = [YBIBDefaultWebImageMediator new];
+#endif
 }
 
 #pragma mark - private
@@ -283,6 +289,14 @@
             return self.auxiliaryViewHandler;
         }];
     }
+    if ([obj respondsToSelector:@selector(setYb_webImageMediator:)]) {
+        [obj setYb_webImageMediator:^id<YBIBWebImageMediator> {
+            __strong typeof(wSelf) self = wSelf;
+            if (!self) return nil;
+            NSAssert(self.webImageMediator, @"'webImageMediator' should not be nil.");
+            return self.webImageMediator;
+        }];
+    }
     if ([obj respondsToSelector:@selector(setYb_currentPage:)]) {
         [obj setYb_currentPage:^NSInteger{
             __strong typeof(wSelf) self = wSelf;
@@ -378,8 +392,7 @@
     }
     
     if (!scrollView.isDecelerating && !scrollView.isDragging) {
-        // Return if not scrolled by finger, and correcting the page.
-        [self collectionViewScrollToPage:self.currentPage];
+        // Return if not scrolled by finger.
         return;
     }
     if (page < 0 || page > [self.dataMediator numberOfCells] - 1) return;

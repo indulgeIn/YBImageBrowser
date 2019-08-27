@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "YBIBAuxiliaryViewHandler.h"
+#import "YBIBWebImageMediator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -26,6 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 辅助视图处理器
 @property (nonatomic, copy) id<YBIBAuxiliaryViewHandler>(^yb_auxiliaryViewHandler)(void);
+
+/// 图片下载缓存相关中介者
+@property (nonatomic, copy) id<YBIBWebImageMediator>(^yb_webImageMediator)(void);
 
 /// 当前页码
 @property (nonatomic, copy) NSInteger(^yb_currentPage)(void);

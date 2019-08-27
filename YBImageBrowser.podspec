@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
 
   s.name         = "YBImageBrowser"
 
-  s.version      = "3.0.1"
+  s.version      = "3.0.4"
 
   s.summary      = "iOS image browser / iOS 图片浏览器"
 
@@ -21,30 +21,38 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios, "8.0"
 
-  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "3.0-beta3" }
+  s.source       = { :git => "https://github.com/indulgeIn/YBImageBrowser.git", :tag => "#{s.version}" }
 
   s.requires_arc = true
 
-  # s.source_files = "YBImageBrowser/**/*.{h,m}"
-  # s.resources    = "YBImageBrowser/YBImageBrowser.bundle"
-  # s.dependency 'SDWebImage', '~>5.0.0'
-  # s.dependency 'YYImage'
-  # s.frameworks   = "Foundation", "UIKit"
+  s.default_subspec = "Core"
 
-  s.default_subspec = 'Core'
+  s.subspec "SD" do |sd|
+    sd.source_files = "YBIBDependentMediator/**/*.{h,m}"
+    sd.dependency 'SDWebImage', '>= 5.0.0'
+  end
 
-  s.subspec 'Core' do |core|
+  s.subspec "Core" do |core|
     core.source_files = "YBImageBrowser/**/*.{h,m}"
     core.resources    = "YBImageBrowser/YBImageBrowser.bundle"
-    core.frameworks   = "Foundation", "UIKit"
-    core.dependency 'SDWebImage', '~>5.0.0'
+    core.dependency 'YBImageBrowser/SD'
+    core.dependency 'YYImage'
+  end
+  s.subspec "NOSD" do |core|
+    core.source_files = "YBImageBrowser/**/*.{h,m}"
+    core.resources    = "YBImageBrowser/YBImageBrowser.bundle"
     core.dependency 'YYImage'
   end
 
-  s.subspec 'Video' do |video|
+  s.subspec "Video" do |video|
     video.source_files = "Video/*.{h,m}"
     video.resources    = "Video/YBImageBrowserVideo.bundle"
     video.dependency 'YBImageBrowser/Core'
+  end
+  s.subspec "Video/NOSD" do |video|
+    video.source_files = "Video/*.{h,m}"
+    video.resources    = "Video/YBImageBrowserVideo.bundle"
+    video.dependency 'YBImageBrowser/NOSD'
   end
 
 end

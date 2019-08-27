@@ -15,6 +15,7 @@
 		231F048922A8A3DF00C335FE /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 231F048722A8A3DF00C335FE /* MainNavigationController.m */; };
 		231F04AC22A8A95B00C335FE /* localBigImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F049522A8A95A00C335FE /* localBigImage0.jpeg */; };
 		231F04B922A8A95B00C335FE /* localLongImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F04A222A8A95A00C335FE /* localLongImage0.jpeg */; };
+		231FD3DD231539570016D426 /* YBIBDefaultWebImageMediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */; };
 		23556E4322D77F43004178DA /* YBIBContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23556E4222D77F43004178DA /* YBIBContainerView.m */; };
 		23ABA2A722D0BAB700535F6A /* YBIBAuxiliaryViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26D22D0BAB600535F6A /* YBIBAuxiliaryViewHandler.m */; };
 		23ABA2A822D0BAB700535F6A /* YBIBLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26F22D0BAB600535F6A /* YBIBLoadingView.m */; };
@@ -28,7 +29,6 @@
 		23ABA2B122D0BAB700535F6A /* YBIBPhotoAlbumManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA28622D0BAB600535F6A /* YBIBPhotoAlbumManager.m */; };
 		23ABA2B222D0BAB700535F6A /* YBIBSentinel.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA28822D0BAB600535F6A /* YBIBSentinel.m */; };
 		23ABA2B322D0BAB700535F6A /* YBIBUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA28A22D0BAB600535F6A /* YBIBUtilities.m */; };
-		23ABA2B422D0BAB700535F6A /* YBIBWebImageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA28C22D0BAB600535F6A /* YBIBWebImageManager.m */; };
 		23ABA2B522D0BAB700535F6A /* YBIBImageCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA29022D0BAB600535F6A /* YBIBImageCache.m */; };
 		23ABA2B622D0BAB700535F6A /* YBIBImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA29222D0BAB600535F6A /* YBIBImageCell.m */; };
 		23ABA2B722D0BAB700535F6A /* YBIBImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA29522D0BAB600535F6A /* YBIBImageData.m */; };
@@ -99,6 +99,9 @@
 		231F048822A8A3DF00C335FE /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
 		231F049522A8A95A00C335FE /* localBigImage0.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = localBigImage0.jpeg; sourceTree = "<group>"; };
 		231F04A222A8A95A00C335FE /* localLongImage0.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = localLongImage0.jpeg; sourceTree = "<group>"; };
+		231FD3D6231530750016D426 /* YBIBWebImageMediator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBWebImageMediator.h; sourceTree = "<group>"; };
+		231FD3DB231539570016D426 /* YBIBDefaultWebImageMediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBDefaultWebImageMediator.h; sourceTree = "<group>"; };
+		231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBDefaultWebImageMediator.m; sourceTree = "<group>"; };
 		232D0EF722D2DFED00666331 /* YBIBOrientationReceiveProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBOrientationReceiveProtocol.h; sourceTree = "<group>"; };
 		232D0EF822D2F3AC00666331 /* YBIBOperateBrowserProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBOperateBrowserProtocol.h; sourceTree = "<group>"; };
 		233BD69522C6497100F4CEF3 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
@@ -129,8 +132,6 @@
 		23ABA28822D0BAB600535F6A /* YBIBSentinel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBSentinel.m; sourceTree = "<group>"; };
 		23ABA28922D0BAB600535F6A /* YBIBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBUtilities.h; sourceTree = "<group>"; };
 		23ABA28A22D0BAB600535F6A /* YBIBUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBUtilities.m; sourceTree = "<group>"; };
-		23ABA28B22D0BAB600535F6A /* YBIBWebImageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBWebImageManager.h; sourceTree = "<group>"; };
-		23ABA28C22D0BAB600535F6A /* YBIBWebImageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBWebImageManager.m; sourceTree = "<group>"; };
 		23ABA28E22D0BAB600535F6A /* YBIBImageCache+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "YBIBImageCache+Internal.h"; sourceTree = "<group>"; };
 		23ABA28F22D0BAB600535F6A /* YBIBImageCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBImageCache.h; sourceTree = "<group>"; };
 		23ABA29022D0BAB600535F6A /* YBIBImageCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBImageCache.m; sourceTree = "<group>"; };
@@ -244,6 +245,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		231FD3DA231539570016D426 /* YBIBDependentMediator */ = {
+			isa = PBXGroup;
+			children = (
+				231FD3DB231539570016D426 /* YBIBDefaultWebImageMediator.h */,
+				231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */,
+			);
+			path = YBIBDependentMediator;
+			sourceTree = "<group>";
+		};
 		23ABA26A22D0BAB600535F6A /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
@@ -306,8 +316,6 @@
 				23ABA28822D0BAB600535F6A /* YBIBSentinel.m */,
 				23ABA28922D0BAB600535F6A /* YBIBUtilities.h */,
 				23ABA28A22D0BAB600535F6A /* YBIBUtilities.m */,
-				23ABA28B22D0BAB600535F6A /* YBIBWebImageManager.h */,
-				23ABA28C22D0BAB600535F6A /* YBIBWebImageManager.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -345,6 +353,7 @@
 				232D0EF722D2DFED00666331 /* YBIBOrientationReceiveProtocol.h */,
 				23ABA2A222D0BAB600535F6A /* YBImageBrowserDataSource.h */,
 				23ABA2A322D0BAB600535F6A /* YBImageBrowserDelegate.h */,
+				231FD3D6231530750016D426 /* YBIBWebImageMediator.h */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -404,6 +413,7 @@
 		23B326FE22A768F4008BFF5D /* YBImageBrowserDemo */ = {
 			isa = PBXGroup;
 			children = (
+				231FD3DA231539570016D426 /* YBIBDependentMediator */,
 				23ABA26A22D0BAB600535F6A /* YBImageBrowser */,
 				23ABA2BE22D0BB1A00535F6A /* Video */,
 				23CC34D422DC248C0037018B /* Example */,
@@ -743,7 +753,6 @@
 				2303ADBE22D625D30001A176 /* YBIBIconManager.m in Sources */,
 				23ABA2AD22D0BAB700535F6A /* YBIBDataMediator.m in Sources */,
 				23ABA2C522D0CAD100535F6A /* YBIBSheetView.m in Sources */,
-				23ABA2B422D0BAB700535F6A /* YBIBWebImageManager.m in Sources */,
 				23ABA2B722D0BAB700535F6A /* YBIBImageData.m in Sources */,
 				23F26AD222D7208700C27C21 /* YBIBVideoActionBar.m in Sources */,
 				23F26ACC22D71FB200C27C21 /* YBIBVideoView.m in Sources */,
@@ -771,6 +780,7 @@
 				23CC350B22DC7CC00037018B /* TestCustomData.m in Sources */,
 				23ABA2B922D0BAB700535F6A /* YBIBImageScrollView.m in Sources */,
 				23ABA2AE22D0BAB700535F6A /* YBIBScreenRotationHandler.m in Sources */,
+				231FD3DD231539570016D426 /* YBIBDefaultWebImageMediator.m in Sources */,
 				23ABA2BB22D0BAB700535F6A /* YBImage.m in Sources */,
 				23CC34F322DC59340037018B /* TestDController.m in Sources */,
 				23ABA2AB22D0BAB700535F6A /* YBIBCollectionView.m in Sources */,
@@ -955,7 +965,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yangbo.YBImageBrowserDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = yangbo.YBImageBrowserDemo2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -975,7 +985,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yangbo.YBImageBrowserDemo;
+				PRODUCT_BUNDLE_IDENTIFIER = yangbo.YBImageBrowserDemo2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
