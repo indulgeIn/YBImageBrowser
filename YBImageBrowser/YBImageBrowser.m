@@ -70,6 +70,8 @@
     
     [self buildToolView];
     
+    [self layoutIfNeeded];
+    
     [self collectionViewScrollToPage:self.currentPage];
     [self.rotationHandler startObserveDeviceOrientation];
 }
@@ -186,8 +188,8 @@
     
     self.transitioning = YES;
     [self.animatedTransition yb_showTransitioningWithContainer:self startView:startView startImage:startImage endFrame:endFrame orientation:self.rotationHandler.currentOrientation completion:^{
-        [self build];
         self.transitioning = NO;
+        [self build];
     }];
 }
 

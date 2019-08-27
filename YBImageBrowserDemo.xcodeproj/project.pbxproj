@@ -245,19 +245,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		231FD3DA231539570016D426 /* YBIBDependentMediator */ = {
+		231FD3DA231539570016D426 /* WebImageMediator */ = {
 			isa = PBXGroup;
 			children = (
 				231FD3DB231539570016D426 /* YBIBDefaultWebImageMediator.h */,
 				231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */,
 			);
-			path = YBIBDependentMediator;
-			sourceTree = "<group>";
+			name = WebImageMediator;
+			path = YBImageBrowserDemo/WebImageMediator;
+			sourceTree = SOURCE_ROOT;
 		};
 		23ABA26A22D0BAB600535F6A /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
 				23ABA2A422D0BAB600535F6A /* YBImageBrowser.bundle */,
+				231FD3DA231539570016D426 /* WebImageMediator */,
 				23ABA2BF22D0C22900535F6A /* ToolView */,
 				23ABA26B22D0BAB600535F6A /* AuxiliaryView */,
 				23ABA28222D0BAB600535F6A /* Helper */,
@@ -413,7 +415,6 @@
 		23B326FE22A768F4008BFF5D /* YBImageBrowserDemo */ = {
 			isa = PBXGroup;
 			children = (
-				231FD3DA231539570016D426 /* YBIBDependentMediator */,
 				23ABA26A22D0BAB600535F6A /* YBImageBrowser */,
 				23ABA2BE22D0BB1A00535F6A /* Video */,
 				23CC34D422DC248C0037018B /* Example */,
