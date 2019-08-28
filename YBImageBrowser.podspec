@@ -34,14 +34,14 @@ Pod::Spec.new do |s|
 
   s.subspec "Core" do |core|
     core.source_files   = "YBImageBrowser/**/*.{h,m}"
-    core.exclude_files  = "YBImageBrowser/WebImageMediator/*.{h,m}"
+    core.exclude_files  = "YBImageBrowser/WebImageMediator/YBIBDefaultWebImageMediator.{h,m}"
     core.resources      = "YBImageBrowser/YBImageBrowser.bundle"
     core.dependency 'YBImageBrowser/SD'
     core.dependency 'YYImage'
   end
   s.subspec "NOSD" do |core|
     core.source_files   = "YBImageBrowser/**/*.{h,m}"
-    core.exclude_files  = "YBImageBrowser/WebImageMediator/*.{h,m}"
+    core.exclude_files  = "YBImageBrowser/WebImageMediator/YBIBDefaultWebImageMediator.{h,m}"
     core.resources      = "YBImageBrowser/YBImageBrowser.bundle"
     core.dependency 'YYImage'
   end

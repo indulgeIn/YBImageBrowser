@@ -345,7 +345,6 @@
 				232D0EF722D2DFED00666331 /* YBIBOrientationReceiveProtocol.h */,
 				23ABA2A222D0BAB600535F6A /* YBImageBrowserDataSource.h */,
 				23ABA2A322D0BAB600535F6A /* YBImageBrowserDelegate.h */,
-				231FD3D6231530750016D426 /* YBIBWebImageMediator.h */,
 			);
 			path = Protocol;
 			sourceTree = "<group>";
@@ -523,6 +522,7 @@
 		23F5A00A23161D51003F0FAE /* WebImageMediator */ = {
 			isa = PBXGroup;
 			children = (
+				231FD3D6231530750016D426 /* YBIBWebImageMediator.h */,
 				23F5A00B23161D51003F0FAE /* YBIBDefaultWebImageMediator.h */,
 				23F5A00C23161D51003F0FAE /* YBIBDefaultWebImageMediator.m */,
 			);
