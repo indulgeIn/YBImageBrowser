@@ -3,7 +3,7 @@ name: Issue template
 about: Asking questions or pointing out mistakes.
 title: ''
 labels: ''
-assignees: indulgeIn
+assignees: ''
 
 ---
 
