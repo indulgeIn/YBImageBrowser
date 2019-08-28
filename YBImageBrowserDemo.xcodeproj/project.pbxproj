@@ -15,7 +15,6 @@
 		231F048922A8A3DF00C335FE /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 231F048722A8A3DF00C335FE /* MainNavigationController.m */; };
 		231F04AC22A8A95B00C335FE /* localBigImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F049522A8A95A00C335FE /* localBigImage0.jpeg */; };
 		231F04B922A8A95B00C335FE /* localLongImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F04A222A8A95A00C335FE /* localLongImage0.jpeg */; };
-		231FD3DD231539570016D426 /* YBIBDefaultWebImageMediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */; };
 		23556E4322D77F43004178DA /* YBIBContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23556E4222D77F43004178DA /* YBIBContainerView.m */; };
 		23ABA2A722D0BAB700535F6A /* YBIBAuxiliaryViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26D22D0BAB600535F6A /* YBIBAuxiliaryViewHandler.m */; };
 		23ABA2A822D0BAB700535F6A /* YBIBLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26F22D0BAB600535F6A /* YBIBLoadingView.m */; };
@@ -68,6 +67,7 @@
 		23F26ACC22D71FB200C27C21 /* YBIBVideoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F26ACB22D71FB200C27C21 /* YBIBVideoView.m */; };
 		23F26ACF22D7206900C27C21 /* YBIBVideoTopBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F26ACE22D7206900C27C21 /* YBIBVideoTopBar.m */; };
 		23F26AD222D7208700C27C21 /* YBIBVideoActionBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F26AD122D7208700C27C21 /* YBIBVideoActionBar.m */; };
+		23F5A00D23161D51003F0FAE /* YBIBDefaultWebImageMediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 23F5A00C23161D51003F0FAE /* YBIBDefaultWebImageMediator.m */; };
 		23FF103622F6B6FC0091331F /* TestFController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23FF103522F6B6FC0091331F /* TestFController.m */; };
 /* End PBXBuildFile section */
 
@@ -100,8 +100,6 @@
 		231F049522A8A95A00C335FE /* localBigImage0.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = localBigImage0.jpeg; sourceTree = "<group>"; };
 		231F04A222A8A95A00C335FE /* localLongImage0.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = localLongImage0.jpeg; sourceTree = "<group>"; };
 		231FD3D6231530750016D426 /* YBIBWebImageMediator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBWebImageMediator.h; sourceTree = "<group>"; };
-		231FD3DB231539570016D426 /* YBIBDefaultWebImageMediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBDefaultWebImageMediator.h; sourceTree = "<group>"; };
-		231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBDefaultWebImageMediator.m; sourceTree = "<group>"; };
 		232D0EF722D2DFED00666331 /* YBIBOrientationReceiveProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBOrientationReceiveProtocol.h; sourceTree = "<group>"; };
 		232D0EF822D2F3AC00666331 /* YBIBOperateBrowserProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBOperateBrowserProtocol.h; sourceTree = "<group>"; };
 		233BD69522C6497100F4CEF3 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
@@ -212,6 +210,8 @@
 		23F26ACE22D7206900C27C21 /* YBIBVideoTopBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBVideoTopBar.m; sourceTree = "<group>"; };
 		23F26AD022D7208700C27C21 /* YBIBVideoActionBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBVideoActionBar.h; sourceTree = "<group>"; };
 		23F26AD122D7208700C27C21 /* YBIBVideoActionBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBVideoActionBar.m; sourceTree = "<group>"; };
+		23F5A00B23161D51003F0FAE /* YBIBDefaultWebImageMediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBDefaultWebImageMediator.h; sourceTree = "<group>"; };
+		23F5A00C23161D51003F0FAE /* YBIBDefaultWebImageMediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBDefaultWebImageMediator.m; sourceTree = "<group>"; };
 		23FF103422F6B6FC0091331F /* TestFController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFController.h; sourceTree = "<group>"; };
 		23FF103522F6B6FC0091331F /* TestFController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestFController.m; sourceTree = "<group>"; };
 		97542AA3FE46C41411B15C5D /* Pods_YBImageBrowserDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YBImageBrowserDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -245,21 +245,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		231FD3DA231539570016D426 /* WebImageMediator */ = {
-			isa = PBXGroup;
-			children = (
-				231FD3DB231539570016D426 /* YBIBDefaultWebImageMediator.h */,
-				231FD3DC231539570016D426 /* YBIBDefaultWebImageMediator.m */,
-			);
-			name = WebImageMediator;
-			path = YBImageBrowserDemo/WebImageMediator;
-			sourceTree = SOURCE_ROOT;
-		};
 		23ABA26A22D0BAB600535F6A /* YBImageBrowser */ = {
 			isa = PBXGroup;
 			children = (
 				23ABA2A422D0BAB600535F6A /* YBImageBrowser.bundle */,
-				231FD3DA231539570016D426 /* WebImageMediator */,
+				23F5A00A23161D51003F0FAE /* WebImageMediator */,
 				23ABA2BF22D0C22900535F6A /* ToolView */,
 				23ABA26B22D0BAB600535F6A /* AuxiliaryView */,
 				23ABA28222D0BAB600535F6A /* Helper */,
@@ -530,6 +520,15 @@
 			path = File;
 			sourceTree = "<group>";
 		};
+		23F5A00A23161D51003F0FAE /* WebImageMediator */ = {
+			isa = PBXGroup;
+			children = (
+				23F5A00B23161D51003F0FAE /* YBIBDefaultWebImageMediator.h */,
+				23F5A00C23161D51003F0FAE /* YBIBDefaultWebImageMediator.m */,
+			);
+			path = WebImageMediator;
+			sourceTree = "<group>";
+		};
 		23FF103322F6B6BF0091331F /* 用代理配置数据源（以相册为例） */ = {
 			isa = PBXGroup;
 			children = (
@@ -781,7 +780,7 @@
 				23CC350B22DC7CC00037018B /* TestCustomData.m in Sources */,
 				23ABA2B922D0BAB700535F6A /* YBIBImageScrollView.m in Sources */,
 				23ABA2AE22D0BAB700535F6A /* YBIBScreenRotationHandler.m in Sources */,
-				231FD3DD231539570016D426 /* YBIBDefaultWebImageMediator.m in Sources */,
+				23F5A00D23161D51003F0FAE /* YBIBDefaultWebImageMediator.m in Sources */,
 				23ABA2BB22D0BAB700535F6A /* YBImage.m in Sources */,
 				23CC34F322DC59340037018B /* TestDController.m in Sources */,
 				23ABA2AB22D0BAB700535F6A /* YBIBCollectionView.m in Sources */,
