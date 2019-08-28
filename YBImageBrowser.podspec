@@ -51,7 +51,7 @@ Pod::Spec.new do |s|
     video.resources    = "Video/YBImageBrowserVideo.bundle"
     video.dependency 'YBImageBrowser/Core'
   end
-  s.subspec "Video/NOSD" do |video|
+  s.subspec "VideoNOSD" do |video|
     video.source_files = "Video/*.{h,m}"
     video.resources    = "Video/YBImageBrowserVideo.bundle"
     video.dependency 'YBImageBrowser/NOSD'

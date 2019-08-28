@@ -12,6 +12,7 @@
 #import "YBIBImageScrollView.h"
 #import "YBIBImageData+Internal.h"
 #import "YBIBCopywriter.h"
+#import "YBIBUtilities.h"
 
 @interface YBIBImageCell () <YBIBImageDataDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate>
 @property (nonatomic, strong) YBIBImageScrollView *imageScrollView;
@@ -162,11 +163,14 @@
     
     __weak typeof(self) wSelf = self;
     [data cuttingImageToRect:CGRectMake(x, y, width, height) complete:^(UIImage *image) {
-        __strong typeof(wSelf) self = wSelf;
-        if (!self) return;
-        if (data == self.yb_cellData && !self.imageScrollView.isDragging && !self->_interacting && !self.yb_isTransitioning()) {
-            [self showTailoringImageView:image];
-        }
+        if (!image) return;
+        YBIB_DISPATCH_ASYNC_MAIN(^{
+            __strong typeof(wSelf) self = wSelf;
+            if (!self) return;
+            if (data == self.yb_cellData && !self.imageScrollView.isDragging && !self->_interacting && !self.yb_isTransitioning()) {
+                [self showTailoringImageView:image];
+            }
+        })
     }];
 }
 

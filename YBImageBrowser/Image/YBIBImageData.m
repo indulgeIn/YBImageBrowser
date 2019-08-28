@@ -385,6 +385,8 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         // Physical pixel.
         CGFloat scale = self.originImage.scale;
         CGRect rectOfPhysical = rect;
+        rectOfPhysical.origin.x *= scale;
+        rectOfPhysical.origin.y *= scale;
         rectOfPhysical.size.width *= scale;
         rectOfPhysical.size.height *= scale;
         CGImageRef cgImage = CGImageCreateWithImageInRect(self.originImage.CGImage, rectOfPhysical);
@@ -393,7 +395,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
             if (cgImage) CGImageRelease(cgImage);
             return;
         }
-        CGSize size = [self bestSizeOfCuttingWithOriginSize:CGSizeMake(CGImageGetWidth(cgImage), CGImageGetHeight(cgImage))];
+        CGSize size = [self bestSizeOfCuttingWithOriginSize:CGSizeMake(CGImageGetWidth(cgImage) / scale, CGImageGetHeight(cgImage) / scale)];
         UIImage *tmpImage = [UIImage imageWithCGImage:cgImage];
         if (isCancelled()) {
             complete(nil);
@@ -500,13 +502,11 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         self.loadingStatus = YBIBImageLoadingStatusProcessing;
         __weak typeof(self) wSelf = self;
         modifier(self, image, ^(UIImage *processedImage){
-            YBIB_DISPATCH_ASYNC_MAIN(^{
-                // This step is necessary, maybe 'self' is already 'dealloc' if processing code takes too much time.
-                __strong typeof(wSelf) self = wSelf;
-                if (!self) return;
-                self.loadingStatus = YBIBImageLoadingStatusNone;
-                completion(processedImage);
-            });
+            // This step is necessary, maybe 'self' is already 'dealloc' if processing code takes too much time.
+            __strong typeof(wSelf) self = wSelf;
+            if (!self) return;
+            self.loadingStatus = YBIBImageLoadingStatusNone;
+            completion(processedImage);
         });
     } else {
         completion(image);

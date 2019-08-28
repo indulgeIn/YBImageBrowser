@@ -53,22 +53,23 @@
     
     PHAsset *asset = (PHAsset *)self.dataArray[index];
     if (asset.mediaType == PHAssetMediaTypeVideo) {
-        
+
         // 系统相册的视频
         YBIBVideoData *data = [YBIBVideoData new];
         data.videoPHAsset = asset;
         data.projectiveView = [self viewAtIndex:index];
         return data;
-        
+
     } else if (asset.mediaType == PHAssetMediaTypeImage) {
-        
+
         // 系统相册的图片
         YBIBImageData *data = [YBIBImageData new];
         data.imagePHAsset = asset;
         data.projectiveView = [self viewAtIndex:index];
         return data;
-        
+
     }
+    
     return nil;
 }
 
