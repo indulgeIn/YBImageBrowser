@@ -180,6 +180,19 @@ SDWebImage 有两种情况会出现兼容问题：该库对 SDWebImage 采用模
 为什么不去除依赖 SDWebImage 自己实现？时间成本太高。
 为什么不拖入 SDWebImage 修改类名？会扩大组件的体积，若外部有 SDWebImage 就存在一份多余代码。
 
+## 依赖的 YYImage 与项目依赖的 YYKit 冲突
+
+实际上 YYKit 有把各个组件拆分出来，建议项目中分开导入：
+```
+pod 'YYModel'
+pod 'YYCache'
+pod 'YYImage'
+pod 'YYWebImage'
+pod 'YYText'
+...
+```
+而且这样更灵活便于取舍。
+
 ## 低内存设备 OOM 问题
 
 组件内部会降低在低内存设备上的性能，减小内存占用，但若高清图过多，可能需要手动去控制（以下是硬件消耗很低的状态）：
