@@ -19,7 +19,7 @@
 
 #### 提问前须知
 
-考虑到笔者的精力问题，遇到问题请先查看 API 接口、效仿 Demo、阅读 README、搜索 Issues。请不要提出与组件无关的问题，比如 CocoaPods 的错误；如果是 BUG 或 Feature 最好是提 Issue；请不要问联系方式，主页有qq邮箱，简书也能直接发消息。
+考虑到笔者的精力问题，遇到问题请先查看 API、效仿 Demo、阅读 README、搜索 Issues。请不要提出与组件无关的问题，比如 CocoaPods 的错误，如果是 BUG 或 Feature 最好是提 Issue。
 
 # 目录
 
