@@ -233,11 +233,11 @@
 
 - (void)setHiddenProjectiveView:(id)hiddenProjectiveView {
     if (!self.autoHideProjectiveView) return;
-    if (_hiddenProjectiveView && [_hiddenProjectiveView respondsToSelector:@selector(setHidden:)]) {
-        [_hiddenProjectiveView setValue:@(NO) forKey:@"hidden"];
+    if (_hiddenProjectiveView && [_hiddenProjectiveView respondsToSelector:@selector(setAlpha:)]) {
+        [_hiddenProjectiveView setAlpha:1];
     }
-    if (hiddenProjectiveView && [hiddenProjectiveView respondsToSelector:@selector(setHidden:)]) {
-        [hiddenProjectiveView setValue:@(YES) forKey:@"hidden"];
+    if (hiddenProjectiveView && [hiddenProjectiveView respondsToSelector:@selector(setAlpha:)]) {
+        [hiddenProjectiveView setAlpha:0];
     }
     _hiddenProjectiveView = hiddenProjectiveView;
 }
