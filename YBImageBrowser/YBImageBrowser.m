@@ -30,7 +30,8 @@
 #pragma mark - life cycle
 
 - (void)dealloc {
-    [self rebuild];
+    self.hiddenProjectiveView = nil;
+    [self showStatusBar];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
