@@ -6,20 +6,21 @@
 
 **iOS 图片浏览器，功能强大，易于拓展，性能优化和内存控制让其运行更加的流畅和稳健。**
 
-**相关文章: **
-**[YBImageBrowser 重构心得：如何优化架构、性能、内存？](https://www.jianshu.com/p/ef53d0094437)**
-**[避免 iOS 组件依赖冲突的小技巧](https://www.jianshu.com/p/0e3283275300)**
+##### 相关文章：
+##### [YBImageBrowser 重构心得：如何优化架构、性能、内存？](https://www.jianshu.com/p/ef53d0094437)
+##### [避免 iOS 组件依赖冲突的小技巧](https://www.jianshu.com/p/0e3283275300)
 
 
+## 注意事项
 
 #### 关于 3.x 版本 (使用 2.x 版本请切换到 store_2.x 分支)
 
 为了彻底解决 2.x 版本的设计缺陷和代码漏洞，特花费大量业余时间进行了 3.x 深度重构，所以没办法做到向下兼容，希望社区朋友们能体谅，根据情况进行版本迁移。
 3.x 版本有着更科学的架构，更极致的性能提升，更严格的内存控制，使用起来会更得心应手，也便于将来的迭代优化。
 
-#### 提问前须知
+#### 提问须知
 
-考虑到笔者的精力问题，遇到问题请先查看 API 接口、效仿 Demo、阅读 README、搜索 Issues。请不要提出与组件无关的问题，比如 CocoaPods 的错误；如果是 BUG 或 Feature 最好是提 Issue；请不要问联系方式，主页有qq邮箱，简书也能直接发消息。
+考虑到笔者的精力问题，遇到问题请先查看 API、效仿 Demo、阅读 README、搜索 Issues。请不要提出与组件无关的问题，比如 CocoaPods 的错误，如果是 BUG 或 Feature 最好是提 Issue。
 
 # 目录
 
@@ -102,6 +103,8 @@ pod 'YBImageBrowser/VideoNOSD'
 
 Demo 中提供了很多示例代码，演示较复杂的拓展方式，所以若需要深度定制最好是下载 Demo 查看。
 
+建议不对`YBImageBrowser`进行复用，目前还存在一些逻辑漏洞。
+
 
 ## 基本使用
 
@@ -179,6 +182,19 @@ SDWebImage 有两种情况会出现兼容问题：该库对 SDWebImage 采用模
 
 为什么不去除依赖 SDWebImage 自己实现？时间成本太高。
 为什么不拖入 SDWebImage 修改类名？会扩大组件的体积，若外部有 SDWebImage 就存在一份多余代码。
+
+## 依赖的 YYImage 与项目依赖的 YYKit 冲突
+
+实际上 YYKit 有把各个组件拆分出来，建议项目中分开导入：
+```
+pod 'YYModel'
+pod 'YYCache'
+pod 'YYImage'
+pod 'YYWebImage'
+pod 'YYText'
+...
+```
+而且这样更灵活便于取舍。
 
 ## 低内存设备 OOM 问题
 
