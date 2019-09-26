@@ -32,7 +32,12 @@
 }
 
 - (void)yb_hide:(BOOL)hide {
-    self.viewOriginButton.hidden = hide;
+    YBIBImageData *data = self.yb_currentData();
+    if (hide || !data.extraData) {
+        self.viewOriginButton.hidden = YES;
+    } else {
+        self.viewOriginButton.hidden = NO;
+    }
 }
 
 - (void)yb_pageChanged {
