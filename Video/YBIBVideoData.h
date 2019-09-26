@@ -38,6 +38,9 @@ typedef void (^YBIBVideoSingleTouchBlock)(YBIBVideoData *videoData);
 /// 预览图/缩约图，若 projectiveView 存在且是 UIImageView 类型将会自动获取缩约图
 @property (nonatomic, strong, nullable) UIImage *thumbImage;
 
+/// 是否允许保存到相册
+@property (nonatomic, assign) BOOL allowSaveToPhotoAlbum;
+
 /// 自动播放次数，默认为 0，NSUIntegerMax 表示无限次
 @property (nonatomic, assign) NSUInteger autoPlayCount;
 

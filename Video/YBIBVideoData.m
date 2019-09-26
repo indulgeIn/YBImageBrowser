@@ -40,6 +40,7 @@ extern CGImageRef YYCGImageCreateDecodedCopy(CGImageRef imageRef, BOOL decodeFor
     _repeatPlayCount = 0;
     _autoPlayCount = 0;
     _shouldHideForkButton = NO;
+    _allowSaveToPhotoAlbum = YES;
 }
 
 #pragma mark - load data
@@ -159,6 +160,10 @@ extern CGImageRef YYCGImageCreateDecodedCopy(CGImageRef imageRef, BOOL decodeFor
     if (!self.delegate) {
         [self loadData];
     }
+}
+
+- (BOOL)yb_allowSaveToPhotoAlbum {
+    return self.allowSaveToPhotoAlbum;
 }
 
 - (void)yb_saveToPhotoAlbum {

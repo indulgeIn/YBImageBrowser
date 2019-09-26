@@ -70,6 +70,7 @@
     YBImageBrowser *browser = [YBImageBrowser new];
     browser.dataSourceArray = datas;
     browser.currentPage = index;
+    browser.defaultToolViewHandler.topView.operationType = YBIBTopViewOperationTypeSave;
     [browser show];
 }
 

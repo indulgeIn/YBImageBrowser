@@ -34,7 +34,7 @@
 
 - (void)yb_pageChanged {
     if (self.topView.operationType == YBIBTopViewOperationTypeSave) {
-        self.topView.operationButton.hidden = ![self.yb_currentData() respondsToSelector:@selector(yb_saveToPhotoAlbum)];
+        self.topView.operationButton.hidden = [self currentDataShouldHideSaveButton];
     }
     [self.topView setPage:self.yb_currentPage() totalPage:self.yb_totalPage()];
 }
@@ -58,6 +58,13 @@
 
 #pragma mark - private
 
+- (BOOL)currentDataShouldHideSaveButton {
+    id<YBIBDataProtocol> data = self.yb_currentData();
+    BOOL allow = [data respondsToSelector:@selector(yb_allowSaveToPhotoAlbum)] && [data yb_allowSaveToPhotoAlbum];
+    BOOL can = [data respondsToSelector:@selector(yb_saveToPhotoAlbum)];
+    return !(allow && can);
+}
+
 - (void)layoutWithExpectOrientation:(UIDeviceOrientation)orientation {
     CGSize containerSize = self.yb_containerSize(orientation);
     UIEdgeInsets padding = YBIBPaddingByBrowserOrientation(orientation);
@@ -66,12 +73,12 @@
 }
 
 - (void)showSheetView {
-    if ([self.yb_currentData() respondsToSelector:@selector(yb_saveToPhotoAlbum)]) {
+    if ([self currentDataShouldHideSaveButton]) {
+        [self.sheetView.actions removeObject:self.saveAction];
+    } else {
         if (![self.sheetView.actions containsObject:self.saveAction]) {
             [self.sheetView.actions addObject:self.saveAction];
         }
-    } else {
-        [self.sheetView.actions removeObject:self.saveAction];
     }
     [self.sheetView showToView:self.yb_containerView orientation:self.yb_currentOrientation()];
 }

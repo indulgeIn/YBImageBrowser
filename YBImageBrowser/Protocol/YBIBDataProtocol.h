@@ -50,9 +50,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)yb_preload;
 
 /**
- 保存到相册，不实现就表示不支持这个功能
+ 保存到相册
  */
 - (void)yb_saveToPhotoAlbum;
+
+/**
+ 是否允许保存到相册
+ */
+- (BOOL)yb_allowSaveToPhotoAlbum;
 
 @end
 

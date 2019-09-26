@@ -60,6 +60,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     _freezing = NO;
     _cuttingSentinel = [YBIBSentinel new];
     _interactionProfile = [YBIBInteractionProfile new];
+    _allowSaveToPhotoAlbum = YES;
 }
 
 #pragma mark - load data
@@ -565,6 +566,10 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     if (!self.delegate) {
         [self loadData];
     }
+}
+
+- (BOOL)yb_allowSaveToPhotoAlbum {
+    return self.allowSaveToPhotoAlbum;
 }
 
 - (void)yb_saveToPhotoAlbum {

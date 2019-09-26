@@ -14,7 +14,7 @@
     for (UIView *subView in self.subviews.reverseObjectEnumerator) {
         CGPoint subPoint = [self convertPoint:point toView:subView];
         UIView *view = [subView hitTest:subPoint withEvent:event];
-        if (view) return view;
+        if (view && !view.isHidden && view.alpha > 0 && view.userInteractionEnabled) return view;
     }
     return nil;
 }

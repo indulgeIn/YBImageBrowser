@@ -73,6 +73,9 @@ typedef void (^YBIBImageScrollViewStatusBlock)(YBIBImageData *imageData, UIScrol
 /// 预览图/缩约图 URL，缓存中未找到则忽略（若 projectiveView 存在且是 UIImageView 类型将会自动获取缩约图）
 @property (nonatomic, copy, nullable) NSURL *thumbURL;
 
+/// 是否允许保存到相册
+@property (nonatomic, assign) BOOL allowSaveToPhotoAlbum;
+
 /// 根据图片信息判断是否需要预解码
 @property (nonatomic, copy, nullable) YBIBPreDecodeDecisionBlock preDecodeDecision;
 
