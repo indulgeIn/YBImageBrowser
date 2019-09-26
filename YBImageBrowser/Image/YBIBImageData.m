@@ -354,8 +354,8 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
                 thumbImage = [UIImage imageWithData:imageData];
             }
             // If the target image is ready, ignore the thumb image.
-            BOOL shouldIgnore = [self shouldCompress] ? (self.compressedImage != nil) : (thumbImage != nil);
-            if (!shouldIgnore) {
+            BOOL shouldIgnore = [self shouldCompress] ? (self.compressedImage != nil) : (self.originImage != nil);
+            if (!shouldIgnore && thumbImage) {
                 [self.delegate yb_imageData:self readyForThumbImage:thumbImage];
             }
         }];

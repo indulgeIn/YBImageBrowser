@@ -67,7 +67,7 @@ typedef void (^YBIBImageScrollViewStatusBlock)(YBIBImageData *imageData, UIScrol
 /// 投影视图，当前数据模型对应外界业务的 UIView (通常为 UIImageView)，做转场动效用
 @property (nonatomic, weak, nullable) __kindof UIView *projectiveView;
 
-/// 预览图/缩约图，注意这个图片不能过大（若 projectiveView 存在且是 UIImageView 类型将会自动获取缩约图）
+/// 预览图/缩约图，注意若这个图片过大会导致内存压力（若 projectiveView 存在且是 UIImageView 类型将会自动获取缩约图）
 @property (nonatomic, strong, nullable) UIImage *thumbImage;
 
 /// 预览图/缩约图 URL，缓存中未找到则忽略（若 projectiveView 存在且是 UIImageView 类型将会自动获取缩约图）
