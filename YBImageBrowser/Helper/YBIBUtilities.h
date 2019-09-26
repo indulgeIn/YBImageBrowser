@@ -37,7 +37,7 @@ BOOL YBIBLowMemory(void);
 
 BOOL YBIBIsIphoneXSeries(void);
 CGFloat YBIBStatusbarHeight(void);
-CGFloat YBIBSafeAreaHeight(void);
+CGFloat YBIBSafeAreaBottomHeight(void);
 
 UIImage *YBIBSnapshotView(UIView *);
 

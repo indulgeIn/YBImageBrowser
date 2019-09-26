@@ -65,27 +65,29 @@ BOOL YBIBLowMemory(void) {
 }
 
 BOOL YBIBIsIphoneXSeries(void) {
-    static BOOL isIphoneX = NO;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSSet *platformSet = [NSSet setWithObjects:@"iPhone10,3", @"iPhone10,6", @"iPhone11,8", @"iPhone11,2", @"iPhone11,4", @"iPhone11,6", nil];
-        struct utsname systemInfo;
-        uname(&systemInfo);
-        NSString *platform = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-        if ([platform isEqualToString:@"x86_64"] || [platform isEqualToString:@"i386"]) {
-            platform = NSProcessInfo.processInfo.environment[@"SIMULATOR_MODEL_IDENTIFIER"];
-        }
-        isIphoneX = [platformSet containsObject:platform];
-    });
-    return isIphoneX;
+    return YBIBStatusbarHeight() > 20;
 }
 
 CGFloat YBIBStatusbarHeight(void) {
-    return YBIBIsIphoneXSeries() ? 44 : 20;
+    CGFloat height = 0;
+    if (@available(iOS 11.0, *)) {
+        height = UIApplication.sharedApplication.delegate.window.safeAreaInsets.top;
+    }
+    if (height <= 0) {
+        height = UIApplication.sharedApplication.statusBarFrame.size.height;
+    }
+    if (height <= 0) {
+        height = 20;
+    }
+    return height;
 }
 
-CGFloat YBIBSafeAreaHeight(void) {
-    return YBIBIsIphoneXSeries() ? 34 : 0;
+CGFloat YBIBSafeAreaBottomHeight(void) {
+    CGFloat bottom = 0;
+    if (@available(iOS 11.0, *)) {
+        bottom = UIApplication.sharedApplication.delegate.window.safeAreaInsets.bottom;
+    }
+    return bottom;
 }
 
 UIImage *YBIBSnapshotView(UIView *view) {
@@ -106,22 +108,22 @@ UIEdgeInsets YBIBPaddingByBrowserOrientation(UIDeviceOrientation orientation) {
         BOOL same = orientation == barOrientation;
         BOOL reverse = !same && UIDeviceOrientationIsLandscape(barOrientation);
         if (same) {
-            padding.bottom = YBIBSafeAreaHeight();
+            padding.bottom = YBIBSafeAreaBottomHeight();
             padding.top = 0;
         } else if (reverse) {
-            padding.top = YBIBSafeAreaHeight();
+            padding.top = YBIBSafeAreaBottomHeight();
             padding.bottom = 0;
         }
-        padding.left = padding.right = MAX(YBIBSafeAreaHeight(), YBIBStatusbarHeight());
+        padding.left = padding.right = MAX(YBIBSafeAreaBottomHeight(), YBIBStatusbarHeight());
     } else {
         if (orientation == UIDeviceOrientationPortrait) {
             padding.top = YBIBStatusbarHeight();
-            padding.bottom = barOrientation == UIDeviceOrientationPortrait ? YBIBSafeAreaHeight() : 0;
+            padding.bottom = barOrientation == UIDeviceOrientationPortrait ? YBIBSafeAreaBottomHeight() : 0;
         } else {
             padding.bottom = YBIBStatusbarHeight();
-            padding.top = barOrientation == UIDeviceOrientationPortrait ? YBIBSafeAreaHeight() : 0;
+            padding.top = barOrientation == UIDeviceOrientationPortrait ? YBIBSafeAreaBottomHeight() : 0;
         }
-        padding.left = padding.right = UIDeviceOrientationIsLandscape(barOrientation) ? YBIBSafeAreaHeight() : 0 ;
+        padding.left = padding.right = UIDeviceOrientationIsLandscape(barOrientation) ? YBIBSafeAreaBottomHeight() : 0 ;
     }
     return padding;
 }

@@ -91,7 +91,7 @@
         layout.sectionInset = UIEdgeInsetsMake(padding, padding, padding, padding);
         layout.minimumLineSpacing = 0;
         layout.minimumInteritemSpacing = 0;
-        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - YBIBStatusbarHeight() - 40 - YBIBSafeAreaHeight() - 44) collectionViewLayout:layout];
+        _collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - YBIBStatusbarHeight() - 40 - YBIBSafeAreaBottomHeight() - 44) collectionViewLayout:layout];
         [_collectionView registerNib:[UINib nibWithNibName:NSStringFromClass(BaseListCell.self) bundle:nil] forCellWithReuseIdentifier:NSStringFromClass(BaseListCell.self)];
         _collectionView.backgroundColor = [UIColor whiteColor];
         _collectionView.alwaysBounceVertical = YES;
