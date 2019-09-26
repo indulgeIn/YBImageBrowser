@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)implementGetBaseInfoProtocol:(id<YBIBGetBaseInfoProtocol>)obj;
 
-@property (nonatomic, weak, nullable) id hiddenProjectiveView;
+@property (nonatomic, weak, nullable) NSObject *hiddenProjectiveView;
 
 @end
 

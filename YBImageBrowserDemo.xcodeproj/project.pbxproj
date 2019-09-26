@@ -16,6 +16,7 @@
 		231F04AC22A8A95B00C335FE /* localBigImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F049522A8A95A00C335FE /* localBigImage0.jpeg */; };
 		231F04B922A8A95B00C335FE /* localLongImage0.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 231F04A222A8A95A00C335FE /* localLongImage0.jpeg */; };
 		23556E4322D77F43004178DA /* YBIBContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23556E4222D77F43004178DA /* YBIBContainerView.m */; };
+		23A484A1233CC0500017FA5D /* NSObject+YBImageBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 23A484A0233CC0500017FA5D /* NSObject+YBImageBrowser.m */; };
 		23ABA2A722D0BAB700535F6A /* YBIBAuxiliaryViewHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26D22D0BAB600535F6A /* YBIBAuxiliaryViewHandler.m */; };
 		23ABA2A822D0BAB700535F6A /* YBIBLoadingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA26F22D0BAB600535F6A /* YBIBLoadingView.m */; };
 		23ABA2A922D0BAB700535F6A /* YBIBToastView.m in Sources */ = {isa = PBXBuildFile; fileRef = 23ABA27222D0BAB600535F6A /* YBIBToastView.m */; };
@@ -105,6 +106,8 @@
 		233BD69522C6497100F4CEF3 /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		23556E4122D77F43004178DA /* YBIBContainerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YBIBContainerView.h; sourceTree = "<group>"; };
 		23556E4222D77F43004178DA /* YBIBContainerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBContainerView.m; sourceTree = "<group>"; };
+		23A4849F233CC0500017FA5D /* NSObject+YBImageBrowser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+YBImageBrowser.h"; sourceTree = "<group>"; };
+		23A484A0233CC0500017FA5D /* NSObject+YBImageBrowser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+YBImageBrowser.m"; sourceTree = "<group>"; };
 		23ABA26C22D0BAB600535F6A /* YBIBAuxiliaryViewHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBAuxiliaryViewHandler.h; sourceTree = "<group>"; };
 		23ABA26D22D0BAB600535F6A /* YBIBAuxiliaryViewHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBAuxiliaryViewHandler.m; sourceTree = "<group>"; };
 		23ABA26E22D0BAB600535F6A /* YBIBLoadingView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBLoadingView.h; sourceTree = "<group>"; };
@@ -291,6 +294,8 @@
 				23556E4122D77F43004178DA /* YBIBContainerView.h */,
 				23556E4222D77F43004178DA /* YBIBContainerView.m */,
 				23ABA27E22D0BAB600535F6A /* YBImageBrowser+Internal.h */,
+				23A4849F233CC0500017FA5D /* NSObject+YBImageBrowser.h */,
+				23A484A0233CC0500017FA5D /* NSObject+YBImageBrowser.m */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -761,6 +766,7 @@
 				23CC34F622DC593F0037018B /* TestEController.m in Sources */,
 				23C1F89422D1CB2200793CAA /* YBIBToolViewHandler.m in Sources */,
 				23FF103622F6B6FC0091331F /* TestFController.m in Sources */,
+				23A484A1233CC0500017FA5D /* NSObject+YBImageBrowser.m in Sources */,
 				23ABA2AF22D0BAB700535F6A /* YBIBCopywriter.m in Sources */,
 				23C282F222D5F4540084E9E6 /* YBIBVideoCell.m in Sources */,
 				23ABA2A922D0BAB700535F6A /* YBIBToastView.m in Sources */,

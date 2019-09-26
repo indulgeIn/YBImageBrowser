@@ -11,6 +11,7 @@
 #import "YBIBCellProtocol.h"
 #import "YBIBDataMediator.h"
 #import "YBIBScreenRotationHandler.h"
+#import "NSObject+YBImageBrowser.h"
 #import "YBImageBrowser+Internal.h"
 #if __has_include("YBIBDefaultWebImageMediator.h")
 #import "YBIBDefaultWebImageMediator.h"
@@ -231,15 +232,26 @@
 
 #pragma mark - internal
 
-- (void)setHiddenProjectiveView:(id)hiddenProjectiveView {
-    if (!self.autoHideProjectiveView) return;
-    if (_hiddenProjectiveView && [_hiddenProjectiveView respondsToSelector:@selector(setHidden:)]) {
-        [_hiddenProjectiveView setValue:@(NO) forKey:@"hidden"];
-    }
-    if (hiddenProjectiveView && [hiddenProjectiveView respondsToSelector:@selector(setHidden:)]) {
-        [hiddenProjectiveView setValue:@(YES) forKey:@"hidden"];
+- (void)setHiddenProjectiveView:(NSObject *)hiddenProjectiveView {
+    if (_hiddenProjectiveView && [_hiddenProjectiveView respondsToSelector:@selector(setAlpha:)]) {
+        CGFloat originAlpha = _hiddenProjectiveView.ybib_originAlpha;
+        if (originAlpha != 1) {
+            [_hiddenProjectiveView setValue:@(1) forKey:@"alpha"];
+            [UIView animateWithDuration:0.2 animations:^{
+                [self->_hiddenProjectiveView setValue:@(originAlpha) forKey:@"alpha"];
+            }];
+        } else {
+            [_hiddenProjectiveView setValue:@(originAlpha) forKey:@"alpha"];
+        }
     }
     _hiddenProjectiveView = hiddenProjectiveView;
+    
+    if (!self.autoHideProjectiveView) return;
+    
+    if (hiddenProjectiveView && [hiddenProjectiveView respondsToSelector:@selector(setAlpha:)]) {
+        hiddenProjectiveView.ybib_originAlpha = ((NSNumber *)[hiddenProjectiveView valueForKey:@"alpha"]).floatValue;
+        [hiddenProjectiveView setValue:@(0) forKey:@"alpha"];
+    }
 }
 
 - (void)implementOperateBrowserProtocol:(id<YBIBOperateBrowserProtocol>)obj {
