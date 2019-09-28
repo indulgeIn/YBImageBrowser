@@ -27,7 +27,7 @@
     
     YBImageBrowser *browser = [YBImageBrowser new];
     // 禁止旋转（但是若当前控制器能旋转，图片浏览器也会跟随，布局可能会错位，这种情况还待处理）
-    browser.supportedOrientations = UIInterfaceOrientationPortrait;
+    browser.supportedOrientations = UIInterfaceOrientationMaskPortrait;
     // 这里演示使用代理来处理数据源（当然用数组也可以）
     browser.dataSource = self;
     browser.currentPage = self.selectIndex;
