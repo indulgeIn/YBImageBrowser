@@ -83,7 +83,7 @@ extern CGFloat YBIBRotationAngle(UIDeviceOrientation startOrientation, UIDeviceO
             } completion:^(BOOL finished) {
                 completion();
                 // Disappear smoothly.
-                [UIView animateWithDuration:0.25 animations:^{
+                [UIView animateWithDuration:0.2 animations:^{
                     animateImageView.alpha = 0;
                 } completion:^(BOOL finished) {
                     [animateImageView removeFromSuperview];
