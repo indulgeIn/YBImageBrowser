@@ -188,10 +188,10 @@
         endFrame = [data yb_imageViewFrameWithContainerSize:self.bounds.size imageSize:startImage.size orientation:self.rotationHandler.currentOrientation];
     }
     
-    self.transitioning = YES;
+    [self setTransitioning:YES isShow:YES];
     [self.animatedTransition yb_showTransitioningWithContainer:self startView:startView startImage:startImage endFrame:endFrame orientation:self.rotationHandler.currentOrientation completion:^{
-        self.transitioning = NO;
         [self build];
+        [self setTransitioning:NO isShow:YES];
     }];
 }
 
@@ -211,11 +211,11 @@
     }
     [self showStatusBar];
     
-    self.transitioning = YES;
+    [self setTransitioning:YES isShow:NO];
     [self.animatedTransition yb_hideTransitioningWithContainer:self startView:startView endView:endView orientation:self.rotationHandler.currentOrientation completion:^{
         [self rebuild];
         [self removeFromSuperview];
-        self.transitioning = NO;
+        [self setTransitioning:NO isShow:NO];
     }];
 }
 
@@ -471,13 +471,12 @@
     return self.collectionView.layout.distanceBetweenPages;
 }
 
-- (void)setTransitioning:(BOOL)transitioning {
+- (void)setTransitioning:(BOOL)transitioning isShow:(BOOL)isShow {
     _transitioning = transitioning;
     // Make 'self.userInteractionEnabled' always 'YES' to block external interaction.
     self.containerView.userInteractionEnabled = !transitioning;
     self.collectionView.userInteractionEnabled = !transitioning;
     
-    BOOL isShow = !(_collectionView && _collectionView.superview);
     if (transitioning) {
         if ([self.delegate respondsToSelector:@selector(yb_imageBrowser:beginTransitioningWithIsShow:)]) {
             [self.delegate yb_imageBrowser:self beginTransitioningWithIsShow:isShow];
