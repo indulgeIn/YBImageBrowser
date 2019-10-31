@@ -66,7 +66,11 @@
 
 支持分库导入，核心部分就是图片浏览功能，视频播放作为拓展功能按需导入。
 
-1. 在 Podfile 中添加 `pod 'YBImageBrowser'`，视频功能需添加`pod 'YBImageBrowser/Video'`。
+1. 在 Podfile 中添加：
+```
+pod 'YBImageBrowser'
+pod 'YBImageBrowser/Video'  //视频功能需添加
+```
 2. 执行 `pod install` 或 `pod update`。
 3. 导入 `<YBImageBrowser/YBImageBrowser.h>`，视频功能需导入`<YBImageBrowser/YBIBVideoData.h>`。
 4. 注意：如果你需要支持 WebP，可以在 Podfile 中添加 `pod 'YYImage/WebP'`。
@@ -75,10 +79,10 @@
 
 #### 去除 SDWebImage 的依赖（版本需 >= 3.0.4）
 
-相应的配置变为：
+Podfile 相应的配置变为：
 ```
 pod 'YBImageBrowser/NOSD'
-pod 'YBImageBrowser/VideoNOSD'
+pod 'YBImageBrowser/VideoNOSD'  //视频功能需添加
 ```
 这时你必须定义一个类实现`YBIBWebImageMediator`协议，并赋值给`YBImageBrowser`类的`webImageMediator`属性（可以参考 `YBIBDefaultWebImageMediator`的实现）。
 
