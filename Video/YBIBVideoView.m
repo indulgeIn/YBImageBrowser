@@ -281,17 +281,15 @@
 }
 
 - (void)audioRouteChangeListenerCallback:(NSNotification*)notification {
-    NSDictionary *interuptionDict = notification.userInfo;
-    NSInteger routeChangeReason = [[interuptionDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
-    switch (routeChangeReason) {
-        case AVAudioSessionRouteChangeReasonNewDeviceAvailable:
-            break;
-        case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
-            [self playerPause];
-            break;
-        case AVAudioSessionRouteChangeReasonCategoryChange:
-            break;
-    }
+    YBIB_DISPATCH_ASYNC_MAIN(^{
+        NSDictionary *interuptionDict = notification.userInfo;
+        NSInteger routeChangeReason = [[interuptionDict valueForKey:AVAudioSessionRouteChangeReasonKey] integerValue];
+        switch (routeChangeReason) {
+            case AVAudioSessionRouteChangeReasonOldDeviceUnavailable:
+                [self playerPause];
+                break;
+        }
+    })
 }
 
 #pragma mark - event
