@@ -220,6 +220,10 @@
 }
 
 - (void)yb_videoData:(YBIBVideoData *)data readyForThumbImage:(UIImage *)image {
+    if (!self.videoView.isPlaying && !self.videoView.isPreparingPlay) {
+        self.videoView.thumbImageView.hidden = NO;
+    }
+    
     if (!self.videoView.thumbImageView.image) {
         CGSize previousSize = self.videoView.thumbImageView.image.size;
         self.videoView.thumbImageView.image = image;
@@ -252,6 +256,7 @@
 }
 
 - (void)yb_startPlayForVideoView:(YBIBVideoView *)view {
+    self.videoView.thumbImageView.hidden = YES;
     [self.yb_backView ybib_videoPlayingAdd:self];
     [self.yb_auxiliaryViewHandler() yb_hideLoadingWithContainer:self];
     [self hideToolViews:YES];

@@ -17,8 +17,6 @@
 @property (nonatomic, strong) YBIBVideoTopBar *topBar;
 @property (nonatomic, strong) YBIBVideoActionBar *actionBar;
 @property (nonatomic, strong) UIButton *playButton;
-@property (nonatomic, assign, getter=isPlaying) BOOL playing;
-@property (nonatomic, assign, getter=isPlayFailed) BOOL playFailed;
 @end
 
 @implementation YBIBVideoView {
@@ -111,6 +109,7 @@
 }
 
 - (void)preparPlay {
+    _preparingPlay = YES;
     _playFailed = NO;
     
     self.playButton.hidden = YES;
@@ -133,7 +132,7 @@
 
 - (void)startPlay {
     if (_player) {
-        self.playing = YES;
+        _playing = YES;
         
         [_player play];
         [self.actionBar play];
@@ -150,7 +149,9 @@
     [self.actionBar setCurrentValue:0];
     self.actionBar.hidden = YES;
     self.topBar.hidden = YES;
-    self.playing = NO;
+    
+    _playing = NO;
+    
     [self.delegate yb_finishPlayForVideoView:self];
 }
 
@@ -226,6 +227,8 @@
 
 - (void)playerItemStatusChanged {
     if (!_active) return;
+    
+    _preparingPlay = NO;
     
     switch (_playerItem.status) {
         case AVPlayerItemStatusReadyToPlay: {

@@ -52,6 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readonly, getter=isPlayFailed) BOOL playFailed;
 
+@property (nonatomic, assign, readonly, getter=isPreparingPlay) BOOL preparingPlay;
+
 @property (nonatomic, strong, readonly) UITapGestureRecognizer *tapGesture;
 
 - (void)reset;
