@@ -47,7 +47,7 @@
     self.videoError = en ? @"Video error" : @"视频错误";
     self.unableToSave = en ? @"Unable to save" : @"无法保存";
     self.imageIsInvalid = en ? @"Image is invalid" : @"图片无效";
-    self.downloadFailed = en ? @"Download failed" : @"图片失败";
+    self.downloadFailed = en ? @"Download failed" : @"加载图片失败";
     self.getPhotoAlbumAuthorizationFailed = en ? @"Failed to get album authorization" : @"获取相册权限失败";
     self.saveToPhotoAlbumSuccess = en ? @"Save successful" : @"已保存到系统相册";
     self.saveToPhotoAlbumFailed = en ? @"Save failed" : @"保存失败";
