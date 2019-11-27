@@ -235,7 +235,7 @@
             [self startPlay];
             
             double max = CMTimeGetSeconds(_playerItem.duration);
-            [self.actionBar setMaxValue:isnan(max) || isinf(max) ? 0 : max];
+            [self.actionBar setMaxValue:(isnan(max) || isinf(max)) ? 0 : max];
         }
             break;
         case AVPlayerItemStatusUnknown: {

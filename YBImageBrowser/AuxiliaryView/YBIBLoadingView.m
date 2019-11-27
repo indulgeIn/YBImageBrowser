@@ -74,6 +74,8 @@ static void *YBIBLoadingKey = &YBIBLoadingKey;
 - (void)drawRect:(CGRect)rect {
     if (self.isHidden) return;
     
+    CGFloat progress = (isnan(_progress) || isinf(_progress) || _progress < 0) ? 0 : _progress;
+    
     CGFloat radius = 17;
     CGFloat strokeWidth = 3;
     CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
@@ -86,7 +88,7 @@ static void *YBIBLoadingKey = &YBIBLoadingKey;
     [bottomPath stroke];
     
     [[UIColor whiteColor] setStroke];
-    UIBezierPath *activePath = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI / 2.0 endAngle:M_PI * 2 * _progress - M_PI / 2.0 clockwise:true];
+    UIBezierPath *activePath = [UIBezierPath bezierPathWithArcCenter:center radius:radius startAngle:-M_PI / 2.0 endAngle:M_PI * 2 * progress - M_PI / 2.0 clockwise:true];
     activePath.lineWidth = strokeWidth;
     activePath.lineCapStyle = kCGLineCapRound;
     activePath.lineJoinStyle = kCGLineCapRound;
@@ -96,7 +98,7 @@ static void *YBIBLoadingKey = &YBIBLoadingKey;
     shadow.shadowBlurRadius = 4;
     shadow.shadowOffset = CGSizeMake(0, 1);
     shadow.shadowColor = UIColor.darkGrayColor;
-    NSString *string = [NSString stringWithFormat:@"%.0lf%@", _progress * 100, @"%"];
+    NSString *string = [NSString stringWithFormat:@"%.0lf%@", progress * 100, @"%"];
     NSMutableAttributedString *atts = [[NSMutableAttributedString alloc] initWithString:string attributes:@{NSFontAttributeName:[UIFont boldSystemFontOfSize:10], NSForegroundColorAttributeName:[UIColor whiteColor], NSShadowAttributeName:shadow}];
     CGSize size = atts.size;
     [atts drawAtPoint:CGPointMake(center.x - size.width / 2.0, center.y - size.height / 2.0)];
