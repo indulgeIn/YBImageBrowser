@@ -6,6 +6,7 @@
 //  Copyright © 2019 杨波. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import <Photos/Photos.h>
 
 NS_ASSUME_NONNULL_BEGIN
