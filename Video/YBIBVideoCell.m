@@ -124,6 +124,7 @@
     [self.videoView hidePlayButton];
     self.yb_hideBrowser();
     _interacting = NO;
+    self.videoView.thumbImageView.hidden = NO;
 }
 
 - (void)hideToolViews:(BOOL)hide {

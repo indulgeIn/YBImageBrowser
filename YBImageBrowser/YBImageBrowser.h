@@ -78,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (id<YBIBDataProtocol>)currentData;
 
-/// 是否隐藏状态栏，默认为 YES
+/// 是否隐藏状态栏，默认为 YES（该值为 YES 时需要在 info.plist 中添加 View controller-based status bar appearance : NO 才能生效）
 @property (nonatomic, assign) BOOL shouldHideStatusBar;
 
 /// 工具视图处理器

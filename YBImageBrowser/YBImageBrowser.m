@@ -25,7 +25,7 @@
 @end
 
 @implementation YBImageBrowser {
-     UIWindowLevel _originWindowLevel;
+    BOOL _originStatusBarHidden;
 }
 
 #pragma mark - life cycle
@@ -137,13 +137,13 @@
 
 - (void)showStatusBar {
     if (self.shouldHideStatusBar) {
-        self.window.windowLevel = _originWindowLevel;
+        [UIApplication sharedApplication].statusBarHidden = _originStatusBarHidden;
     }
 }
 
 - (void)hideStatusBar {
     if (self.shouldHideStatusBar) {
-        self.window.windowLevel = UIWindowLevelStatusBar + 1;
+        [UIApplication sharedApplication].statusBarHidden = YES;
     }
 }
 
@@ -164,8 +164,7 @@
     self.frame = view.bounds;
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
-    _originWindowLevel = self.window.windowLevel;
-    [self hideStatusBar];
+    _originStatusBarHidden = [UIApplication sharedApplication].isStatusBarHidden;
     
     [self.rotationHandler configContainerSize:containerSize];
     
@@ -190,6 +189,7 @@
     
     [self setTransitioning:YES isShow:YES];
     [self.animatedTransition yb_showTransitioningWithContainer:self startView:startView startImage:startImage endFrame:endFrame orientation:self.rotationHandler.currentOrientation completion:^{
+        [self hideStatusBar];
         [self build];
         [self setTransitioning:NO isShow:YES];
     }];

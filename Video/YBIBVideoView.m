@@ -232,10 +232,12 @@
     
     switch (_playerItem.status) {
         case AVPlayerItemStatusReadyToPlay: {
-            [self startPlay];
-            
-            double max = CMTimeGetSeconds(_playerItem.duration);
-            [self.actionBar setMaxValue:(isnan(max) || isinf(max)) ? 0 : max];
+            // Delay to update UI.
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.15 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [self startPlay];
+                double max = CMTimeGetSeconds(self->_playerItem.duration);
+                [self.actionBar setMaxValue:(isnan(max) || isinf(max)) ? 0 : max];
+            });
         }
             break;
         case AVPlayerItemStatusUnknown: {
