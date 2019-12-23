@@ -21,7 +21,6 @@
 @property (nonatomic, strong) YBIBCollectionView *collectionView;
 @property (nonatomic, strong) YBIBDataMediator *dataMediator;
 @property (nonatomic, strong) YBIBScreenRotationHandler *rotationHandler;
-@property (nonatomic, assign) BOOL transitioning;
 @end
 
 @implementation YBImageBrowser {
@@ -47,7 +46,7 @@
 }
 
 - (void)initValue {
-    _transitioning = NO;
+    _transitioning = _showTransitioning = _hideTransitioning = NO;
     _defaultAnimatedTransition = _animatedTransition = [YBIBAnimatedTransition new];
     _toolViewHandlers = @[[YBIBToolViewHandler new]];
     _defaultToolViewHandler = _toolViewHandlers[0];
@@ -354,6 +353,20 @@
             return self.isTransitioning;
         }];
     }
+    if ([obj respondsToSelector:@selector(setYb_isShowTransitioning:)]) {
+        [obj setYb_isShowTransitioning:^BOOL{
+            __strong typeof(wSelf) self = wSelf;
+            if (!self) return NO;
+            return self.isShowTransitioning;
+        }];
+    }
+    if ([obj respondsToSelector:@selector(setYb_isHideTransitioning:)]) {
+        [obj setYb_isHideTransitioning:^BOOL{
+            __strong typeof(wSelf) self = wSelf;
+            if (!self) return NO;
+            return self.isHideTransitioning;
+        }];
+    }
     if ([obj respondsToSelector:@selector(setYb_isRotating:)]) {
         [obj setYb_isRotating:^BOOL{
             __strong typeof(wSelf) self = wSelf;
@@ -473,6 +486,9 @@
 
 - (void)setTransitioning:(BOOL)transitioning isShow:(BOOL)isShow {
     _transitioning = transitioning;
+    _showTransitioning = transitioning && isShow;
+    _hideTransitioning = transitioning && !isShow;
+    
     // Make 'self.userInteractionEnabled' always 'YES' to block external interaction.
     self.containerView.userInteractionEnabled = !transitioning;
     self.collectionView.userInteractionEnabled = !transitioning;

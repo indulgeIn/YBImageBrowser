@@ -42,6 +42,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 是否正在转场
 @property (nonatomic, copy) BOOL(^yb_isTransitioning)(void);
+/// 是否正在展示过程转场
+@property (nonatomic, copy) BOOL(^yb_isShowTransitioning)(void);
+/// 是否正在隐藏过程转场
+@property (nonatomic, copy) BOOL(^yb_isHideTransitioning)(void);
 
 /// 是否正在旋转
 @property (nonatomic, copy) BOOL(^yb_isRotating)(void);

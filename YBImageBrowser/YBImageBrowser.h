@@ -62,6 +62,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 是否正在转场
 @property (nonatomic, assign, readonly, getter=isTransitioning) BOOL transitioning;
+/// 是否正在进行展示过程转场
+@property (nonatomic, assign, readonly, getter=isShowTransitioning) BOOL showTransitioning;
+/// 是否正在进行隐藏过程转场
+@property (nonatomic, assign, readonly, getter=isHideTransitioning) BOOL hideTransitioning;
 
 /// 预加载数量 (默认为 2，低内存设备默认为 0)
 @property (nonatomic, assign) NSUInteger preloadCount;

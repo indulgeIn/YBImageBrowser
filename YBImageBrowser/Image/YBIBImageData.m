@@ -564,7 +564,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 
 #pragma mark - <YBIBDataProtocol>
 
-@synthesize yb_isTransitioning = _yb_isTransitioning;
+@synthesize yb_isHideTransitioning = _yb_isHideTransitioning;
 @synthesize yb_currentOrientation = _yb_currentOrientation;
 @synthesize yb_containerSize = _yb_containerSize;
 @synthesize yb_containerView = _yb_containerView;
@@ -646,7 +646,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
 }
 - (id<YBIBImageDataDelegate>)delegate {
     // Stop sending data to the '_delegate' if it is transiting.
-    return self.yb_isTransitioning() ? nil : _delegate;
+    return self.yb_isHideTransitioning() ? nil : _delegate;
 }
 
 - (void)setImageURL:(NSURL *)imageURL {
