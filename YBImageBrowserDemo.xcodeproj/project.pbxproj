@@ -215,6 +215,8 @@
 		23F26AD122D7208700C27C21 /* YBIBVideoActionBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YBIBVideoActionBar.m; sourceTree = "<group>"; };
 		23F5A00B23161D51003F0FAE /* YBIBDefaultWebImageMediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YBIBDefaultWebImageMediator.h; sourceTree = "<group>"; };
 		23F5A00C23161D51003F0FAE /* YBIBDefaultWebImageMediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YBIBDefaultWebImageMediator.m; sourceTree = "<group>"; };
+		23FC590723B05DD800F42054 /* YBIBImageCell+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "YBIBImageCell+Internal.h"; sourceTree = "<group>"; };
+		23FC590B23B05EBD00F42054 /* YBIBVideoCell+Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "YBIBVideoCell+Internal.h"; sourceTree = "<group>"; };
 		23FF103422F6B6FC0091331F /* TestFController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFController.h; sourceTree = "<group>"; };
 		23FF103522F6B6FC0091331F /* TestFController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestFController.m; sourceTree = "<group>"; };
 		97542AA3FE46C41411B15C5D /* Pods_YBImageBrowserDemo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YBImageBrowserDemo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -325,6 +327,7 @@
 				23ABA29322D0BAB600535F6A /* YBIBImageData+Internal.h */,
 				23ABA29122D0BAB600535F6A /* YBIBImageCell.h */,
 				23ABA29222D0BAB600535F6A /* YBIBImageCell.m */,
+				23FC590723B05DD800F42054 /* YBIBImageCell+Internal.h */,
 				23ABA28F22D0BAB600535F6A /* YBIBImageCache.h */,
 				23ABA29022D0BAB600535F6A /* YBIBImageCache.m */,
 				23ABA28E22D0BAB600535F6A /* YBIBImageCache+Internal.h */,
@@ -363,6 +366,7 @@
 				23EFA3BA22D6E1B800BC7AD9 /* YBIBVideoData+Internal.h */,
 				23C282F022D5F4540084E9E6 /* YBIBVideoCell.h */,
 				23C282F122D5F4540084E9E6 /* YBIBVideoCell.m */,
+				23FC590B23B05EBD00F42054 /* YBIBVideoCell+Internal.h */,
 				23F26ACA22D71FB200C27C21 /* YBIBVideoView.h */,
 				23F26ACB22D71FB200C27C21 /* YBIBVideoView.m */,
 				23F26ACD22D7206900C27C21 /* YBIBVideoTopBar.h */,

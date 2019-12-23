@@ -9,14 +9,12 @@
 #import "YBIBImageCell.h"
 #import "YBIBImageData.h"
 #import "YBIBIconManager.h"
-#import "YBIBImageScrollView.h"
+#import "YBIBImageCell+Internal.h"
 #import "YBIBImageData+Internal.h"
 #import "YBIBCopywriter.h"
 #import "YBIBUtilities.h"
 
 @interface YBIBImageCell () <YBIBImageDataDelegate, UIScrollViewDelegate, UIGestureRecognizerDelegate>
-@property (nonatomic, strong) YBIBImageScrollView *imageScrollView;
-@property (nonatomic, strong) UIImageView *tailoringImageView;
 @end
 
 @implementation YBIBImageCell {

@@ -9,11 +9,10 @@
 #import "YBIBVideoCell.h"
 #import "YBIBVideoData.h"
 #import "YBIBVideoData+Internal.h"
-#import "YBIBVideoView.h"
 #import "YBIBCopywriter.h"
 #import "YBIBIconManager.h"
 #import <objc/runtime.h>
-
+#import "YBIBVideoCell+Internal.h"
 
 @interface NSObject (YBIBVideoPlayingRecord)
 - (void)ybib_videoPlayingAdd:(NSObject *)obj;
@@ -43,7 +42,6 @@
 
 
 @interface YBIBVideoCell () <YBIBVideoDataDelegate, YBIBVideoViewDelegate, UIGestureRecognizerDelegate>
-@property (nonatomic, strong) YBIBVideoView *videoView;
 @end
 
 @implementation YBIBVideoCell {
