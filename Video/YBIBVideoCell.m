@@ -375,7 +375,7 @@
         } else {
             
             // Start
-            if (CGPointEqualToPoint(_interactStartPoint, CGPointZero) || self.yb_currentPage() != self.yb_selfPage() || !self.yb_cellIsInCenter()) return;
+            if (CGPointEqualToPoint(_interactStartPoint, CGPointZero) || self.yb_currentPage() != self.yb_selfPage() || !self.yb_cellIsInCenter() || self.videoView.actionBar.isTouchInside) return;
             
             CGPoint velocityPoint = [pan velocityInView:self.videoView];
             CGFloat triggerDistance = profile.triggerDistance;

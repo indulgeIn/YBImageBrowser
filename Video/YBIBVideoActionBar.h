@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (CGFloat)defaultHeight;
 
+@property (nonatomic, assign, readonly) BOOL isTouchInside;
+
 @end
 
 NS_ASSUME_NONNULL_END

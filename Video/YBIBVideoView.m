@@ -57,6 +57,7 @@
     _needAutoPlay = NO;
     _autoPlayCount = 0;
     _playFailed = NO;
+    _preparingPlay = NO;
 }
 
 #pragma mark - public

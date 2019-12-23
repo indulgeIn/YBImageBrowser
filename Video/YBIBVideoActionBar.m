@@ -184,4 +184,8 @@
     return _slider;
 }
 
+- (BOOL)isTouchInside {
+    return self.slider.isTouchInside;
+}
+
 @end
