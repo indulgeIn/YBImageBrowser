@@ -174,6 +174,8 @@ browser.currentPage = ...;
 
 定义一个实现`YBIBCellProtocol`协议的`UICollectionViewCell`类和一个实现`YBIBDataProtocol`协议的数据类，当要求不高时实现必选协议方法就能跑起来了，若对交互有要求就相对比较复杂，最好是参考默认的交互动效实现。
 
+在某些场景下，甚至可以直接继承项目中的 Cell 来做自定义。
+
 
 # 常见问题
 
