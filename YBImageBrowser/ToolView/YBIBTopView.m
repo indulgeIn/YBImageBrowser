@@ -66,15 +66,6 @@
     if (self.clickOperation) self.clickOperation(self.operationType);
 }
 
-#pragma mark - hit test
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if (CGRectContainsPoint(self.operationButton.frame, point)) {
-        return self.operationButton;
-    }
-    return nil;
-}
-
 #pragma mark - getters & setters
 
 - (void)setOperationType:(YBIBTopViewOperationType)operationType {

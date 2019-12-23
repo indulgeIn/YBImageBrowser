@@ -37,15 +37,6 @@
     return 50;
 }
 
-#pragma mark - hit test
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if (CGRectContainsPoint(self.cancelButton.frame, point)) {
-        return self.cancelButton;
-    }
-    return nil;
-}
-
 #pragma mark - getter
 
 - (UIButton *)cancelButton {

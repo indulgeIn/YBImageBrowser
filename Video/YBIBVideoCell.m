@@ -118,13 +118,13 @@
 
 - (void)hideBrowser {
     ((YBIBVideoData *)self.yb_cellData).delegate = nil;
+    self.videoView.thumbImageView.hidden = NO;
     self.videoView.autoPlayCount = 0;
     [self.videoView reset];
     [self.videoView hideToolBar:YES];
     [self.videoView hidePlayButton];
     self.yb_hideBrowser();
     _interacting = NO;
-    self.videoView.thumbImageView.hidden = NO;
 }
 
 - (void)hideToolViews:(BOOL)hide {
