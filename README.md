@@ -226,4 +226,4 @@ browser.preloadCount = 0;
 
 ## 关于 Swift 版本
 
-目前没有写 Swift 版本的计划，对笔者来说感觉收益太低了。 
+考虑时间成本，目前没有写 Swift 版本的计划。 
