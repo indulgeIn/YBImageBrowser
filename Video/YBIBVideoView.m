@@ -100,8 +100,6 @@
 #pragma mark - private
 
 - (void)videoJumpWithScale:(float)scale {
-    if (!self.isPlaying) return;
-    
     CMTime startTime = CMTimeMakeWithSeconds(scale, _player.currentTime.timescale);
     AVPlayer *tmpPlayer = _player;
     

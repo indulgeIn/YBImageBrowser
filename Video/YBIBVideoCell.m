@@ -219,7 +219,7 @@
 }
 
 - (void)yb_videoData:(YBIBVideoData *)data readyForThumbImage:(UIImage *)image {
-    if (!self.videoView.isPlaying && !self.videoView.isPreparingPlay) {
+    if (!self.videoView.isPlaying) {
         self.videoView.thumbImageView.hidden = NO;
     }
     
