@@ -77,7 +77,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     
     if (self.originImage) {
         [self loadOriginImage];
-    } else if (self.imageName || self.imagePath || self.imageData) {
+    } else if (self.imageName || self.imagePath || self.imageData ||self.sbimage ) {
         [self loadYBImage];
     } else if (self.image) {
         [self loadImageBlock];
@@ -152,7 +152,7 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
     NSString *name = self.imageName.copy;
     NSString *path = self.imagePath.copy;
     NSData *data = self.imageData ? self.imageData().copy : nil;
-    if (name.length == 0 && path.length == 0 && data.length == 0) return;
+    if (name.length == 0 && path.length == 0 && data.length == 0 && !self.sbimage) return;
     
     YBImageDecodeDecision decision = [self defaultDecodeDecision];
     
@@ -165,6 +165,8 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
             image = [YBImage imageWithContentsOfFile:path decodeDecision:decision];
         } else if (data.length > 0) {
             image = [YBImage imageWithData:data scale:UIScreen.mainScreen.scale decodeDecision:decision];
+        }else{
+            image = self.sbimage;
         }
         YBIB_DISPATCH_ASYNC_MAIN(^{
             __strong typeof(wSelf) self = wSelf;
