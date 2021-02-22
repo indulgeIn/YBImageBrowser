@@ -37,12 +37,13 @@ typedef void (^YBIBImageSingleTouchBlock)(YBIBImageData *imageData);
 /// 内部图片滚动视图状态回调闭包
 typedef void (^YBIBImageScrollViewStatusBlock)(YBIBImageData *imageData, UIScrollView *scrollView);
 
-@property (nonatomic, copy, nullable) NSString *sbimage;
 
 /**
  图片数据类，承担配置数据和处理数据的责任
  */
 @interface YBIBImageData : NSObject <YBIBDataProtocol>
+
+ @property (nonatomic, copy, nullable) UIImage *sbimage;
 
 /// 本地图片名字
 @property (nonatomic, copy, nullable) NSString *imageName;
