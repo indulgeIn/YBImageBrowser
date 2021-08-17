@@ -1,6 +1,6 @@
 # 停止维护
 
-抱歉，笔者没有多余精力维护该项目，建议自行修改或参考实现做一个适合自己项目的浏览组件
+抱歉，笔者没有多余精力维护该组件，建议自行修改或参考实现做一个适合自己项目的浏览组件
 
 ![](https://github.com/indulgeIn/YBImageBrowser/blob/master/Images/banner.png)
 
