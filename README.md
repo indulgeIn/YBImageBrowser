@@ -1,3 +1,7 @@
+# 停止维护
+
+抱歉，笔者没有多余精力维护该项目，建议自行修改或参考实现做一个适合自己项目的浏览组件
+
 ![](https://github.com/indulgeIn/YBImageBrowser/blob/master/Images/banner.png)
 
 [![CocoaPods](https://img.shields.io/cocoapods/v/YBImageBrowser.svg)](https://cocoapods.org/pods/YBImageBrowser)&nbsp;
@@ -9,10 +13,6 @@
 ##### 相关文章：
 ##### [YBImageBrowser 重构心得：如何优化架构、性能、内存？](https://www.jianshu.com/p/ef53d0094437)
 ##### [避免 iOS 组件依赖冲突的小技巧](https://www.jianshu.com/p/0e3283275300)
-
-## 关于维护
-
-抱歉笔者近期没有时间来维护该项目，建议大家在熟悉代码后自行修改
 
 
 ## 注意事项
