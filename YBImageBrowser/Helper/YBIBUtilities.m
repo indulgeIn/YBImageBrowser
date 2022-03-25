@@ -71,7 +71,8 @@ BOOL YBIBIsIphoneXSeries(void) {
 CGFloat YBIBStatusbarHeight(void) {
     CGFloat height = 0;
     if (@available(iOS 11.0, *)) {
-        height = UIApplication.sharedApplication.delegate.window.safeAreaInsets.top;
+//        height = UIApplication.sharedApplication.delegate.window.safeAreaInsets.top;
+        height = UIApplication.sharedApplication.keyWindow.safeAreaInsets.top;
     }
     if (height <= 0) {
         height = UIApplication.sharedApplication.statusBarFrame.size.height;
@@ -85,7 +86,8 @@ CGFloat YBIBStatusbarHeight(void) {
 CGFloat YBIBSafeAreaBottomHeight(void) {
     CGFloat bottom = 0;
     if (@available(iOS 11.0, *)) {
-        bottom = UIApplication.sharedApplication.delegate.window.safeAreaInsets.bottom;
+//        bottom = UIApplication.sharedApplication.delegate.window.safeAreaInsets.bottom;
+        bottom = UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom;
     }
     return bottom;
 }
