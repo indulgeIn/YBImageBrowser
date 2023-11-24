@@ -11,6 +11,9 @@ PODS:
   - libwebp/sharpyuv (1.3.2)
   - libwebp/webp (1.3.2):
     - libwebp/sharpyuv
+  - LookinServer (1.2.4):
+    - LookinServer/Core (= 1.2.4)
+  - LookinServer/Core (1.2.4)
   - SDWebImage (5.18.5):
     - SDWebImage/Core (= 5.18.5)
   - SDWebImage/Core (5.18.5)
@@ -24,6 +27,7 @@ PODS:
     - YYImage/Core
 
 DEPENDENCIES:
+  - LookinServer
   - SDWebImage (= 5.18.5)
   - SDWebImageWebPCoder
   - YYImage (from `https://github.com/QiuYeHong90/YYImage.git`)
@@ -32,6 +36,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - libwebp
+    - LookinServer
     - SDWebImage
     - SDWebImageWebPCoder
 
@@ -46,10 +51,11 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
+  LookinServer: 00c7588043ed8e7ab64ce55b9fb747e51371ad06
   SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
   SDWebImageWebPCoder: 633b813fca24f1de5e076bcd7f720c038b23892b
   YYImage: 20ec986d18a8d0ad421619d166a9e628097e2433
 
-PODFILE CHECKSUM: b1de81dbbdfa0c82cafe93db492134d681f5b375
+PODFILE CHECKSUM: 266006ae047391762f269326279cf58203c371c4
 
 COCOAPODS: 1.13.0

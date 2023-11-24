@@ -122,7 +122,18 @@ extern CGFloat YBIBRotationAngle(UIDeviceOrientation startOrientation, UIDeviceO
         case YBIBTransitionTypeCoherent: {
             
             CGRect startFrame = startView.frame;
+            UIView * supView = startView.superview.superview;
+             
             CGRect endFrame = [endView convertRect:endView.bounds toView:startView.superview];
+            if (supView) {
+                CGRect rect =[startView convertRect:startView.bounds toView:supView];
+                
+                [startView removeFromSuperview];
+                [supView addSubview:startView];
+                startView.frame = rect;
+                endFrame = [endView convertRect:endView.bounds toView:startView.superview];
+            }
+            
             
             UIColor *rawBackgroundColor = container.backgroundColor;
             

@@ -1,0 +1,6 @@
+framework module LookinServer {
+  umbrella header "LookinServer-umbrella.h"
+
+  export *
+  module * { export * }
+}

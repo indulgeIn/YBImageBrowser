@@ -9,7 +9,7 @@ pod 'SDWebImageWebPCoder'
 # 兼容新系统的问题
 pod 'YYImage', :git => 'https://github.com/QiuYeHong90/YYImage.git'
 pod 'YYImage/WebP', :git => 'https://github.com/QiuYeHong90/YYImage.git'
-
+pod 'LookinServer', :configurations => ['Debug']
 
 end
 # 兼容m1 电脑模拟器
