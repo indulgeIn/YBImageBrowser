@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "MainController.h"
 #import "MainNavigationController.h"
+#import "SDWebImage/SDWebImage.h"
+#import "SDImageWebPCoder.h"
 
 @interface AppDelegate ()
 
@@ -26,6 +28,10 @@
     _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
     _window.rootViewController = nvc;
     [_window makeKeyAndVisible];
+    
+    SDImageWebPCoder *webPCoder = [SDImageWebPCoder sharedCoder];
+    [[SDImageCodersManager sharedManager] addCoder:webPCoder];
+    
     return YES;
 }
 

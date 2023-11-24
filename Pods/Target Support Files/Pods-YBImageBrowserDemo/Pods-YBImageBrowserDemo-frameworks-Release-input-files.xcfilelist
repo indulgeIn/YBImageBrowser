@@ -1,3 +1,5 @@
 ${PODS_ROOT}/Target Support Files/Pods-YBImageBrowserDemo/Pods-YBImageBrowserDemo-frameworks.sh
 ${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework
+${BUILT_PRODUCTS_DIR}/SDWebImageWebPCoder/SDWebImageWebPCoder.framework
 ${BUILT_PRODUCTS_DIR}/YYImage/YYImage.framework
+${BUILT_PRODUCTS_DIR}/libwebp/libwebp.framework

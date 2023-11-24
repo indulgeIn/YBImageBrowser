@@ -1,7 +1,22 @@
 PODS:
-  - SDWebImage (5.1.0):
-    - SDWebImage/Core (= 5.1.0)
-  - SDWebImage/Core (5.1.0)
+  - libwebp (1.3.2):
+    - libwebp/demux (= 1.3.2)
+    - libwebp/mux (= 1.3.2)
+    - libwebp/sharpyuv (= 1.3.2)
+    - libwebp/webp (= 1.3.2)
+  - libwebp/demux (1.3.2):
+    - libwebp/webp
+  - libwebp/mux (1.3.2):
+    - libwebp/demux
+  - libwebp/sharpyuv (1.3.2)
+  - libwebp/webp (1.3.2):
+    - libwebp/sharpyuv
+  - SDWebImage (5.18.5):
+    - SDWebImage/Core (= 5.18.5)
+  - SDWebImage/Core (5.18.5)
+  - SDWebImageWebPCoder (0.14.2):
+    - libwebp (~> 1.0)
+    - SDWebImage/Core (~> 5.17)
   - YYImage (1.0.4):
     - YYImage/Core (= 1.0.4)
   - YYImage/Core (1.0.4)
@@ -9,13 +24,16 @@ PODS:
     - YYImage/Core
 
 DEPENDENCIES:
-  - SDWebImage (>= 5.0.0)
+  - SDWebImage (= 5.18.5)
+  - SDWebImageWebPCoder
   - YYImage (from `https://github.com/QiuYeHong90/YYImage.git`)
   - YYImage/WebP (from `https://github.com/QiuYeHong90/YYImage.git`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  trunk:
+    - libwebp
     - SDWebImage
+    - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
   YYImage:
@@ -27,9 +45,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/QiuYeHong90/YYImage.git
 
 SPEC CHECKSUMS:
-  SDWebImage: fb387001955223213dde14bc08c8b73f371f8d8f
+  libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
+  SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
+  SDWebImageWebPCoder: 633b813fca24f1de5e076bcd7f720c038b23892b
   YYImage: 20ec986d18a8d0ad421619d166a9e628097e2433
 
-PODFILE CHECKSUM: 1446451fcada0f8e901a20e18884617bdd8f23dc
+PODFILE CHECKSUM: b1de81dbbdfa0c82cafe93db492134d681f5b375
 
 COCOAPODS: 1.13.0
