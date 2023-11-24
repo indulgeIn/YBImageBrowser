@@ -5,20 +5,31 @@ PODS:
   - YYImage (1.0.4):
     - YYImage/Core (= 1.0.4)
   - YYImage/Core (1.0.4)
+  - YYImage/WebP (1.0.4):
+    - YYImage/Core
 
 DEPENDENCIES:
   - SDWebImage (>= 5.0.0)
-  - YYImage
+  - YYImage (from `https://github.com/QiuYeHong90/YYImage.git`)
+  - YYImage/WebP (from `https://github.com/QiuYeHong90/YYImage.git`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - SDWebImage
-    - YYImage
+
+EXTERNAL SOURCES:
+  YYImage:
+    :git: https://github.com/QiuYeHong90/YYImage.git
+
+CHECKOUT OPTIONS:
+  YYImage:
+    :commit: 4164acb76e8979c0612530bd874e099a1fa51e9d
+    :git: https://github.com/QiuYeHong90/YYImage.git
 
 SPEC CHECKSUMS:
   SDWebImage: fb387001955223213dde14bc08c8b73f371f8d8f
-  YYImage: 1e1b62a9997399593e4b9c4ecfbbabbf1d3f3b54
+  YYImage: 20ec986d18a8d0ad421619d166a9e628097e2433
 
-PODFILE CHECKSUM: 7d28b9ae8c240bc994d951954252612eb02203f4
+PODFILE CHECKSUM: 1446451fcada0f8e901a20e18884617bdd8f23dc
 
-COCOAPODS: 1.7.2
+COCOAPODS: 1.13.0
