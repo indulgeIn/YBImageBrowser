@@ -37,10 +37,12 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
     /**
      * By default, we will decode the image in the background during cache query and download from the network. This can help to improve performance because when rendering image on the screen, it need to be firstly decoded. But this happen on the main queue by Core Animation.
      * However, this process may increase the memory usage as well. If you are experiencing a issue due to excessive memory consumption, This flag can prevent decode the image.
+     * @note 5.14.0 introduce `SDImageCoderDecodeUseLazyDecoding`, use that for better control from codec, instead of post-processing. Which acts the similar like this option but works for SDAnimatedImage as well (this one does not)
+     * @deprecated Deprecated in v5.17.0, if you don't want force-decode, pass [.imageForceDecodePolicy] = [SDImageForceDecodePolicy.never] in context option
      */
-    SDImageCacheAvoidDecodeImage = 1 << 4,
+    SDImageCacheAvoidDecodeImage API_DEPRECATED("Use SDWebImageContextImageForceDecodePolicy instead", macos(10.10, 10.10), ios(8.0, 8.0), tvos(9.0, 9.0), watchos(2.0, 2.0)) = 1 << 4,
     /**
-     * By default, we decode the animated image. This flag can force decode the first frame only and produece the static image.
+     * By default, we decode the animated image. This flag can force decode the first frame only and produce the static image.
      */
     SDImageCacheDecodeFirstFrameOnly = 1 << 5,
     /**
@@ -49,11 +51,28 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
     SDImageCachePreloadAllFrames = 1 << 6,
     /**
      * By default, when you use `SDWebImageContextAnimatedImageClass` context option (like using `SDAnimatedImageView` which designed to use `SDAnimatedImage`), we may still use `UIImage` when the memory cache hit, or image decoder is not available, to behave as a fallback solution.
-     * Using this option, can ensure we always produce image with your provided class. If failed, a error with code `SDWebImageErrorBadImageData` will been used.
+     * Using this option, can ensure we always produce image with your provided class. If failed, an error with code `SDWebImageErrorBadImageData` will be used.
      * Note this options is not compatible with `SDImageCacheDecodeFirstFrameOnly`, which always produce a UIImage/NSImage.
      */
     SDImageCacheMatchAnimatedImageClass = 1 << 7,
 };
+
+/**
+ *  A token associated with each cache query. Can be used to cancel a cache query
+ */
+@interface SDImageCacheToken : NSObject <SDWebImageOperation>
+
+/**
+ Cancel the current cache query.
+ */
+- (void)cancel;
+
+/**
+ The query's cache key.
+ */
+@property (nonatomic, strong, nullable, readonly) NSString *key;
+
+@end
 
 /**
  * SDImageCache maintains a memory cache and a disk cache. Disk cache write operations are performed
@@ -65,7 +84,7 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
 
 /**
  *  Cache Config object - storing all kind of settings.
- *  The property is copy so change of currrent config will not accidentally affect other cache's config.
+ *  The property is copy so change of current config will not accidentally affect other cache's config.
  */
 @property (nonatomic, copy, nonnull, readonly) SDImageCacheConfig *config;
 
@@ -104,7 +123,17 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
 @property (nonatomic, class, readonly, nonnull) SDImageCache *sharedImageCache;
 
 /**
+ * Control the default disk cache directory. This will effect all the SDImageCache instance created after modification, even for shared image cache.
+ * This can be used to share the same disk cache with the App and App Extension (Today/Notification Widget) using `- [NSFileManager.containerURLForSecurityApplicationGroupIdentifier:]`.
+ * @note If you pass nil, the value will be reset to `~/Library/Caches/com.hackemist.SDImageCache`.
+ * @note We still preserve the `namespace` arg, which means, if you change this property into `/path/to/use`,  the `SDImageCache.sharedImageCache.diskCachePath` should be `/path/to/use/default` because shared image cache use `default` as namespace.
+ * Defaults to nil.
+ */
+@property (nonatomic, class, readwrite, null_resettable) NSString *defaultDiskCacheDirectory;
+
+/**
  * Init a new cache store with a specific namespace
+ * The final disk cache directory should looks like ($directory/$namespace). And the default config of shared cache, should result in (~/Library/Caches/com.hackemist.SDImageCache/default/)
  *
  * @param ns The namespace to use for this cache store
  */
@@ -112,7 +141,7 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
 
 /**
  * Init a new cache store with a specific namespace and directory.
- * If you don't provide the disk cache directory, we will use the User Cache directory with prefix (~/Library/Caches/com.hackemist.SDImageCache/).
+ * The final disk cache directory should looks like ($directory/$namespace). And the default config of shared cache, should result in (~/Library/Caches/com.hackemist.SDImageCache/default/)
  *
  * @param ns        The namespace to use for this cache store
  * @param directory Directory to cache disk images in
@@ -121,7 +150,7 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
                        diskCacheDirectory:(nullable NSString *)directory;
 
 /**
- * Init a new cache store with a specific namespace, directory and file manager
+ * Init a new cache store with a specific namespace, directory and config.
  * The final disk cache directory should looks like ($directory/$namespace). And the default config of shared cache, should result in (~/Library/Caches/com.hackemist.SDImageCache/default/)
  *
  * @param ns          The namespace to use for this cache store
@@ -162,8 +191,38 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
  * @param key             The unique image cache key, usually it's image absolute URL
  * @param toDisk          Store the image to disk cache if YES. If NO, the completion block is called synchronously
  * @param completionBlock A block executed after the operation is finished
+ * @note If no image data is provided and encode to disk, we will try to detect the image format (using either `sd_imageFormat` or `SDAnimatedImage` protocol method) and animation status, to choose the best matched format, including GIF, JPEG or PNG.
  */
 - (void)storeImage:(nullable UIImage *)image
+            forKey:(nullable NSString *)key
+            toDisk:(BOOL)toDisk
+        completion:(nullable SDWebImageNoParamsBlock)completionBlock;
+
+/**
+ * Asynchronously store an image data into disk cache at the given key.
+ *
+ * @param imageData           The image data to store
+ * @param key             The unique image cache key, usually it's image absolute URL
+ * @param completionBlock A block executed after the operation is finished
+ */
+- (void)storeImageData:(nullable NSData *)imageData
+                forKey:(nullable NSString *)key
+            completion:(nullable SDWebImageNoParamsBlock)completionBlock;
+
+/**
+ * Asynchronously store an image into memory and disk cache at the given key.
+ *
+ * @param image           The image to store
+ * @param imageData       The image data as returned by the server, this representation will be used for disk storage
+ *                        instead of converting the given image object into a storable/compressed image format in order
+ *                        to save quality and CPU
+ * @param key             The unique image cache key, usually it's image absolute URL
+ * @param toDisk          Store the image to disk cache if YES. If NO, the completion block is called synchronously
+ * @param completionBlock A block executed after the operation is finished
+ * @note If no image data is provided and encode to disk, we will try to detect the image format (using either `sd_imageFormat` or `SDAnimatedImage` protocol method) and animation status, to choose the best matched format, including GIF, JPEG or PNG.
+ */
+- (void)storeImage:(nullable UIImage *)image
+         imageData:(nullable NSData *)imageData
             forKey:(nullable NSString *)key
             toDisk:(BOOL)toDisk
         completion:(nullable SDWebImageNoParamsBlock)completionBlock;
@@ -176,17 +235,22 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
  *                        instead of converting the given image object into a storable/compressed image format in order
  *                        to save quality and CPU
  * @param key             The unique image cache key, usually it's image absolute URL
- * @param toDisk          Store the image to disk cache if YES. If NO, the completion block is called synchronously
+ * @param options A mask to specify options to use for this store
+ * @param context The context options to use. Pass `.callbackQueue` to control callback queue
+ * @param cacheType The image store op cache type
  * @param completionBlock A block executed after the operation is finished
+ * @note If no image data is provided and encode to disk, we will try to detect the image format (using either `sd_imageFormat` or `SDAnimatedImage` protocol method) and animation status, to choose the best matched format, including GIF, JPEG or PNG.
  */
 - (void)storeImage:(nullable UIImage *)image
          imageData:(nullable NSData *)imageData
             forKey:(nullable NSString *)key
-            toDisk:(BOOL)toDisk
+           options:(SDWebImageOptions)options
+           context:(nullable SDWebImageContext *)context
+         cacheType:(SDImageCacheType)cacheType
         completion:(nullable SDWebImageNoParamsBlock)completionBlock;
 
 /**
- * Synchronously store image into memory cache at the given key.
+ * Synchronously store an image into memory cache at the given key.
  *
  * @param image  The image to store
  * @param key    The unique image cache key, usually it's image absolute URL
@@ -195,7 +259,7 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
                     forKey:(nullable NSString *)key;
 
 /**
- * Synchronously store image data into disk cache at the given key.
+ * Synchronously store an image data into disk cache at the given key.
  *
  * @param imageData  The image data to store
  * @param key        The unique image cache key, usually it's image absolute URL
@@ -225,8 +289,7 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
 #pragma mark - Query and Retrieve Ops
 
 /**
- * Asynchronously queries the cache with operation and call the completion when done.
- *  Query the image data for the given key synchronously.
+ * Synchronously query the image data for the given key in disk cache. You can decode the image data to image after loaded.
  *
  *  @param key The unique key used to store the wanted image
  *  @return The image data for the given key, or nil if not found.
@@ -234,37 +297,59 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
 - (nullable NSData *)diskImageDataForKey:(nullable NSString *)key;
 
 /**
- * Operation that queries the cache asynchronously and call the completion when done.
+ * Asynchronously query the image data for the given key in disk cache. You can decode the image data to image after loaded.
  *
- * @param key       The unique key used to store the wanted image
- * @param doneBlock The completion block. Will not get called if the operation is cancelled
- *
- * @return a NSOperation instance containing the cache op
+ *  @param key The unique key used to store the wanted image
+ *  @param completionBlock the block to be executed when the query is done.
+ *  @note the completion block will be always executed on the main queue
  */
-- (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key done:(nullable SDImageCacheQueryCompletionBlock)doneBlock;
+- (void)diskImageDataQueryForKey:(nullable NSString *)key completion:(nullable SDImageCacheQueryDataCompletionBlock)completionBlock;
 
 /**
  * Asynchronously queries the cache with operation and call the completion when done.
  *
- * @param key       The unique key used to store the wanted image
+ * @param key       The unique key used to store the wanted image. If you want transformed or thumbnail image, calculate the key with `SDTransformedKeyForKey`, `SDThumbnailedKeyForKey`, or generate the cache key from url with `cacheKeyForURL:context:`.
+ * @param doneBlock The completion block. Will not get called if the operation is cancelled
+ *
+ * @return a SDImageCacheToken instance containing the cache operation, will callback immediately when cancelled
+ */
+- (nullable SDImageCacheToken *)queryCacheOperationForKey:(nullable NSString *)key done:(nullable SDImageCacheQueryCompletionBlock)doneBlock;
+
+/**
+ * Asynchronously queries the cache with operation and call the completion when done.
+ *
+ * @param key       The unique key used to store the wanted image. If you want transformed or thumbnail image, calculate the key with `SDTransformedKeyForKey`, `SDThumbnailedKeyForKey`, or generate the cache key from url with `cacheKeyForURL:context:`.
  * @param options   A mask to specify options to use for this cache query
  * @param doneBlock The completion block. Will not get called if the operation is cancelled
  *
- * @return a NSOperation instance containing the cache op
+ * @return a SDImageCacheToken instance containing the cache operation, will callback immediately when cancelled
  */
-- (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options done:(nullable SDImageCacheQueryCompletionBlock)doneBlock;
+- (nullable SDImageCacheToken *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options done:(nullable SDImageCacheQueryCompletionBlock)doneBlock;
 
 /**
  * Asynchronously queries the cache with operation and call the completion when done.
  *
- * @param key       The unique key used to store the wanted image
+ * @param key       The unique key used to store the wanted image. If you want transformed or thumbnail image, calculate the key with `SDTransformedKeyForKey`, `SDThumbnailedKeyForKey`, or generate the cache key from url with `cacheKeyForURL:context:`.
  * @param options   A mask to specify options to use for this cache query
  * @param context   A context contains different options to perform specify changes or processes, see `SDWebImageContextOption`. This hold the extra objects which `options` enum can not hold.
  * @param doneBlock The completion block. Will not get called if the operation is cancelled
  *
- * @return a NSOperation instance containing the cache op
+ * @return a SDImageCacheToken instance containing the cache operation, will callback immediately when cancellederation, will callback immediately when cancelled
  */
-- (nullable NSOperation *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options context:(nullable SDWebImageContext *)context done:(nullable SDImageCacheQueryCompletionBlock)doneBlock;
+- (nullable SDImageCacheToken *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options context:(nullable SDWebImageContext *)context done:(nullable SDImageCacheQueryCompletionBlock)doneBlock;
+
+/**
+ * Asynchronously queries the cache with operation and call the completion when done.
+ *
+ * @param key       The unique key used to store the wanted image. If you want transformed or thumbnail image, calculate the key with `SDTransformedKeyForKey`, `SDThumbnailedKeyForKey`, or generate the cache key from url with `cacheKeyForURL:context:`.
+ * @param options   A mask to specify options to use for this cache query
+ * @param context   A context contains different options to perform specify changes or processes, see `SDWebImageContextOption`. This hold the extra objects which `options` enum can not hold.
+ * @param queryCacheType Specify where to query the cache from. By default we use `.all`, which means both memory cache and disk cache. You can choose to query memory only or disk only as well. Pass `.none` is invalid and callback with nil immediately.
+ * @param doneBlock The completion block. Will not get called if the operation is cancelled
+ *
+ * @return a SDImageCacheToken instance containing the cache operation, will callback immediately when cancelled
+ */
+- (nullable SDImageCacheToken *)queryCacheOperationForKey:(nullable NSString *)key options:(SDImageCacheOptions)options context:(nullable SDWebImageContext *)context cacheType:(SDImageCacheType)queryCacheType done:(nullable SDImageCacheQueryCompletionBlock)doneBlock;
 
 /**
  * Synchronously query the memory cache.
@@ -283,12 +368,32 @@ typedef NS_OPTIONS(NSUInteger, SDImageCacheOptions) {
 - (nullable UIImage *)imageFromDiskCacheForKey:(nullable NSString *)key;
 
 /**
+ * Synchronously query the disk cache. With the options and context which may effect the image generation. (Such as transformer, animated image, thumbnail, etc)
+ *
+ * @param key The unique key used to store the image
+ * @param options   A mask to specify options to use for this cache query
+ * @param context   A context contains different options to perform specify changes or processes, see `SDWebImageContextOption`. This hold the extra objects which `options` enum can not hold.
+ * @return The image for the given key, or nil if not found.
+ */
+- (nullable UIImage *)imageFromDiskCacheForKey:(nullable NSString *)key options:(SDImageCacheOptions)options context:(nullable SDWebImageContext *)context;
+
+/**
  * Synchronously query the cache (memory and or disk) after checking the memory cache.
  *
  * @param key The unique key used to store the image
  * @return The image for the given key, or nil if not found.
  */
 - (nullable UIImage *)imageFromCacheForKey:(nullable NSString *)key;
+
+/**
+ * Synchronously query the cache (memory and or disk) after checking the memory cache. With the options and context which may effect the image generation. (Such as transformer, animated image, thumbnail, etc)
+ *
+ * @param key The unique key used to store the image
+ * @param options   A mask to specify options to use for this cache query
+ * @param context   A context contains different options to perform specify changes or processes, see `SDWebImageContextOption`. This hold the extra objects which `options` enum can not hold.
+ * @return The image for the given key, or nil if not found.
+ */
+- (nullable UIImage *)imageFromCacheForKey:(nullable NSString *)key options:(SDImageCacheOptions)options context:(nullable SDWebImageContext *)context;
 
 #pragma mark - Remove Ops
 

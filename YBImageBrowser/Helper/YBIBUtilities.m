@@ -91,10 +91,21 @@ CGFloat YBIBSafeAreaBottomHeight(void) {
 }
 
 UIImage *YBIBSnapshotView(UIView *view) {
-    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, [UIScreen mainScreen].scale);
-    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];
-    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+//    UIGraphicsBeginImageContextWithOptions(view.bounds.size, YES, [UIScreen mainScreen].scale);
+//    [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];
+//    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+    
+    UIGraphicsImageRendererFormat *format = [[UIGraphicsImageRendererFormat alloc] init];
+    format.opaque = YES;
+    format.scale = [UIScreen mainScreen].scale;
+    
+    UIGraphicsImageRenderer *renderer = [[UIGraphicsImageRenderer alloc] initWithSize:view.bounds.size format:format];
+    
+    UIImage *image = [renderer imageWithActions:^(UIGraphicsImageRendererContext * _Nonnull rendererContext) {
+        [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:NO];
+    }];
+    
     return image;
 }
 

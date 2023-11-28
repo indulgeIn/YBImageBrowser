@@ -8,9 +8,13 @@
 
 #import "SDWebImageCompat.h"
 
+/// The scale mode to apply when image drawing on a container with different sizes.
 typedef NS_ENUM(NSUInteger, SDImageScaleMode) {
+    /// The option to scale the content to fit the size of itself by changing the aspect ratio of the content if necessary.
     SDImageScaleModeFill = 0,
+    /// The option to scale the content to fit the size of the view by maintaining the aspect ratio. Any remaining area of the view’s bounds is transparent.
     SDImageScaleModeAspectFit = 1,
+    /// The option to scale the content to fill the size of the view. Some portion of the content may be clipped to fill the view’s bounds.
     SDImageScaleModeAspectFill = 2
 };
 
@@ -27,7 +31,7 @@ typedef NS_OPTIONS(NSUInteger, SDRectCorner) {
 #endif
 
 /**
- Provide some commen method for `UIImage`.
+ Provide some common method for `UIImage`.
  Image process is based on Core Graphics and vImage.
  */
 @interface UIImage (Transform)
@@ -103,6 +107,7 @@ typedef NS_OPTIONS(NSUInteger, SDRectCorner) {
 
 /**
  Return the pixel color at specify position. The point is from the top-left to the bottom-right and 0-based. The returned the color is always be RGBA format. The image must be CG-based.
+ @note The point's x/y will be converted into integer.
  @note The point's x/y should not be smaller than 0, or greater than or equal to width/height.
  @note The overhead of object creation means this method is best suited for infrequent color sampling. For heavy image processing, grab the raw bitmap data and process yourself.
 
@@ -113,6 +118,7 @@ typedef NS_OPTIONS(NSUInteger, SDRectCorner) {
 
 /**
  Return the pixel color array with specify rectangle. The rect is from the top-left to the bottom-right and 0-based. The returned the color is always be RGBA format. The image must be CG-based.
+ @note The rect's origin and size will be converted into integer.
  @note The rect's width/height should not be smaller than or equal to 0. The minX/minY should not be smaller than 0. The maxX/maxY should not be greater than width/height. Attention this limit is different from `sd_colorAtPoint:` (point: (0, 0) like rect: (0, 0, 1, 1))
  @note The overhead of object creation means this method is best suited for infrequent color sampling. For heavy image processing, grab the raw bitmap data and process yourself.
 

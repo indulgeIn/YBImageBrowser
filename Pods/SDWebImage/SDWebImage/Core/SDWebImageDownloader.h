@@ -12,6 +12,8 @@
 #import "SDWebImageOperation.h"
 #import "SDWebImageDownloaderConfig.h"
 #import "SDWebImageDownloaderRequestModifier.h"
+#import "SDWebImageDownloaderResponseModifier.h"
+#import "SDWebImageDownloaderDecryptor.h"
 #import "SDImageLoader.h"
 
 /// Downloader options
@@ -72,11 +74,13 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageDownloaderOptions) {
     /**
      * By default, we will decode the image in the background during cache query and download from the network. This can help to improve performance because when rendering image on the screen, it need to be firstly decoded. But this happen on the main queue by Core Animation.
      * However, this process may increase the memory usage as well. If you are experiencing a issue due to excessive memory consumption, This flag can prevent decode the image.
+     * @note 5.14.0 introduce `SDImageCoderDecodeUseLazyDecoding`, use that for better control from codec, instead of post-processing. Which acts the similar like this option but works for SDAnimatedImage as well (this one does not)
+     * @deprecated Deprecated in v5.17.0, if you don't want force-decode, pass [.imageForceDecodePolicy] = [SDImageForceDecodePolicy.never] in context option
      */
-    SDWebImageDownloaderAvoidDecodeImage = 1 << 9,
+    SDWebImageDownloaderAvoidDecodeImage API_DEPRECATED("Use SDWebImageContextImageForceDecodePolicy instead", macos(10.10, 10.10), ios(8.0, 8.0), tvos(9.0, 9.0), watchos(2.0, 2.0)) = 1 << 9,
     
     /**
-     * By default, we decode the animated image. This flag can force decode the first frame only and produece the static image.
+     * By default, we decode the animated image. This flag can force decode the first frame only and produce the static image.
      */
     SDWebImageDownloaderDecodeFirstFrameOnly = 1 << 10,
     
@@ -93,9 +97,13 @@ typedef NS_OPTIONS(NSUInteger, SDWebImageDownloaderOptions) {
     SDWebImageDownloaderMatchAnimatedImageClass = 1 << 12,
 };
 
+/// Posed when URLSessionTask started (`resume` called))
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadStartNotification;
+/// Posed when URLSessionTask get HTTP response (`didReceiveResponse:completionHandler:` called)
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadReceiveResponseNotification;
+/// Posed when URLSessionTask stoped (`didCompleteWithError:` with error or `cancel` called)
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadStopNotification;
+/// Posed when URLSessionTask finished with success  (`didCompleteWithError:` without error)
 FOUNDATION_EXPORT NSNotificationName _Nonnull const SDWebImageDownloadFinishNotification;
 
 typedef SDImageLoaderProgressBlock SDWebImageDownloaderProgressBlock;
@@ -126,6 +134,11 @@ typedef SDImageLoaderCompletedBlock SDWebImageDownloaderCompletedBlock;
  */
 @property (nonatomic, strong, nullable, readonly) NSURLResponse *response;
 
+/**
+ The download's metrics. This will be nil if download operation does not support metrics.
+ */
+@property (nonatomic, strong, nullable, readonly) NSURLSessionTaskMetrics *metrics API_AVAILABLE(macosx(10.12), ios(10.0), watchos(3.0), tvos(10.0));
+
 @end
 
 
@@ -142,11 +155,28 @@ typedef SDImageLoaderCompletedBlock SDWebImageDownloaderCompletedBlock;
 
 /**
  * Set the request modifier to modify the original download request before image load.
- * This request modifier method will be called for each downloading image request. Return the original request means no modication. Return nil will cancel the download request.
+ * This request modifier method will be called for each downloading image request. Return the original request means no modification. Return nil will cancel the download request.
  * Defaults to nil, means does not modify the original download request.
  * @note If you want to modify single request, consider using `SDWebImageContextDownloadRequestModifier` context option.
  */
 @property (nonatomic, strong, nullable) id<SDWebImageDownloaderRequestModifier> requestModifier;
+
+/**
+ * Set the response modifier to modify the original download response during image load.
+ * This response modifier method will be called for each downloading image response. Return the original response means no modification. Return nil will mark current download as cancelled.
+ * Defaults to nil, means does not modify the original download response.
+ * @note If you want to modify single response, consider using `SDWebImageContextDownloadResponseModifier` context option.
+ */
+@property (nonatomic, strong, nullable) id<SDWebImageDownloaderResponseModifier> responseModifier;
+
+/**
+ * Set the decryptor to decrypt the original download data before image decoding. This can be used for encrypted image data, like Base64.
+ * This decryptor method will be called for each downloading image data. Return the original data means no modification. Return nil will mark this download failed.
+ * Defaults to nil, means does not modify the original download data.
+ * @note When using decryptor, progressive decoding will be disabled, to avoid data corrupt issue.
+ * @note If you want to decrypt single download data, consider using `SDWebImageContextDownloadDecryptor` context option.
+ */
+@property (nonatomic, strong, nullable) id<SDWebImageDownloaderDecryptor> decryptor;
 
 /**
  * The configuration in use by the internal NSURLSession. If you want to provide a custom sessionConfiguration, use `SDWebImageDownloaderConfig.sessionConfiguration` and create a new downloader instance.
